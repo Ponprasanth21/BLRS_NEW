@@ -1,0 +1,582 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="header">
+
+<head>
+
+	<title>BLRS</title>
+
+	<script src="/js/maxcdn.js" th:src="@{/js/maxcdn.js}"></script>
+	<link rel="stylesheet" type="text/css" href="/css/loader.css" th:href="@{/css/loader2.css}">
+	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
+		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+	<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+		th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+	<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+		th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
+
+	<style>
+		body {
+			font-size: 0.8rem;
+		}
+
+		#loadingContent img {
+			width: 100px;
+			height: 100px;
+			margin-bottom: 10px;
+		}
+
+		#loadingModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: none;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 9999;
+			backdrop-filter: blur(5px);
+		}
+
+		#loadingContent {
+			text-align: center;
+			background-color: none;
+			z-index: 10000;
+		}
+
+		.header1 {
+			background-color: #83b5ec;
+		}
+
+		.dropdown-menu>li {
+			margin-left: 10px;
+		}
+
+		.error {
+			color: red;
+			padding-left: 10px;
+		}
+
+		#menu {
+			background-color: #7593b3;
+			position: absolute;
+			position: fixed;
+			width: 16.5%;
+			top: 70px;
+			left: -1px;
+			overflow-y: auto;
+			height: 100%;
+		}
+
+		#menu>ul>li>a {
+			display: block;
+			background-color: #2b506f;
+			color: #f1eaea;
+			font-size: 13px;
+			border-bottom: 2px solid white;
+			/* Changed to solid white */
+		}
+
+		#menu>ul>li>a:hover {
+			background-color: #7593b3;
+			color: #f1eaea;
+		}
+
+		.sidenav>li>ul>li>a:hover {
+			color: 7593b3;
+		}
+
+		.sidenav>li>ul>li>a {
+			padding: .2rem .2rem !important;
+		}
+
+		#dropico {
+			float: right;
+		}
+
+		.submenu1>ul>li>a {
+			display: block;
+			background-color: red;
+			color: #f1eaea;
+			font-size: 13px;
+		}
+
+		#headerdiv {
+			top: 50%;
+			left: 40%;
+			height: 50px;
+			color: black;
+			position: absolute;
+			text-align: center;
+			margin: -20px 0 0 -0px;
+		}
+
+		#showmenu {
+			font-weight: 700;
+			font-size: larger;
+		}
+
+		nav {
+			background-color: #fafafa;
+		}
+
+		.user-profile-card {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			padding: 6px 12px;
+			border-radius: 8px;
+			background-color: transparent;
+			border: none;
+			transition: all 0.2s ease;
+		}
+
+
+		.avatar-wrapper {
+			position: relative;
+			width: 55px;
+			height: 55px;
+			border-radius: 50%;
+			overflow: hidden;
+			border: none;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: #e2e8f0;
+		}
+
+		.avatar-img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.avatar-fallback {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: #3b82f6;
+			color: #ffffff;
+			font-size: 1.3rem;
+		}
+
+		.user-details-info {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			line-height: 1.25;
+		}
+
+		.user-name {
+			font-size: 0.85rem;
+			font-weight: 700;
+			color: #0f172a;
+			text-transform: uppercase;
+			margin-bottom: 2px;
+		}
+
+		.user-meta {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 0.85rem;
+			color: #475569;
+			font-weight: 500;
+		}
+
+		.user-id {
+			font-style: normal;
+		}
+
+		.user-meta-divider {
+			color: #cbd5e1;
+		}
+
+		.user-login {
+			font-style: normal;
+		}
+
+		#pagetitle {
+			top: 114%;
+			left: 50%;
+			height: 50px;
+			color: #e80909;
+			position: absolute;
+			text-align: center;
+			margin: -25px 0 0 -31px;
+		}
+
+		#logoutmenu {
+			display: none;
+			position: absolute;
+			z-index: 1031;
+			width: 200px;
+			background-color: #dee2e6;
+			box-shadow: 3px 1px 11px 1px #888888;
+			border-radius: 5px;
+			background-color: #dee2e6;
+			right: 0px;
+			top: 70px;
+			border: 2px solid #4d8cb9;
+			position: fixed;
+		}
+
+		#ques {
+			margin-top: -54px;
+			float: right;
+			padding: 65px;
+		}
+
+		.logout {
+			color: #2e7bd0;
+		}
+
+		.content {
+			margin-top: 100px;
+		}
+
+		html {
+			zoom: 0.7;
+		}
+
+		label {
+			text-align: left;
+		}
+
+		.modal-backdrop {
+			width: 200vw;
+			height: 200vh;
+		}
+
+		section {
+			padding-left: 15px;
+		}
+
+		.form-control:focus {
+			color: #495057;
+			outline: 0;
+			box-shadow: unset !important;
+		}
+
+		.btn-primary.focus,
+		.btn-primary:focus {
+			box-shadow: unset !important;
+		}
+
+		.nav-link-collapse:after {
+			float: right;
+			content: '\f067';
+			font-family: 'Font Awesome 5 Free';
+			color: red;
+		}
+
+		.nav-link-show:after {
+			float: right;
+			content: '\f068';
+			font-family: 'Font Awesome 5 Free';
+			color: red;
+		}
+
+		ul {
+			list-style: none
+		}
+
+		li a {
+			color: #fffdfdbf;
+		}
+
+		a {
+			text-decoration: none !important;
+		}
+
+		#showmenu1 {
+			width: 55px;
+			height: 55px;
+			border-radius: 50%;
+			object-fit: cover;
+		}
+	</style>
+	<script type="text/javascript">
+		/*<![CDATA[*/
+
+		/* Re-Direction Functionality */
+		function contentLoad(a) {
+
+			location.href = "/BLRS/" + a.id;
+		}
+
+		/* LogOut Functionality */
+		function logout() {
+			$("#datalogout").modal("toggle");
+		}
+
+		$(document).ready(function () {
+			$('.nav-link-collapse').on('click', function () {
+				$('.nav-link-collapse').not(this).removeClass('nav-link-show');
+				$(this).toggleClass('nav-link-show');
+			});
+		});
+
+		function logoutfunc() {
+
+			location.href = "/BGLS/logoutsub";
+
+		}
+	</script>
+
+	<script>
+		function imageuserprofile() {
+			var userphoto = document.getElementById("userphoto").value;
+			$.ajax({
+				type: 'GET',
+				url: '/BGLS/userprofileimage?userphoto=' + encodeURIComponent(userphoto),
+				success: function (response) {
+					var element = document.getElementById("photoCapture123");
+
+					if (!element) return;
+
+					// Check if response contains valid image data
+					if (!response || response.startsWith("No records found")
+						|| response.startsWith("Photo content is null")) {
+						element.innerHTML = '<i class="fas fa-user-circle"></i>';
+						return;
+					}
+
+					try {
+						// Convert the base64 string to a Blob and create an image URL
+						const uint8Array = base64ToUint8Array(response);
+						const blob = new Blob([uint8Array], {
+							type: "image/jpeg"
+						});
+						const imageUrl = URL.createObjectURL(blob);
+
+						// Create and append image element
+						element.innerHTML = ''; // Clear previous fallback icon
+						const img = document.createElement("img");
+						img.src = imageUrl;
+						img.style.width = "55px";
+						img.style.height = "55px";
+						img.style.borderRadius = "50%";
+						img.style.objectFit = "cover";
+						img.alt = "User Profile Image";
+
+						element.appendChild(img);
+					} catch (e) {
+						console.error("Error parsing base64 image data:", e);
+						element.innerHTML = '<i class="fas fa-user-circle"></i>';
+					}
+				},
+				error: function () {
+					console.error("Error fetching image.");
+					var element = document.getElementById("photoCapture123");
+					if (element) {
+						element.innerHTML = '<i class="fas fa-user-circle"></i>';
+					}
+				}
+			});
+		}
+
+		// Function to convert Base64 string to Uint8Array
+		function base64ToUint8Array(base64) {
+			const binaryString = window.atob(base64);
+			const len = binaryString.length;
+			const bytes = new Uint8Array(len);
+			for (let i = 0; i < len; i++) {
+				bytes[i] = binaryString.charCodeAt(i);
+			}
+			return bytes;
+		}
+
+	</script>
+	<script>
+		// Function to hide the image and show photoCapture123 if the image fails to load
+		function hideImage() {
+			const imgElement = document.getElementById("showmenu1");
+			const photoCaptureElement = document.getElementById("photoCapture123");
+
+			if (imgElement) imgElement.style.display = "none";
+			if (photoCaptureElement) {
+				photoCaptureElement.style.display = "flex";
+				imageuserprofile(); // Trigger AJAX load for DB image only when local image fails
+			}
+		}
+	</script>
+
+
+</head>
+
+<body>
+	<input type="hidden" id="activemenu" th:value="${menu}" />
+	<nav class="navbar fixed-top navbar-expand-md navbar-dark mb-3"
+		style="box-shadow: 6px 6px 12px #888888; height: 70px">
+		<input type="text" name="userphoto" id="userphoto" th:value="${session.USERID}" hidden />
+		<div class="col-sm-12 d-flex justify-content-between align-items-center">
+			<img th:src="@{/images/mcs_logotrans.png}" class="img-fluid" style="max-width: 100px; max-height: 55px;"
+				id="showmenu" alt="Bornfire">
+
+			<div id="headerdiv">
+				<h3 class="text-center">LOAN RECOVERY SYSTEM</h3>
+			</div>
+
+			<div class="col-sm-8"></div>
+
+			<!-- User Profile Card -->
+			<div class="user-profile-card">
+				<div class="avatar-wrapper">
+					<img th:src="@{'/images/' + ${session.USERID} + '.jpg'}" class="avatar-img" id="showmenu1"
+						alt="User Profile" onerror="hideImage()">
+					<div id="photoCapture123" class="avatar-fallback" style="display: none;">
+						<i class="fas fa-user-circle"></i>
+					</div>
+				</div>
+				<div class="user-details-info">
+					<div class="user-name" th:text="${session.USERNAME}">SURESH</div>
+					<div class="user-meta">
+						<span class="user-id" th:text="'ID: ' + ${session.USERID}">ID: EMP01</span>
+						<span class="user-meta-divider">|</span>
+						<span class="user-login" th:text="'LOGIN: ' + ${session.LOGIN_TIME}">LOGIN: 10:23:17</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</nav>
+
+	<!-- <input type="text"
+       name="userphoto"
+       id="userphoto"
+       th:value="${session.USERID}"
+       class="form-control-sm bg-white border border-dark"
+       style="font-size: 20px; width: 150px;"
+       readonly /> -->
+
+
+	<div id="menu">
+		<ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+			<!-- HOME PAGE -->
+			<li class="nav-item">
+				<a class="nav-link pl-3 pt-4" data-toggle="collapse" href="#" id="Dashboard"
+					onclick="contentLoad(this)">Home</a>
+			</li>
+
+			<!-- ADMIN -->
+			<li class="nav-item">
+				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+					data-target="#collapseSubItems1" aria-controls="collapseSubItems1" aria-expanded="false">Admin</a>
+				<ul class="nav-second-level collapse" id="collapseSubItems1" data-parent="#navAccordion">
+					<li class="nav-item">
+						<a class="nav-link" id="Userprofile" href="#" onclick="contentLoad(this)">User
+							Profile</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Accesscontrol" href="#" onclick="contentLoad(this)">Access Controls</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Batchjobscheduler" href="#" onclick="contentLoad(this)">Batch Job
+							Scheduler</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Batchjobalert" href="#" onclick="contentLoad(this)">Batch Job Alert</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Parameters" href="#" onclick="contentLoad(this)">Parameters</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Loanaccountprofile" href="#" onclick="contentLoad(this)">Loan Account
+							Profile</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- OPERACTION -->
+			<li class="nav-item">
+				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+					data-target="#collapseSubItems2" aria-controls="collapseSubItems2"
+					aria-expanded="false">Operations</a>
+				<ul class="nav-second-level collapse" id="collapseSubItems2" data-parent="#navAccordion">
+					<li class="nav-item">
+						<a class="nav-link" id="Remindergeneration" href="#" onclick="contentLoad(this)">Reminder
+							Generation</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Dispatchdetails" href="#" onclick="contentLoad(this)">Dispatch Details</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Batchjobexecution" href="#" onclick="contentLoad(this)">Batch Job
+							Execution</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- INQUIRIES -->
+			<li class="nav-item">
+				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+					data-target="#collapseSubItems3" aria-controls="collapseSubItems3"
+					aria-expanded="false">Inquiries</a>
+				<ul class="nav-second-level collapse" id="collapseSubItems3" data-parent="#navAccordion">
+					<li class="nav-item">
+						<a class="nav-link" id="Loanaccountprofileinquiry" href="#" onclick="contentLoad(this)">Loan Account
+							Profile</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- REPORTS -->
+			<li class="nav-item">
+				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+					data-target="#collapseSubItems4" aria-controls="collapseSubItems4" aria-expanded="false">Reports</a>
+				<ul class="nav-second-level collapse" id="collapseSubItems4" data-parent="#navAccordion">
+					<li class="nav-item">
+						<a class="nav-link" id="Overduereports" href="#" onclick="contentLoad(this)">List of
+							Overdue Reports</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Reminderreports" href="#" onclick="contentLoad(this)">List of Reminder
+							Reports</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Guarantorreports" href="#" onclick="contentLoad(this)">List of Guarantor
+							Reports</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- AUDITLOGS -->
+			<li class="nav-item">
+				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+					data-target="#collapseSubItems5" aria-controls="collapseSubItems5" aria-expanded="false">Audit
+					Logs</a>
+				<ul class="nav-second-level collapse" id="collapseSubItems5" data-parent="#navAccordion">
+					<li class="nav-item">
+						<a class="nav-link" id="Useroperation" href="#" onclick="contentLoad(this)">User
+							Operations</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="Businessoperation" href="#" onclick="contentLoad(this)">Business
+							Operations</a>
+					</li>
+				</ul>
+			</li>
+
+			<!-- LOG OUT -->
+			<li class="nav-item">
+				<a class="nav-link pl-3" data-toggle="collapse" href="#logout" id="logout"
+					onclick="contentLoad(this)">Logout</a>
+			</li>
+		</ul>
+	</div>
+	<!------------------------------------------------------------------- Loading Modal ------------------------------------------------------>
+	<div id="loadingModal" style="display: none;">
+		<div id="loadingContent">
+			<img th:src=@{/images/Loading.gif} alt="Loading...">
+		</div>
+	</div>
+
+</body>
+
+</html>

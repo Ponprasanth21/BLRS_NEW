@@ -1,0 +1,132 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Page Not Found (404) - BAJ</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+        th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
+        th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/color_document.css}">
+
+    <script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+    <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
+        th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+        th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+
+    <style>
+        body {
+            font-size: 0.8rem;
+            background-color: #ffffff;
+        }
+
+        .container-manager {
+            width: 83.5%;
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: 15.5%;
+            margin-top: 80px;
+        }
+
+        .error-card {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .error-header {
+            background-color: #e9ecef;
+            border-bottom: 1px solid #dee2e6;
+            padding: 12px 20px;
+        }
+
+        .error-body {
+            background-color: #ffffff;
+            padding: 60px 40px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            color: #2b506f;
+            line-height: 1;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .error-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .error-text {
+            font-size: 1rem;
+            color: #6c757d;
+            max-width: 480px;
+            margin-bottom: 30px;
+        }
+
+        .card-footer {
+            background-color: #e9ecef;
+            border-top: 1px solid #dee2e6;
+            padding: 12px 20px;
+        }
+    </style>
+
+    <script th:inline="javascript">
+        function Home() {
+            location.href = /*[[@{/Dashboard}]]*/ 'Dashboard';
+        }
+
+        function Back() {
+            window.history.back();
+        }
+    </script>
+</head>
+
+<body>
+    <div class="col-sm-2">
+        <div th:insert="BGLSHeaderMenu :: header"></div>
+    </div>
+
+    <div class="container-manager">
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-10 ml-5 mt-2">
+                <div class="card error-card">
+                    <div class="error-header">
+                        <h4 style="margin: 0; font-weight: 600; color: black;">ERROR OCCURRED</h4>
+                    </div>
+                    <div class="card-body error-body text-center">
+                        <div class="error-code">404</div>
+                        <div class="error-title">Page Not Found</div>
+                        <div class="error-text">
+                            The page you are looking for might have been removed, had its name changed, or is
+                            temporarily unavailable.
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <button class="btn btn-primary p-2 px-3 mx-1" onclick="Home();"><i
+                                class="fas fa-home mr-1"></i>Home</button>
+                        <button class="btn btn-primary p-2 px-3 mx-1" onclick="Back();"><i
+                                class="fas fa-arrow-left mr-1"></i>Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+.card-footer {
+	text-align: center;
+	padding: 10px;
+}
+
+.custom-btn {
+	border: none;
+	background: none;
+	font-size: 17px;
+	margin: 5px;
+	cursor: pointer;
+	transition: color 0.3s ease;
+	color: inherit; /* Adjust this to the desired text color */
+}
+
+.custom-btn:hover {
+	color: #007bff; /* Change the text color on hover if needed */
+}
+
+
+.custom-btn:hover {
+	color: gray;
+}
+
+.custom-btn:focus {
+	outline: none;
+}
+
+.card-footer {
+	background-color: #e9ecef;
+}
+
+.card-header {
+	font-size: 1.2rem;
+	background-color: #e9ecef;
+}
+
+.table-header {
+	background-color: #e9ecef;
+	font-size: 1.2rem;
+}
