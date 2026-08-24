@@ -1,22 +1,34 @@
 package com.bornfire.entities;
 import java.util.Date;
-import java.util.List;
-public class AuditTablePojo {
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+@Entity
+@Table(name = "BGLS_AUDIT_TABLE")
+public class BLRS_AuditTable {
+
+	@Id
 	private String audit_ref_no;
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date audit_date;
 	private String audit_table;
 	private String audit_screen;
 	private String event_id;
 	private String event_name;
+	
+	private String modi_details;
 	private String entry_user;
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date entry_time;
 	private String remarks;
 	private String auth_user;
+	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date auth_time;
 	private String func_code;
-	private List<String> fieldName;
-	private List<String> newvalue;
-	private List<String> oldvalue;
 	public String getAudit_ref_no() {
 		return audit_ref_no;
 	}
@@ -53,6 +65,12 @@ public class AuditTablePojo {
 	public void setEvent_name(String event_name) {
 		this.event_name = event_name;
 	}
+	public String getModi_details() {
+		return modi_details;
+	}
+	public void setModi_details(String modi_details) {
+		this.modi_details = modi_details;
+	}
 	public String getEntry_user() {
 		return entry_user;
 	}
@@ -64,12 +82,6 @@ public class AuditTablePojo {
 	}
 	public void setEntry_time(Date entry_time) {
 		this.entry_time = entry_time;
-	}
-	public String getRemarks() {
-		return remarks;
-	}
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
 	}
 	public String getAuth_user() {
 		return auth_user;
@@ -89,23 +101,32 @@ public class AuditTablePojo {
 	public void setFunc_code(String func_code) {
 		this.func_code = func_code;
 	}
-	public List<String> getFieldName() {
-		return fieldName;
+	public String getRemarks() {
+		return remarks;
 	}
-	public void setFieldName(List<String> fieldName) {
-		this.fieldName = fieldName;
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
-	public List<String> getNewvalue() {
-		return newvalue;
+	public BLRS_AuditTable(String audit_ref_no, Date audit_date, String audit_table, String audit_screen,
+			String event_id, String event_name, String modi_details, String entry_user, Date entry_time, String remarks,
+			String auth_user, Date auth_time, String func_code) {
+		super();
+		this.audit_ref_no = audit_ref_no;
+		this.audit_date = audit_date;
+		this.audit_table = audit_table;
+		this.audit_screen = audit_screen;
+		this.event_id = event_id;
+		this.event_name = event_name;
+		this.modi_details = modi_details;
+		this.entry_user = entry_user;
+		this.entry_time = entry_time;
+		this.remarks = remarks;
+		this.auth_user = auth_user;
+		this.auth_time = auth_time;
+		this.func_code = func_code;
 	}
-	public void setNewvalue(List<String> newvalue) {
-		this.newvalue = newvalue;
+	public BLRS_AuditTable() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
-	public List<String> getOldvalue() {
-		return oldvalue;
-	}
-	public void setOldvalue(List<String> oldvalue) {
-		this.oldvalue = oldvalue;
-	}
-
 }

@@ -6,10 +6,10 @@ import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class SequenceGenerator {
+public class BLRS_SequenceGenerator {
 	
 	@Autowired
-	BGLSAuditTable_Rep bGLSAuditTable_Rep;
+	BLRS_AuditTable_Rep bGLSAuditTable_Rep;
 	//private static final String CHAR_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final int DOC_SEQ_ID = 5;
 	private static final String NUM_LIST= "0123456789";

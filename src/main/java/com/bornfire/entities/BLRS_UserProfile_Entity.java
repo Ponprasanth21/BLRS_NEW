@@ -16,7 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "BIPS_USER_PROFILE")
+@Table(name = "BLRS_USER_PROFILE", schema = "public")
 public class BLRS_UserProfile_Entity {
 	private static final long serialVersionUID = 1L;
 	private String bank_code;
@@ -28,12 +28,14 @@ public class BLRS_UserProfile_Entity {
 	private String empid;
 	private String emp_name;
 	private BigDecimal srl_no;
+
 	@Id
-	@Column(name = "user_id")
+	@Column(name = "USER_ID")
 	private String userid;
 
-	@Column(name = "user_name")
+	@Column(name = "USER_NAME")
 	private String username;
+
 	private String inactive_time;
 	// @DateTimeFormat(pattern = "dd-MM-yyyy")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")

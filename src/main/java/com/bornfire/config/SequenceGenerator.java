@@ -9,12 +9,12 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.bornfire.entities.BGLSAuditTable_Rep;
+import com.bornfire.entities.BLRS_AuditTable_Rep;
 
 @Component
 public class SequenceGenerator {
 	@Autowired
-	BGLSAuditTable_Rep bGLSAuditTable_Rep;
+	BLRS_AuditTable_Rep bGLSAuditTable_Rep;
 	
 	//private static final String CHAR_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 	private static final int DOC_SEQ_ID = 9;

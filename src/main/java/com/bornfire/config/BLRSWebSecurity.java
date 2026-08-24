@@ -45,14 +45,14 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bornfire.entities.BGLSAuditTable;
-import com.bornfire.entities.BGLSAuditTable_Rep;
-import com.bornfire.entities.BGLS_CONTROL_TABLE_REP;
-import com.bornfire.entities.BGLS_Control_Table;
+import com.bornfire.entities.BLRS_AuditTable;
+import com.bornfire.entities.BLRS_AuditTable_Rep;
+import com.bornfire.entities.BLRS_CONTROL_TABLE_REP;
+import com.bornfire.entities.BLRS_Control_Table;
 import com.bornfire.entities.BLRS_UserProfile_Entity;
 import com.bornfire.entities.BLRS_UserProfile_Repo;
-import com.bornfire.entities.Access_Role_Repo;
-import com.bornfire.entities.Access_Role_Entity;
+import com.bornfire.entities.BLRS_Access_Role_Repo;
+import com.bornfire.entities.BLRS_Access_Role_Entity;
 import com.bornfire.services.LoginServices;
 
 @Configuration
@@ -63,10 +63,10 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 	BLRS_UserProfile_Repo userProfileRep;
 
 	@Autowired
-	Access_Role_Repo access_Role_Repo;
+	BLRS_Access_Role_Repo access_Role_Repo;
 
 	@Autowired
-	BGLSAuditTable_Rep bGLSAuditTable_Rep;
+	BLRS_AuditTable_Rep bGLSAuditTable_Rep;
 
 	@Autowired
 	SequenceGenerator sequence;
@@ -84,7 +84,7 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 	Environment env;
 
 	@Autowired
-	BGLS_CONTROL_TABLE_REP bGLS_CONTROL_TABLE_REP;
+	BLRS_CONTROL_TABLE_REP bGLS_CONTROL_TABLE_REP;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -118,11 +118,12 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 				String userid = authentication.getName();
 				String password = authentication.getCredentials().toString();
 
-				Optional<BLRS_UserProfile_Entity> up = userProfileRep.findById(userid);
+				Optional<BLRS_UserProfile_Entity> up = userProfileRep.findUserByUserId(userid);
 
 				try {
 
 					if (up.isPresent()) {
+
 						BLRS_UserProfile_Entity usr = up.get();
 
 						// System.out.println("Inside---->"+usr.isAccountNonExpired());
@@ -154,25 +155,16 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 						 * throw new LockedException("Login Not Allowed");
 						 * 
 						 * }
-						 */ 
+						 */
 						boolean passwordValid = AES.validatePassword(password, usr.getPassword());
 
 						if (!passwordValid) {
-							Session hs = sessionFactory.getCurrentSession();
 
-							Transaction tr = hs.getTransaction();
+						    int updated = userProfileRep.updateFailedLogin(userid);
 
-							hs.createQuery(
-									"update BLRS_UserProfile_Entity a " + "set a.no_of_attmp=nvl(a.no_of_attmp,0)+1, "
-											+ "a.user_locked_flg=decode(nvl(a.no_of_attmp,0)+1,'3','Y','N'), "
-											+ "a.login_status=decode(nvl(a.no_of_attmp,0)+1,'3','Inactive','Active') "
-											+ "where userid=?1")
-									.setParameter(1, userid).executeUpdate();
+						    System.out.println("FAILED LOGIN UPDATE COUNT = " + updated);
 
-							tr.commit();
-							hs.close();
-
-							throw new BadCredentialsException("Authentication failed");
+						    throw new BadCredentialsException("Authentication failed");
 						} else {
 
 							return new UsernamePasswordAuthenticationToken(userid, password, Collections.emptyList());
@@ -180,6 +172,7 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 						}
 
 					} else {
+						System.out.println("USER NOT FOUND - ELSE CONDITION");
 
 						throw new UsernameNotFoundException("Invalid User Name");
 					}
@@ -237,9 +230,9 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 					Authentication authentication) throws IOException, ServletException {
 				String auditID = sequence.generateRequestUUId();
-				Optional<BLRS_UserProfile_Entity> up = userProfileRep.findById(authentication.getName());
+				Optional<BLRS_UserProfile_Entity> up = userProfileRep.findUserByUserId(authentication.getName());
 
-				BGLS_Control_Table up1 = bGLS_CONTROL_TABLE_REP.getTranDate();
+				BLRS_Control_Table up1 = bGLS_CONTROL_TABLE_REP.getTranDate();
 				System.out.println(up1.getTran_date());
 
 				BLRS_UserProfile_Entity user = up.get();
@@ -247,6 +240,9 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 
 				request.getSession().setAttribute("TRANDATE", up1.getTran_date());
 				request.getSession().setAttribute("USERID", user.getUserid());
+
+				System.out.println("THE PASSED USER ID IS " + user.getUserid());
+
 				request.getSession().setAttribute("USERNAME", user.getUsername());
 				request.getSession().setAttribute("BRANCH_ID", user.getBranch_code());
 				request.getSession().setAttribute("BRANCH_DESC", user.getBranch_name());
@@ -259,7 +255,7 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 				request.getSession().setAttribute("LOGIN_TIME",
 						LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
-				BGLSAuditTable audit = new BGLSAuditTable();
+				BLRS_AuditTable audit = new BLRS_AuditTable();
 				LocalDateTime currentDateTime = LocalDateTime.now();
 				Date dateValue = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 				audit.setAudit_date(new Date());
@@ -298,7 +294,7 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 				Optional<BLRS_UserProfile_Entity> up = userProfileRep.findById(authentication.getName());
 
 				BLRS_UserProfile_Entity user = up.get();
-				BGLSAuditTable audit = new BGLSAuditTable();
+				BLRS_AuditTable audit = new BLRS_AuditTable();
 				String Number1 = sequence.generateRequestUUId();
 				audit.setAudit_date(new Date());
 				audit.setEntry_time(new Date());

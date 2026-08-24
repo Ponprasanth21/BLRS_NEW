@@ -36,10 +36,10 @@ import org.springframework.util.ResourceUtils;
 import com.bornfire.config.AES;
 import com.bornfire.config.Emailsent;
 import com.bornfire.config.PasswordEncryption;
-import com.bornfire.entities.Access_Role_Entity;
-import com.bornfire.entities.Access_Role_Repo;
-import com.bornfire.entities.BGLSBusinessTable_Entity;
-import com.bornfire.entities.BGLSBusinessTable_Rep;
+import com.bornfire.entities.BLRS_Access_Role_Entity;
+import com.bornfire.entities.BLRS_Access_Role_Repo;
+import com.bornfire.entities.BLRS_BusinessTable_Entity;
+import com.bornfire.entities.BLRS_BusinessTable_Rep;
 import com.bornfire.entities.BLRS_UserProfile_Entity;
 import com.bornfire.entities.BLRS_UserProfile_Repo;
 
@@ -69,10 +69,10 @@ public class LoginServices {
 	DataSource srcdataSource;
 
 	@Autowired
-	Access_Role_Repo access_Role_Repo;
+	BLRS_Access_Role_Repo access_Role_Repo;
 
 	@Autowired
-	BGLSBusinessTable_Rep bGLSBusinessTable_Rep;
+	BLRS_BusinessTable_Rep bGLSBusinessTable_Rep;
 
 	@NotNull
 	private String exportpath;
@@ -152,8 +152,8 @@ public class LoginServices {
 			userProfileRep.save(up);
 
 			// FOR AUIDT
-			BGLSBusinessTable_Entity audit = new BGLSBusinessTable_Entity();
-			Long auditID = bGLSBusinessTable_Rep.getAuditRefUUID();
+			BLRS_BusinessTable_Entity audit = new BLRS_BusinessTable_Entity();
+			Long auditID = bGLSBusinessTable_Rep.getBusinessRefUUID();
 			Optional<BLRS_UserProfile_Entity> up1 = userProfileRep.findById(inputUser);
 			BLRS_UserProfile_Entity user = up1.get();
 			LocalDateTime currentDateTime = LocalDateTime.now();
@@ -229,7 +229,7 @@ public class LoginServices {
 		String msg = "";
 
 		BLRS_UserProfile_Entity userProfile = userProfileRep.getRole(userId);
-		Access_Role_Entity accessRole = access_Role_Repo.getRole(userId);
+		BLRS_Access_Role_Entity accessRole = access_Role_Repo.getRole(userId);
 		if (Objects.nonNull(userProfile.getUserid())) {
 			userProfile.setEntity_flg("Y");
 			userProfile.setAuth_user(inputUser);
@@ -244,8 +244,8 @@ public class LoginServices {
 			msg = "User Verified Successfully";
 
 			// FOR AUIDT
-			BGLSBusinessTable_Entity audit = new BGLSBusinessTable_Entity();
-			Long auditID = bGLSBusinessTable_Rep.getAuditRefUUID();
+			BLRS_BusinessTable_Entity audit = new BLRS_BusinessTable_Entity();
+			Long auditID = bGLSBusinessTable_Rep.getBusinessRefUUID();
 			Optional<BLRS_UserProfile_Entity> up1 = userProfileRep.findById(inputUser);
 			BLRS_UserProfile_Entity user = up1.get();
 			LocalDateTime currentDateTime = LocalDateTime.now();
@@ -290,8 +290,8 @@ public class LoginServices {
 			msg = "User Deleted Successfully";
 
 			// FOR AUIDT
-			BGLSBusinessTable_Entity audit = new BGLSBusinessTable_Entity();
-			Long auditID = bGLSBusinessTable_Rep.getAuditRefUUID();
+			BLRS_BusinessTable_Entity audit = new BLRS_BusinessTable_Entity();
+			Long auditID = bGLSBusinessTable_Rep.getBusinessRefUUID();
 			Optional<BLRS_UserProfile_Entity> up1 = userProfileRep.findById(userid1);
 			BLRS_UserProfile_Entity user = up1.get();
 			LocalDateTime currentDateTime = LocalDateTime.now();
@@ -322,8 +322,8 @@ public class LoginServices {
 			userProfileRep.deleteById(userId);
 			msg = "User Deleted Successfully";
 			// FOR AUIDT
-			BGLSBusinessTable_Entity audit = new BGLSBusinessTable_Entity();
-			Long auditID = bGLSBusinessTable_Rep.getAuditRefUUID();
+			BLRS_BusinessTable_Entity audit = new BLRS_BusinessTable_Entity();
+			Long auditID = bGLSBusinessTable_Rep.getBusinessRefUUID();
 			Optional<BLRS_UserProfile_Entity> up1 = userProfileRep.findById(userid1);
 			BLRS_UserProfile_Entity user = up1.get();
 			LocalDateTime currentDateTime = LocalDateTime.now();
@@ -404,8 +404,8 @@ public class LoginServices {
 
 				userProfileRep.save(userProfile);
 				// FOR AUIDT
-				BGLSBusinessTable_Entity audit = new BGLSBusinessTable_Entity();
-				Long auditID = bGLSBusinessTable_Rep.getAuditRefUUID();
+				BLRS_BusinessTable_Entity audit = new BLRS_BusinessTable_Entity();
+				Long auditID = bGLSBusinessTable_Rep.getBusinessRefUUID();
 				Optional<BLRS_UserProfile_Entity> up1 = userProfileRep.findById(inputUser);
 				BLRS_UserProfile_Entity user = up1.get();
 				LocalDateTime currentDateTime = LocalDateTime.now();
@@ -599,7 +599,7 @@ public class LoginServices {
 		return outputFile;
 	}
 
-	public String addAccessAndRole(Access_Role_Entity access_Role_Entity, String user) {
+	public String addAccessAndRole(BLRS_Access_Role_Entity access_Role_Entity, String user) {
 		String msg = "";
 
 		if (Objects.nonNull(access_Role_Entity.getUserId())) {

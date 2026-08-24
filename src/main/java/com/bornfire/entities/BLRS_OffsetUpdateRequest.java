@@ -2,7 +2,7 @@ package com.bornfire.entities;
 
 import java.math.BigDecimal;
 
-public class OffsetUpdateRequest {
+public class BLRS_OffsetUpdateRequest {
     private String tranId;
     private Long partTranId;
     private BigDecimal appliedOffsetAmount;

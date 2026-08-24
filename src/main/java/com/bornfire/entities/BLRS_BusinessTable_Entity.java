@@ -8,8 +8,8 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "BGLS_AUDIT_TABLE")
-public class BGLSAuditTable {
+@Table(name = "BLRS_BUSINESS_TABLE")
+public class BLRS_BusinessTable_Entity {
 
 	@Id
 	private String audit_ref_no;
@@ -29,6 +29,28 @@ public class BGLSAuditTable {
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date auth_time;
 	private String func_code;
+	private String field_name;
+	private String old_value;
+	private String new_value;
+	
+	public String getField_name() {
+		return field_name;
+	}
+	public void setField_name(String field_name) {
+		this.field_name = field_name;
+	}
+	public String getOld_value() {
+		return old_value;
+	}
+	public void setOlf_value(String old_value) {
+		this.old_value = old_value;
+	}
+	public String getNew_value() {
+		return new_value;
+	}
+	public void setNew_value(String new_value) {
+		this.new_value = new_value;
+	}
 	public String getAudit_ref_no() {
 		return audit_ref_no;
 	}
@@ -83,6 +105,12 @@ public class BGLSAuditTable {
 	public void setEntry_time(Date entry_time) {
 		this.entry_time = entry_time;
 	}
+	public String getRemarks() {
+		return remarks;
+	}
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
 	public String getAuth_user() {
 		return auth_user;
 	}
@@ -101,15 +129,10 @@ public class BGLSAuditTable {
 	public void setFunc_code(String func_code) {
 		this.func_code = func_code;
 	}
-	public String getRemarks() {
-		return remarks;
-	}
-	public void setRemarks(String remarks) {
-		this.remarks = remarks;
-	}
-	public BGLSAuditTable(String audit_ref_no, Date audit_date, String audit_table, String audit_screen,
+	
+	public BLRS_BusinessTable_Entity(String audit_ref_no, Date audit_date, String audit_table, String audit_screen,
 			String event_id, String event_name, String modi_details, String entry_user, Date entry_time, String remarks,
-			String auth_user, Date auth_time, String func_code) {
+			String auth_user, Date auth_time, String func_code, String field_name, String old_value, String new_value) {
 		super();
 		this.audit_ref_no = audit_ref_no;
 		this.audit_date = audit_date;
@@ -124,8 +147,11 @@ public class BGLSAuditTable {
 		this.auth_user = auth_user;
 		this.auth_time = auth_time;
 		this.func_code = func_code;
+		this.field_name = field_name;
+		this.old_value = old_value;
+		this.new_value = new_value;
 	}
-	public BGLSAuditTable() {
+	public BLRS_BusinessTable_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

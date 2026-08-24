@@ -10,8 +10,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-@Table(name = "BIPS_ACCESS_ROLE_TABLE")
-public class Access_Role_Entity {
+@Table(name = "BLRS_ACCESS_ROLE_TABLE")
+public class BLRS_Access_Role_Entity {
 	@Id
 	private String	role_id;
 	private String	role_desc;
@@ -195,7 +195,7 @@ public class Access_Role_Entity {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	public Access_Role_Entity(String role_id, String role_desc, String permissions, String work_class, String domain_id,
+	public BLRS_Access_Role_Entity(String role_id, String role_desc, String permissions, String work_class, String domain_id,
 			String admin, String entity_flg, String auth_flg, String modify_flg, String del_flg, String menulist,
 			String entry_user, String modify_user, String auth_user, Date entry_time, Date modify_time, Date auth_time,
 			String audit_operations, String ips_operations, String monitoring, String myt_registration,
@@ -229,7 +229,7 @@ public class Access_Role_Entity {
 		this.new_role_flg = new_role_flg;
 		this.remarks = remarks;
 	}
-	public Access_Role_Entity() {
+	public BLRS_Access_Role_Entity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

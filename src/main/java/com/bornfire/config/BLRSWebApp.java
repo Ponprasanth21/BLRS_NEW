@@ -41,7 +41,4 @@ public class BLRSWebApp implements WebMvcConfigurer {
 	        }
 	    };
 	}
-	
-	
-	
 }

@@ -9,8 +9,8 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name="BGLS_CONTROL_TABLE")
-public class BGLS_Control_Table {
+@Table(name="BLRS_CONTROL_TABLE")
+public class BLRS_Control_Table {
 
 	private String	org_name;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -152,7 +152,7 @@ public class BGLS_Control_Table {
 	public void setDcp_status(String dcp_status) {
 		this.dcp_status = dcp_status;
 	}
-	public BGLS_Control_Table() {
+	public BLRS_Control_Table() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
