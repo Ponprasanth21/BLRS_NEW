@@ -141,6 +141,26 @@ public class NavigationController {
 		return "BLRS_Parameters";
 	}
 
+	@RequestMapping(value = "EmailandSMS", method = { RequestMethod.GET, RequestMethod.POST })
+	public String EmailandSMS(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+
+		if (formmode == null || formmode.equals("list")) {
+			md.addAttribute("formmode", "list");
+		}
+
+		return "BLRS_Parameters";
+	}
+
+	@RequestMapping(value = "Reminder", method = { RequestMethod.GET, RequestMethod.POST })
+	public String Reminder(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+
+		if (formmode == null || formmode.equals("list")) {
+			md.addAttribute("formmode", "list");
+		}
+
+		return "BLRS_ReminderParameter";
+	}
+
 	@RequestMapping(value = "Loanaccountprofile", method = { RequestMethod.GET, RequestMethod.POST })
 	public String Loanaccountprofile(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
 
