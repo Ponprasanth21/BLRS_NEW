@@ -1,11 +1,13 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" translate="no" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	th:fragment="summary">
 
 <head>
-	<!-- BAJ VERSION 1.0.1  -->
 	<meta charset="UTF-8">
+	<meta name="google" content="notranslate">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>BLRS</title>
+	<title>BLRS - User Profile</title>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
 		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
@@ -15,658 +17,515 @@
 		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
 	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
 		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 
+	<!-- jQuery -->
 	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+	<!-- jQuery UI -->
 	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
 		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+	<!-- Popper -->
 	<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
 		th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+	<!-- Bootstrap -->
 	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
 		th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+	<!-- DataTables -->
 	<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
 		th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
 	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
 		th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
-
-	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
-		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
-	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
-
-	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
-	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+	<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+		th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+	<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+		th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
 
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
 		body {
-			background-color: #f8fafc !important;
-			font-family: 'Outfit', sans-serif !important;
-			color: #1e293b;
+			background-color: lightgrey;
 		}
 
-		/* .container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 15.5%;
-			margin-top: 80px;
-			margin-bottom: 80px;
-		} */
+		* {
+			overscroll-behavior: none;
+		}
 
 		.container-manager {
-			width: 83.5%;
-			padding-right: 15px;
+			width: 82.5%;
+			padding-right: 25px;
 			padding-left: 15px;
 			margin-right: auto;
-			margin-left: 16% !important;
-			margin-top: 80px;
+			margin-left: 17%;
+			margin-top: 95px;
 		}
 
-		/* KPI Card Styles */
-		.kpi-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			position: relative;
-			overflow: hidden;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-			display: flex;
-			flex-direction: column;
-			height: 100%;
+		.table-scroll-container {
+			max-height: 60vh;
+			overflow-y: auto;
+			overflow-x: auto;
+			border: 1px solid #d4d7da;
+			scrollbar-width: thin;
+			scrollbar-color: #386276 transparent;
 		}
 
-		.kpi-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-		}
-
-		.kpi-icon-container {
-			width: 42px;
-			height: 42px;
-			border-radius: 8px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-bottom: 12px;
-		}
-
-		.kpi-title {
-			font-size: 0.78rem;
-			font-weight: 600;
-			color: #64748b;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-		}
-
-		.kpi-value {
-			font-size: 1.3rem;
-			font-weight: 700;
-			color: #0f172a;
-			margin-top: 4px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		/* Specific Borders for KPI Cards */
-		.border-left-teal {
-			border-left: 4px solid #0d9488;
-		}
-
-		.border-left-rose {
-			border-left: 4px solid #e11d48;
-		}
-
-		.border-left-indigo {
-			border-left: 4px solid #4f46e5;
-		}
-
-		.border-left-emerald {
-			border-left: 4px solid #10b981;
-		}
-
-		.border-left-orange {
-			border-left: 4px solid #f97316;
-		}
-
-		.border-left-violet {
-			border-left: 4px solid #8b5cf6;
-		}
-
-		/* Icon Container Color Combinations */
-		.bg-teal-light {
-			background-color: #f0fdfa;
-		}
-
-		.text-teal {
-			color: #0d9488;
-		}
-
-		.bg-rose-light {
-			background-color: #fff1f2;
-		}
-
-		.text-rose {
-			color: #e11d48;
-		}
-
-		.bg-indigo-light {
-			background-color: #e0e7ff;
-		}
-
-		.text-indigo {
-			color: #4f46e5;
-		}
-
-		.bg-emerald-light {
-			background-color: #ecfdf5;
-		}
-
-		.text-emerald {
-			color: #10b981;
-		}
-
-		.bg-orange-light {
-			background-color: #fff7ed;
-		}
-
-		.text-orange {
-			color: #f97316;
-		}
-
-		.bg-violet-light {
-			background-color: #f5f3ff;
-		}
-
-		.text-violet {
-			color: #8b5cf6;
-		}
-
-		/* Chart Card Styles */
-		.chart-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-
-		.chart-title {
-			font-size: 0.95rem;
-			font-weight: 600;
-			color: #334155;
-			margin-bottom: 16px;
-			padding-bottom: 12px;
-			border-bottom: 1px solid #f1f5f9;
-		}
-
-		/* Table Card Styles */
-		.table-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-
-		.custom-table {
-			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0;
-			margin-bottom: 0;
-		}
-
-		.custom-table th {
-			background: #f8fafc;
-			color: #64748b;
-			font-size: 0.72rem;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-			padding: 10px 14px;
-			border-bottom: 1px solid #e2e8f0;
-			border-top: none;
-		}
-
-		.custom-table td {
-			padding: 10px 14px;
-			border-bottom: 1px solid #f1f5f9;
-			color: #475569;
-			font-size: 0.82rem;
-			vertical-align: middle;
-		}
-
-		.custom-table tr:hover td {
-			background-color: #f8fafc;
-		}
-
-		.custom-table tr:last-child td {
-			border-bottom: none;
-		}
-
-		/* Status Badges */
-		.status-badge {
-			display: inline-flex;
-			align-items: center;
-			padding: 2px 8px;
-			border-radius: 9999px;
-			font-size: 0.72rem;
-			font-weight: 600;
-		}
-
-		.status-success {
-			background-color: #d1fae5;
-			color: #065f46;
-		}
-
-		.status-warning {
-			background-color: #fef3c7;
-			color: #92400e;
-		}
-
-		.status-danger {
-			background-color: #fee2e2;
-			color: #991b1b;
-		}
-
-		.status-info {
-			background-color: #e0f2fe;
-			color: #075985;
-		}
-
-		/* Scrollbar Styling */
-		.table-responsive::-webkit-scrollbar {
+		.table-scroll-container::-webkit-scrollbar {
 			width: 6px;
 			height: 6px;
 		}
 
-		.table-responsive::-webkit-scrollbar-track {
-			background: #f1f5f9;
-			border-radius: 4px;
+		.table-scroll-container::-webkit-scrollbar-track {
+			background: transparent;
 		}
 
-		.table-responsive::-webkit-scrollbar-thumb {
-			background: #cbd5e1;
-			border-radius: 4px;
+		.table-scroll-container::-webkit-scrollbar-thumb {
+			background-color: #386276;
+			border-radius: 3px;
 		}
 
-		.table-responsive::-webkit-scrollbar-thumb:hover {
-			background: #94a3b8;
+		.table-scroll-container::-webkit-scrollbar-thumb:hover {
+			background-color: #2e455d;
+		}
+
+		#usertable {
+			table-layout: fixed !important;
+			width: 100% !important;
+			border-collapse: separate !important;
+			border-spacing: 0 !important;
+			border: 1px solid #d4d7da !important;
+		}
+
+		#usertable thead th {
+			position: sticky !important;
+			top: 0 !important;
+			z-index: 10 !important;
+			background-color: #F1F5F9 !important;
+			color: #1e293b !important;
+			font-size: 13px !important;
+			font-weight: 600;
+			border: none !important;
+			box-shadow: inset -1px 0 0 #d4d7da, inset 0 -2px 0 #d4d7da !important;
+			padding: 4px 8px !important;
+			height: 30px !important;
+			vertical-align: middle !important;
+		}
+
+		#usertable td {
+			height: 15px !important;
+			padding: 4px 6px !important;
+			line-height: 15px;
+			vertical-align: middle;
+			margin: 0 !important;
+			border-right: 1px solid #3B5168 !important;
+			border-bottom: 1px solid #3B5168 !important;
+			border-top: 0px !important;
+			border-left: 0px !important;
+			word-break: break-word;
+			background-color: #f8f7ff;
+			font-size: 12px;
+		}
+
+		.card-header {
+			background-color: #2B506F !important;
+			color: white;
+		}
+
+		.card-footer {
+			background-color: #2B506F !important;
+			padding: 6px;
+		}
+
+		.btn-primary {
+			background-color: #007bff !important;
+			border-color: #007bff !important;
+			color: #ffffff !important;
+		}
+
+		.btn-primary:hover {
+			background-color: #0069d9 !important;
+			border-color: #0062cc !important;
+		}
+
+		.underline {
+			text-decoration: underline;
+			color: #007bff;
+			cursor: pointer;
+		}
+
+		.formline {
+			margin-bottom: 8px;
+		}
+
+		.formline label {
+			font-size: 12px;
+			font-weight: 600;
+			color: #1e293b;
 		}
 	</style>
 
 	<script th:inline="javascript">
 		/*<![CDATA[*/
-		function Yes() {
-			location.href = "./changePassword";
+		function home() {
+			location.href = '/BLRS/Dashboard';
+		}
+
+		function back() {
+			window.history.back();
+		}
+
+		function list() {
+			location.href = '/BLRS/Userprofile?formmode=list';
+		}
+
+		function adduser() {
+			location.href = '/BLRS/Userprofile?formmode=add';
+		}
+
+		function fnClick(a) {
+			var userid = a.getAttribute("data-userid");
+			location.href = '/BLRS/Userprofile?formmode=edit&userid=' + userid;
+		}
+
+		function fnClickview(a) {
+			var userid = a.getAttribute("data-userid");
+			location.href = '/BLRS/Userprofile?formmode=view&userid=' + userid;
+		}
+
+		function fnClickSelect(a) {
+			var userid = a.getAttribute("data-userid");
+			var entity_flg = a.getAttribute("data-entity_flg");
+			if (entity_flg === 'Y') {
+				location.href = '/BLRS/Userprofile?formmode=view&userid=' + userid;
+			} else {
+				location.href = '/BLRS/Userprofile?formmode=verify&userid=' + userid;
+			}
+		}
+
+		function fnClickVerify(a) {
+			var userid = a.getAttribute("data-userid");
+			location.href = '/BLRS/Userprofile?formmode=verify&userid=' + userid;
+		}
+
+		function fnClickCancel(a) {
+			var userid = a.getAttribute("data-userid");
+			location.href = '/BLRS/Userprofile?formmode=cancel&userid=' + userid;
+		}
+
+		function fnClickdel(a) {
+			var userid = a.getAttribute("data-userid");
+			location.href = '/BLRS/Userprofile?formmode=delete&userid=' + userid;
+		}
+
+		function roledesc() {
+			var roleid = $("#roleId").find(':selected').val();
+			if (roleid) {
+				$.ajax({
+					type: 'get',
+					url: '/BLRS/getRoleDetails/' + roleid,
+					success: function (response) {
+						$("#roleDesc").val(response);
+						$("#roleDesc1").val(response);
+					}
+				});
+			}
+		}
+
+		function clickPhoto(a) {
+			var userid = a.getAttribute("data-userid");
+			$.ajax({
+				type: "GET",
+				url: "/BLRS/getUserBlobImage/" + userid,
+				success: function (response) {
+					if (response == null || response.trim() === "") {
+						alert("No user photo available.");
+						return;
+					}
+					$("#imageshow").modal("show");
+					document.getElementById("doc_image").src = "data:image/png;base64," + response;
+				},
+				error: function () {
+					alert("Unable to load user photo.");
+				}
+			});
+		}
+
+		function submitform(a) {
+			if ($("#userProfile").valid()) {
+				$("#loader1").modal("show");
+				var formmode = a.getAttribute("data-formmode");
+				var url = "/BLRS/createUser?formmode=" + formmode;
+				$("#userProfile").attr('action', url);
+
+				var options = {
+					success: function (responseText) {
+						$("#loader1").modal("hide");
+						$("#alertmsg").text(responseText);
+						$('#alert').modal("show");
+					},
+					error: function () {
+						$("#loader1").modal("hide");
+						$("#alertmsg").text("Error occurred while processing request.");
+						$('#alert').modal("show");
+					}
+				};
+
+				$("#userProfile").ajaxSubmit(options);
+			}
+		}
+
+		function editsubmitform(a) {
+			if ($("#userProfile").valid()) {
+				$("#loader1").modal("show");
+				var formmode = a.getAttribute("data-formmode");
+				var url = "/BLRS/createUser?formmode=" + formmode;
+				$("#userProfile").attr('action', url);
+
+				var options = {
+					success: function (responseText) {
+						$("#loader1").modal("hide");
+						$("#alertmsg").text(responseText);
+						$('#alert').modal("show");
+					},
+					error: function () {
+						$("#loader1").modal("hide");
+						$("#alertmsg").text("Error occurred while saving changes.");
+						$('#alert').modal("show");
+					}
+				};
+
+				$("#userProfile").ajaxSubmit(options);
+			}
+		}
+
+		function verifyform(a) {
+			var entryuser = a.getAttribute("data-entry_user");
+			var modifyuser = a.getAttribute("data-modify_user");
+			var loginuser = /*[[${session.USERID}]]*/ 'SYSTEM';
+			var userid = a.getAttribute("data-userid");
+
+			if (modifyuser && modifyuser.trim() !== "") {
+				if (loginuser && modifyuser.trim().toLowerCase() === loginuser.trim().toLowerCase()) {
+					$("#alertmsg").text("Same user cannot verify");
+					$('#alert').modal("show");
+					return;
+				}
+			} else if (entryuser && entryuser.trim() !== "") {
+				if (loginuser && entryuser.trim().toLowerCase() === loginuser.trim().toLowerCase()) {
+					$("#alertmsg").text("Same user cannot verify");
+					$('#alert').modal("show");
+					return;
+				}
+			}
+
+			$("#loader1").modal("show");
+			$.ajax({
+				type: "POST",
+				url: '/BLRS/verifyUser',
+				data: { userid: userid },
+				success: function (response) {
+					$("#loader1").modal("hide");
+					$("#alertmsg").text(response);
+					$('#alert').modal("show");
+				},
+				error: function () {
+					$("#loader1").modal("hide");
+					$("#alertmsg").text("Error verifying user.");
+					$('#alert').modal("show");
+				}
+			});
+		}
+
+		function deleteform(a) {
+			$("#datadelete").modal("show");
+		}
+
+		function submitformdelete(a) {
+			$("#datadelete").modal("hide");
+			var userid = $("#userId").val();
+			$("#loader1").modal("show");
+			$.ajax({
+				type: "POST",
+				url: '/BLRS/deleteUser',
+				data: { userid: userid },
+				success: function (response) {
+					$("#loader1").modal("hide");
+					$("#alertmsg").text(response);
+					$('#alert').modal("show");
+				},
+				error: function () {
+					$("#loader1").modal("hide");
+					$("#alertmsg").text("Error deleting user.");
+					$('#alert').modal("show");
+				}
+			});
+		}
+
+		function cancelform(a) {
+			$("#datacancel").modal("show");
+		}
+
+		function submitformcancel(a) {
+			$("#datacancel").modal("hide");
+			var userid = $("#userId").val();
+			$("#loader1").modal("show");
+			$.ajax({
+				type: "POST",
+				url: '/BLRS/cancelUser',
+				data: { userid: userid },
+				success: function (response) {
+					$("#loader1").modal("hide");
+					$("#alertmsg").text(response);
+					$('#alert').modal("show");
+				},
+				error: function () {
+					$("#loader1").modal("hide");
+					$("#alertmsg").text("Error cancelling user.");
+					$('#alert').modal("show");
+				}
+			});
+		}
+
+		function passwordReset(a) {
+			var userid = a.getAttribute("data-userid");
+			document.getElementById("userid1").value = userid;
+			$("#resetpassword").modal("show");
+		}
+
+		function submitresetpassword(a) {
+			var newpass = $("#newpass1").val();
+			var conpass = $("#Connewpass1").val();
+			var userid = $("#userid1").val();
+
+			if (!newpass) {
+				alert("Please enter a new password");
+				return;
+			}
+
+			if (newpass !== conpass) {
+				$("#resetpassword").modal("hide");
+				$("#alertmsg").text("New Password and Confirm Password must be Same!");
+				$('#alert').modal("show");
+				return;
+			}
+
+			$.ajax({
+				type: "POST",
+				url: "/BLRS/passwordReset1",
+				data: { userid: userid, newpass: newpass },
+				success: function (data) {
+					$("#resetpassword").modal("hide");
+					$("#alertmsg").text(data);
+					$('#alert').modal("show");
+				},
+				error: function () {
+					$("#resetpassword").modal("hide");
+					$("#alertmsg").text("Error resetting password.");
+					$('#alert').modal("show");
+				}
+			});
 		}
 
 		$(document).ready(function () {
-			// Password expiration warning
-			var pdateEl = document.getElementById("pdate");
-			if (pdateEl && pdateEl.value) {
-				var userdate = pdateEl.value;
-				var userdate1 = userdate.split('-');
-				var date1 = userdate1[0];
-				var month1 = userdate1[1];
-				var year = userdate1[2];
-				let todays = new Date().toISOString().slice(0, 10);
-				const startDate = todays;
-				const endDate = userdate;
+			var table;
+			var filterActive = false;
 
-				const diffInMs = new Date(endDate) - new Date(startDate)
-				const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+			var normalHeaderHtml =
+				'<tr id="normalHeaderRow">' +
+				'<th>SNo</th>' +
+				'<th>User Id</th>' +
+				'<th>User Name</th>' +
+				'<th>Employee Id</th>' +
+				'<th>Branch code</th>' +
+				'<th>Branch Name</th>' +
+				'<th>Status</th>' +
+				'</tr>';
 
-				if (diffInDays <= 3 && diffInDays > 0) {
-					$("#alert1").modal("toggle");
-				} else if (diffInDays == 0) {
-					$('#alert2').modal({backdrop: 'static', keyboard: false}, 'show');
-					$("#alert2").modal("toggle");
-				}
+			var columnTitles = ["SNo", "User Id", "User Name", "Employee Id", "Branch code", "Branch Name", "Status"];
+
+			function buildFilterHeaderHtml() {
+				var html = '<tr id="filterHeaderRow">';
+				columnTitles.forEach(function (title, idx) {
+					html += '<th style="padding:3px !important;background-color:#414D59;color:black" class="inputcolors">' +
+						'<input type="text" style="border:2px solid black;background-color:white;color:black" class="form-control form-control-sm col-search" ' +
+						'data-col="' + idx + '" placeholder="' + title + '">' +
+						'</th>';
+				});
+				html += '</tr>';
+				return html;
 			}
 
-			// Format current date display
-			var options = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
-			var today = new Date();
-			$('#current-date-span').text(today.toLocaleDateString('en-US', options));
-
-			// Fetch dynamic stats for Dashboard
-			loadDashboardData();
-		});
-
-		function formatCurrency(val) {
-			if (val === undefined || val === null) return '0.00';
-			var num = parseFloat(val);
-			if (isNaN(num)) return '0.00';
-			return num.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-		}
-
-		function formatCurrencyShort(val) {
-			if (val === undefined || val === null) return '0';
-			var num = parseFloat(val);
-			if (isNaN(num)) return '0';
-			var absNum = Math.abs(num);
-			if (absNum >= 10000000) { // 1 Crore
-				return (num / 10000000).toFixed(1) + ' Cr';
-			}
-			if (absNum >= 100000) { // 1 Lakh
-				return (num / 100000).toFixed(1) + ' L';
-			}
-			if (absNum >= 1000) {
-				return (num / 1000).toFixed(1) + ' K';
-			}
-			return num.toFixed(0);
-		}
-
-		function loadDashboardData() {
-			$.getJSON('./api/dashboard/stats', function (data) {
-				if (!data) return;
-
-				// 1. Populating KPI Values
-				$('#val-assets').text(formatCurrency(data.totalAssets));
-				$('#val-liabilities').text(formatCurrency(data.totalLiabilities));
-				$('#val-equity').text(formatCurrency(data.totalEquity));
-				$('#val-income').text(formatCurrency(data.totalIncome));
-				$('#val-expenses').text(formatCurrency(data.totalExpenses));
-				$('#val-netprofit').text(formatCurrency(data.netProfit));
-
-				// Style net profit dynamically
-				var netProfit = parseFloat(data.netProfit || 0);
-				if (netProfit < 0) {
-					$('#val-netprofit').css('color', '#dc2626');
-				} else {
-					$('#val-netprofit').css('color', '#059669');
-				}
-
-				// 2. Revenue vs Expenses Chart (Bar)
-				var ctxRevExp = document.getElementById('chart-rev-exp').getContext('2d');
-				new Chart(ctxRevExp, {
-					type: 'bar',
-					data: {
-						labels: data.monthlyLabels,
-						datasets: [
-							{
-								label: 'Revenue',
-								data: data.monthlyIncome,
-								backgroundColor: 'rgba(56, 189, 248, 0.85)',
-								borderColor: 'rgb(14, 165, 233)',
-								borderWidth: 1
-							},
-							{
-								label: 'Expenses',
-								data: data.monthlyExpenses,
-								backgroundColor: 'rgba(251, 113, 133, 0.85)',
-								borderColor: 'rgb(244, 63, 94)',
-								borderWidth: 1
-							}
+			function initTable() {
+				if ($('#usertable').length) {
+					table = $('#usertable').DataTable({
+						"destroy": true,
+						"paging": true,
+						"autoWidth": false,
+						"ordering": false,
+						"searching": true,
+						"pageLength": 25,
+						"lengthChange": false,
+						"dom": 'r<"table-scroll-container"t>ip',
+						"columnDefs": [
+							{ width: "6%", targets: 0 },
+							{ width: "14%", targets: 1 },
+							{ width: "20%", targets: 2 },
+							{ width: "15%", targets: 3 },
+							{ width: "15%", targets: 4 },
+							{ width: "18%", targets: 5 },
+							{ width: "12%", targets: 6 }
 						]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							position: 'top',
-							labels: {
-								fontFamily: "'Outfit', sans-serif",
-								usePointStyle: true
-							}
-						},
-						scales: {
-							yAxes: [{
-								ticks: {
-									beginAtZero: true,
-									fontFamily: "'Outfit', sans-serif",
-									callback: function (value) {return formatCurrencyShort(value);}
-								},
-								gridLines: {
-									color: '#f1f5f9'
-								}
-							}],
-							xAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif"
-								},
-								gridLines: {
-									display: false
-								}
-							}]
-						},
-						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
-							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									return dataObj.datasets[tooltipItem.datasetIndex].label + ': ' + formatCurrency(tooltipItem.yLabel);
-								}
-							}
-						}
-					}
-				});
-
-				// 3. Financial Mix (Doughnut)
-				var ctxMix = document.getElementById('chart-fin-mix').getContext('2d');
-				new Chart(ctxMix, {
-					type: 'doughnut',
-					data: {
-						labels: ['Assets', 'Liabilities', 'Equity'],
-						datasets: [{
-							data: [Math.abs(data.totalAssets || 0), Math.abs(data.totalLiabilities || 0), Math.abs(data.totalEquity || 0)],
-							backgroundColor: [
-								'rgba(13, 148, 136, 0.85)', // Teal
-								'rgba(225, 29, 72, 0.85)',  // Red
-								'rgba(79, 70, 229, 0.85)'   // Blue/Indigo
-							],
-							borderWidth: 1
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							position: 'bottom',
-							labels: {
-								fontFamily: "'Outfit', sans-serif",
-								usePointStyle: true
-							}
-						},
-						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
-							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									var label = dataObj.labels[tooltipItem.index];
-									var val = dataObj.datasets[0].data[tooltipItem.index];
-									return label + ': ' + formatCurrency(val);
-								}
-							}
-						}
-					}
-				});
-
-				// 4. Top Accounts (Horizontal Bar)
-				var topAccNames = (data.topAccounts || []).map(function (a) {return a.name;});
-				var topAccBals = (data.topAccounts || []).map(function (a) {return Math.abs(a.balance || 0);});
-				var topAccColors = (data.topAccounts || []).map(function (a) {
-					var cls = (a.classification || '').toLowerCase();
-					if (cls === 'asset') return 'rgba(13, 148, 136, 0.85)';
-					if (cls === 'liability') return 'rgba(225, 29, 72, 0.85)';
-					if (cls === 'income') return 'rgba(16, 185, 129, 0.85)';
-					if (cls === 'expense') return 'rgba(249, 115, 22, 0.85)';
-					return 'rgba(99, 102, 241, 0.85)';
-				});
-
-				var ctxTop = document.getElementById('chart-top-accounts').getContext('2d');
-				new Chart(ctxTop, {
-					type: 'horizontalBar',
-					data: {
-						labels: topAccNames,
-						datasets: [{
-							data: topAccBals,
-							backgroundColor: topAccColors,
-							borderWidth: 1
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							display: false
-						},
-						scales: {
-							xAxes: [{
-								ticks: {
-									beginAtZero: true,
-									fontFamily: "'Outfit', sans-serif",
-									callback: function (value) {return formatCurrencyShort(value);}
-								},
-								gridLines: {
-									color: '#f1f5f9'
-								}
-							}],
-							yAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif"
-								},
-								gridLines: {
-									display: false
-								}
-							}]
-						},
-						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
-							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									return dataObj.labels[tooltipItem.index] + ': ' + formatCurrency(tooltipItem.xLabel);
-								}
-							}
-						}
-					}
-				});
-
-				// 5. Net Profit Trend (Line)
-				var netProfitTrend = [];
-				var monthlyIncomeList = data.monthlyIncome || [];
-				var monthlyExpensesList = data.monthlyExpenses || [];
-				for (var i = 0; i < monthlyIncomeList.length; i++) {
-					var inc = parseFloat(monthlyIncomeList[i] || 0);
-					var exp = parseFloat(monthlyExpensesList[i] || 0);
-					netProfitTrend.push(inc - exp);
-				}
-
-				var ctxProfit = document.getElementById('chart-net-profit').getContext('2d');
-				new Chart(ctxProfit, {
-					type: 'line',
-					data: {
-						labels: data.monthlyLabels,
-						datasets: [{
-							label: 'Net Profit',
-							data: netProfitTrend,
-							backgroundColor: 'rgba(99, 102, 241, 0.08)',
-							borderColor: 'rgb(79, 70, 229)',
-							borderWidth: 2,
-							pointBackgroundColor: 'rgb(79, 70, 229)',
-							pointRadius: 4,
-							fill: true
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							display: false
-						},
-						scales: {
-							yAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif",
-									callback: function (value) {return formatCurrencyShort(value);}
-								},
-								gridLines: {
-									color: '#f1f5f9'
-								}
-							}],
-							xAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif"
-								},
-								gridLines: {
-									display: false
-								}
-							}]
-						},
-						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
-							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									return 'Net Profit: ' + formatCurrency(tooltipItem.yLabel);
-								}
-							}
-						}
-					}
-				});
-
-				// 6. Recent Transactions Table
-				var txBody = $('#recent-transactions-body');
-				txBody.empty();
-				if (data.recentTransactions && data.recentTransactions.length > 0) {
-					data.recentTransactions.forEach(function (tx) {
-						var typeBadgeClass = (tx.type || '').toLowerCase() === 'cr' ? 'status-success' : 'status-info';
-						var amtFormatted = formatCurrency(tx.amount);
-						var row = '<tr>' +
-							'<td>' + (tx.date || '') + '</td>' +
-							'<td>' + (tx.tranId || '') + '</td>' +
-							'<td>' + (tx.acctName || '') + '</td>' +
-							'<td>' + (tx.particular || '') + '</td>' +
-							'<td><span class="status-badge ' + typeBadgeClass + '">' + (tx.type || '') + '</span></td>' +
-							'<td class="text-right font-weight-bold">' + amtFormatted + '</td>' +
-							'</tr>';
-						txBody.append(row);
 					});
-				} else {
-					txBody.append('<tr><td colspan="6" class="text-center text-muted">No recent postings found</td></tr>');
+				}
+			}
+
+			initTable();
+
+			$('#btnToggleFilter').on('click', function () {
+				var savedSearches = {};
+				if (filterActive) {
+					$('#usertable_wrapper .col-search').each(function () {
+						savedSearches[$(this).data('col')] = $(this).val();
+					});
 				}
 
-				// 7. Recent Invoices Table
-				var invBody = $('#recent-invoices-body');
-				invBody.empty();
-				if (data.recentInvoices && data.recentInvoices.length > 0) {
-					data.recentInvoices.forEach(function (inv) {
-						var statusClass = 'status-warning';
-						var statusLower = (inv.status || '').toLowerCase();
-						if (statusLower === 'paid' || statusLower === 'y') {
-							statusClass = 'status-success';
-						} else if (statusLower === 'cancelled') {
-							statusClass = 'status-danger';
-						}
-						var amtFormatted = formatCurrency(inv.amount);
-						var statusLabel = inv.status || 'Pending';
-						if (statusLabel === 'Y') statusLabel = 'Paid';
-						if (statusLabel === 'N') statusLabel = 'Unpaid';
-						var row = '<tr>' +
-							'<td>' + (inv.invNo || '') + '</td>' +
-							'<td>' + (inv.clientName || '') + '</td>' +
-							'<td>' + (inv.date || '') + '</td>' +
-							'<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
-							'<td class="text-right font-weight-bold">' + amtFormatted + '</td>' +
-							'</tr>';
-						invBody.append(row);
-					});
+				table.destroy();
+
+				if (!filterActive) {
+					$('#usertable thead').html(buildFilterHeaderHtml());
+					filterActive = true;
 				} else {
-					invBody.append('<tr><td colspan="5" class="text-center text-muted">No recent invoices found</td></tr>');
+					$('#usertable thead').html(normalHeaderHtml);
+					filterActive = false;
 				}
-			}).fail(function () {
-				console.error("Failed to fetch dashboard stats.");
-				$('#recent-transactions-body').html('<tr><td colspan="6" class="text-center text-danger">Error loading data.</td></tr>');
-				$('#recent-invoices-body').html('<tr><td colspan="5" class="text-center text-danger">Error loading data.</td></tr>');
+
+				initTable();
+
+				if (filterActive) {
+					Object.keys(savedSearches).forEach(function (colIdx) {
+						if (savedSearches[colIdx]) {
+							table.column(colIdx).search(savedSearches[colIdx]);
+							$('#usertable_wrapper .col-search[data-col="' + colIdx + '"]').val(savedSearches[colIdx]);
+						}
+					});
+					table.draw();
+				}
 			});
-		}
+
+			var searchTimeout;
+			$(document).on('keyup change', '#usertable_wrapper .col-search', function () {
+				var colIdx = $(this).data('col');
+				var val = this.value;
+				clearTimeout(searchTimeout);
+				searchTimeout = setTimeout(function () {
+					table.column(colIdx).search(val).draw();
+				}, 300);
+			});
+
+			$("#disableDate, #disableenddate, #expiryDate, #passExDate").datepicker({
+				dateFormat: "yy-mm-dd",
+				changeMonth: true,
+				changeYear: true
+			});
+		});
 		/*]]>*/
 	</script>
 </head>
@@ -675,134 +534,665 @@
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
 	<div class="container-manager">
-		<div class="row d-flex justify-content-center">
-			<div class="col-sm-11 mt-2">
 
-				<div th:if="${formmode} == 'list'">
+		<!-- ========================================================================= -->
+		<!-- LIST MODE -->
+		<!-- ========================================================================= -->
+		<div th:if="${formmode}=='list'">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<div class="card-header d-flex justify-content-between align-items-center"
+							style="background-color: #2B506F; min-height: 50px;">
+							<div>
+								<h6 style="color: white; margin: 0; font-size: 1.2rem">User Profile - LIST</h6>
+							</div>
+							<div class="d-flex align-items-center" style="gap: 8px;">
+								<button type="button" class="btn btn-sm btn-primary" id="btnAdd" onclick="adduser();">
+									Create User
+								</button>
+								<button type="button" class="btn btn-sm btn-primary" id="btnToggleFilter">
+									<i class="fas fa-filter"></i> Filter
+								</button>
+							</div>
+						</div>
 
-					<div class="panel panel-primary filterable">
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered table-hover" id="usertable"
+								style="width: 100%; margin-bottom: 0px !important">
+								<thead class="thead-light">
+									<tr id="normalHeaderRow">
+										<th>SNo</th>
+										<th>User Id</th>
+										<th>User Name</th>
+										<th>Employee Id</th>
+										<th>Branch code</th>
+										<th>Branch Name</th>
+										<th>Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr style="font-size: smaller; cursor:pointer;"
+										th:each="userProfile, iterStat : ${userProfiles}"
+										th:attr="data-userid=${userProfile.userid}, data-entity_flg=${userProfile.entity_flg}"
+										onclick="fnClickSelect(this)">
+										<td th:text="${iterStat.count}">1</td>
+										<td th:text="${userProfile.userid}">456</td>
+										<td th:text="${userProfile.username}">TEST</td>
+										<td th:text="${userProfile.empid}">123</td>
+										<td th:text="${userProfile.branch_code}">123</td>
+										<td th:text="${userProfile.branch_name}">CHENNAI</td>
+										<th:block th:switch="${userProfile.entity_flg}">
+											<td th:case="'Y'" style="color: green; font-weight: bold;">Verified</td>
+											<td th:case="'N'" style="color: red; font-weight: bold;">UnVerified</td>
+										</th:block>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 
-						<div class="card">
+						<div class="card-footer text-center">
+							<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
+							<button type="button" class="btn btn-sm btn-primary" id="btnBack" onclick="back()">Back</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-							<!-- Card Header -->
-							<div class="card-header" style="background-color: #e9ecef;">
-								<div class="float-left">
-									<h6>User Profile - List</h6>
+		<!-- ========================================================================= -->
+		<!-- FORM MODES (ADD / EDIT / VIEW / VERIFY / DELETE / CANCEL) -->
+		<!-- ========================================================================= -->
+		<div th:if="${formmode == 'view' or formmode == 'add' or formmode == 'cancel' or formmode == 'edit' or formmode == 'delete' or formmode == 'verify'}">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="card">
+						<form th:object="${userProfile}" method="post" autocomplete="off" id="userProfile"
+							enctype="multipart/form-data">
+							<div class="card-header d-flex justify-content-between align-items-center"
+								style="background-color: #2B506F; min-height: 50px; padding: 10px 15px;">
+								<div>
+									<h6 th:if="${formmode}=='add'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - ADD</h6>
+									<h6 th:if="${formmode}=='edit'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - MODIFY</h6>
+									<h6 th:if="${formmode}=='view'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - VIEW</h6>
+									<h6 th:if="${formmode}=='verify'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - VERIFY</h6>
+									<h6 th:if="${formmode}=='delete'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - DELETE</h6>
+									<h6 th:if="${formmode}=='cancel'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - CANCEL</h6>
+								</div>
+								<div>
+									<button type="button" class="btn btn-sm btn-primary" onclick="list();">List</button>
 								</div>
 							</div>
 
-							<!-- Table Header -->
-							<div style="border: 1px solid #ddd; border-bottom: 0;">
+							<div class="card-body">
+								<div class="lines">
+									<div class="form-group" style="margin-bottom: 0px">
 
-								<table class="table table-striped table-bordered" id="usertableHeader"
-									style="width: 100%; margin-bottom: 0; table-layout: fixed;">
+										<!-- Row 1: User ID and User Name -->
+										<div class="row formline">
+											<div class="col-sm-2">
+												<label for="userId">User Id</label>
+											</div>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" id="userId" name="userid"
+													class="form-control form-control-sm" style="border-radius:6px;"
+													autocomplete="off" required />
+											</div>
+											<div th:if="${formmode}!='add'" class="col-sm-3">
+												<div class="input-group">
+													<input type="text" id="userId" name="userid"
+														th:value="${userProfile?.userid}"
+														class="form-control form-control-sm" autocomplete="off" required
+														readonly />
+													<div class="input-group-append"
+														th:if="${formmode}=='view' OR ${formmode}=='edit' OR ${formmode}=='verify'">
+														<span class="input-group-text"
+															style="cursor: pointer; background: transparent; border:none; padding-left: 4px; padding-right: 4px;"
+															onclick="clickPhoto(this);"
+															th:attr="data-userid=${userProfile?.userid}"
+															title="View Profile Photo">
+															<i class="fas fa-info-circle" style="color: #007bff; font-size: 16px;"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-1"></div>
 
-									<thead class="thead-light">
-										<tr>
+											<div class="col-sm-2">
+												<label for="userName">User Name</label>
+											</div>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" id="userName" name="username"
+													class="form-control form-control-sm" autocomplete="off"
+													maxlength="100" required />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" th:value="${userProfile?.username}" id="userName"
+													name="username" class="form-control form-control-sm"
+													autocomplete="off" required maxlength="100" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" th:value="${userProfile?.username}" id="userName"
+													name="username" class="form-control form-control-sm"
+													autocomplete="off" readonly />
+											</div>
+										</div>
 
-											<th style="width: 8%;">SNo</th>
-											<th style="width: 13%;">User Id</th>
-											<th style="width: 16%;">User Name</th>
-											<th style="width: 14%;">Employee Id</th>
-											<th style="width: 14%;">Branch Code</th>
-											<th style="width: 17%;">Branch Name</th>
-											<th style="width: 18%;">Status</th>
+										<!-- Row 2: Bank Code and Bank Name -->
+										<div class="row formline">
+											<label class="col-sm-2">Bank Code</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="bank_code" th:value="${userProfile?.bank_code}"
+													id="bankCode" class="form-control form-control-sm" maxlength="50" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="bank_code" th:value="${userProfile?.bank_code}"
+													id="bankCode" class="form-control form-control-sm" maxlength="50" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="bank_code" th:value="${userProfile?.bank_code}"
+													id="bankCode" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
 
-										</tr>
-									</thead>
+											<label class="col-sm-2">Bank Name</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="bank_name" th:value="${userProfile?.bank_name}"
+													id="bankName" class="form-control form-control-sm" maxlength="100" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="bank_name" th:value="${userProfile?.bank_name}"
+													id="bankName" class="form-control form-control-sm" maxlength="100" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="bank_name" th:value="${userProfile?.bank_name}"
+													id="bankName" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
 
-								</table>
+										<!-- Row 3: Branch Code and Branch Name -->
+										<div class="row formline">
+											<label class="col-sm-2">Branch Code</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="branch_code" th:value="${userProfile?.branch_code}"
+													id="branchCode" class="form-control form-control-sm" maxlength="50" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="branch_code" th:value="${userProfile?.branch_code}"
+													id="branchCode" class="form-control form-control-sm" maxlength="50" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="branch_code" th:value="${userProfile?.branch_code}"
+													id="branchCode" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
 
+											<label class="col-sm-2">Branch Name</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="branch_name" th:value="${userProfile?.branch_name}"
+													id="branchName" class="form-control form-control-sm" maxlength="100" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="branch_name" th:value="${userProfile?.branch_name}"
+													id="branchName" class="form-control form-control-sm" maxlength="100" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="branch_name" th:value="${userProfile?.branch_name}"
+													id="branchName" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<!-- Row 4: Employee ID and Employee Name -->
+										<div class="row formline">
+											<label class="col-sm-2">Employee Id</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="empid" id="empId" class="form-control form-control-sm" maxlength="20" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="empid" th:value="${userProfile?.empid}" id="empId" class="form-control form-control-sm" maxlength="20" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="empid" th:value="${userProfile?.empid}" id="empId" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">Employee Name</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="emp_name" id="empName" class="form-control form-control-sm" maxlength="100" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="emp_name" th:value="${userProfile?.emp_name}" id="empName" class="form-control form-control-sm" maxlength="100" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="emp_name" th:value="${userProfile?.emp_name}" id="empName" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<!-- Row 5: Mobile No and Email ID -->
+										<div class="row formline">
+											<label class="col-sm-2">Mobile No</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="mob_number" maxlength="15" id="mobNo" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="mob_number" maxlength="15" th:value="${userProfile?.mob_number}" id="mobNo" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="mob_number" th:value="${userProfile?.mob_number}" id="mobNo" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">Email Id</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="email" name="email_id" id="emailId" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="email" name="email_id" th:value="${userProfile?.email_id}" id="emailId" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="email" name="email_id" th:value="${userProfile?.email_id}" id="emailId" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<!-- Row 6: Login Low and Login High -->
+										<div class="row formline">
+											<label class="col-sm-2">Login Low</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="time" name="login_low" id="loginLow" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="time" name="login_low" th:value="${userProfile?.login_low}" id="loginLow" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="time" name="login_low" th:value="${userProfile?.login_low}" id="loginLow" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">Login High</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="time" name="login_high" id="loginHigh" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="time" name="login_high" th:value="${userProfile?.login_high}" id="loginHigh" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="time" name="login_high" th:value="${userProfile?.login_high}" id="loginHigh" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<!-- Row 7: User Disable Date and User Disable Till Date -->
+										<div class="row formline">
+											<label class="col-sm-2">User Disable Date</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="disable_start_date" id="disableDate" class="form-control form-control-sm" placeholder="YYYY-MM-DD" autocomplete="off" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="disable_start_date" th:value="${#dates.format(userProfile?.disable_start_date, 'yyyy-MM-dd')}" id="disableDate" class="form-control form-control-sm" autocomplete="off" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="disable_start_date" th:value="${#dates.format(userProfile?.disable_start_date, 'yyyy-MM-dd')}" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">User Disable Till Date</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="disable_end_date" id="disableenddate" class="form-control form-control-sm" placeholder="YYYY-MM-DD" autocomplete="off" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="disable_end_date" th:value="${#dates.format(userProfile?.disable_end_date, 'yyyy-MM-dd')}" id="disableenddate" class="form-control form-control-sm" autocomplete="off" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="disable_end_date" th:value="${#dates.format(userProfile?.disable_end_date, 'yyyy-MM-dd')}" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<!-- Row 8: User Status and Login Status -->
+										<div class="row formline">
+											<label class="col-sm-2">User Status</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<select name="user_status" id="userStatus" class="form-control form-control-sm">
+													<option value="Active">Active</option>
+													<option value="Inactive">Inactive</option>
+												</select>
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<select th:field="*{user_status}" id="userStatus" class="form-control form-control-sm">
+													<option value="Active">Active</option>
+													<option value="Inactive">Inactive</option>
+												</select>
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" class="form-control form-control-sm" th:value="${userProfile?.user_status}" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">Login Status</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<select name="login_status" id="loginStatus" class="form-control form-control-sm">
+													<option value="Active">Active</option>
+													<option value="Inactive">Inactive</option>
+												</select>
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<select th:field="*{login_status}" id="loginStatus" class="form-control form-control-sm">
+													<option value="Active">Active</option>
+													<option value="Inactive">Inactive</option>
+												</select>
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" class="form-control form-control-sm" th:value="${userProfile?.login_status}" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<!-- Row 9: Account Expiry Date and Remarks -->
+										<div class="row formline">
+											<label class="col-sm-2">Account Expiry Date</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="acc_exp_date" id="expiryDate" class="form-control form-control-sm" placeholder="YYYY-MM-DD" autocomplete="off" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="acc_exp_date" th:value="${#dates.format(userProfile?.acc_exp_date, 'yyyy-MM-dd')}" id="expiryDate" class="form-control form-control-sm" autocomplete="off" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="acc_exp_date" th:value="${#dates.format(userProfile?.acc_exp_date, 'yyyy-MM-dd')}" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">Remarks</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" id="remarks" name="remarks" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" id="remarks" th:value="${userProfile?.remarks}" name="remarks" class="form-control form-control-sm" />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" th:value="${userProfile?.remarks}" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<br>
+										<!-- Banner: Role and Rights -->
+										<div class="row"
+											style="background-color: #2B506F; color: white; height: 44px; border-radius: .20rem; margin-bottom: 0px !important; padding: 11px 10px;">
+											<h4 style="color: white; font-size: 1.15rem; margin: 0;">Role and Rights</h4>
+										</div>
+										<br>
+
+										<div class="row formline">
+											<label class="col-sm-2">Role Id</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<select name="role_id" id="roleId" class="form-control form-control-sm" onchange="roledesc();" required>
+													<option value="">SELECT</option>
+													<option th:each="r : ${RuleIDType}" th:value="${r}" th:text="${r}"></option>
+												</select>
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<select th:field="*{role_id}" id="roleId" class="form-control form-control-sm" onchange="roledesc();">
+													<option value="">SELECT</option>
+													<option th:each="r : ${RuleIDType}" th:value="${r}" th:text="${r}"></option>
+												</select>
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="role_id" th:value="${userProfile?.role_id}" id="roleId" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">Role Description</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<input type="text" name="role_desc" id="roleDesc" class="form-control form-control-sm" readonly />
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<input type="text" name="role_desc" th:value="${userProfile?.role_desc}" id="roleDesc1" class="form-control form-control-sm" readonly />
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" name="role_desc" th:value="${userProfile?.role_desc}" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+										<div class="row formline">
+											<div th:if="${formmode}=='add' OR ${formmode}=='edit'" class="col-sm-2">
+												<label for="file">Upload Image</label>
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-2">
+												<label>Profile Image</label>
+											</div>
+											<div th:if="${formmode}=='add' OR ${formmode}=='edit'" class="col-sm-3">
+												<input type="file" id="file" name="file" accept="image/png, image/jpeg">
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<span th:if="${userProfile?.photo}!=null" class="underline" onclick="clickPhoto(this);"
+													th:attr="data-userid=${userProfile?.userid}" title="click to view Image">show</span>
+												<span th:if="${userProfile?.photo}==null" class="text-muted">No Image</span>
+											</div>
+											<div class="col-sm-1"></div>
+
+											<label class="col-sm-2">Work Class</label>
+											<div th:if="${formmode}=='add'" class="col-sm-3">
+												<select name="work_class" id="workclass" class="form-control form-control-sm">
+													<option value="Maker">Maker</option>
+													<option value="Checker">Checker</option>
+													<option value="Admin">Admin</option>
+												</select>
+											</div>
+											<div th:if="${formmode}=='edit'" class="col-sm-3">
+												<select th:field="*{work_class}" id="workclass" class="form-control form-control-sm">
+													<option value="Maker">Maker</option>
+													<option value="Checker">Checker</option>
+													<option value="Admin">Admin</option>
+												</select>
+											</div>
+											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
+												<input type="text" th:value="${userProfile?.work_class}" class="form-control form-control-sm" readonly />
+											</div>
+											<div class="col-sm-1"></div>
+										</div>
+
+									</div>
+								</div>
 							</div>
 
-							<!-- Scrollable Table Body -->
-							<div style="
-                    max-height: 450px;
-                    overflow-y: auto;
-                    overflow-x: hidden;
-                    border: 1px solid #ddd;
-                    border-top: 0;
-                ">
+							<!-- Card Footer with Buttons -->
+							<div class="card-footer text-center">
+								<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
 
-								<table class="table table-striped table-bordered table-hover" id="usertable" style="
-                           width: 100%;
-                           margin-bottom: 0;
-                           table-layout: fixed;
-                       ">
+								<button th:if="${formmode}=='view'" type="button" class="btn btn-sm btn-primary"
+									th:attr="data-userid=${userProfile?.userid}" onclick="fnClick(this);" id="btnModifyView">Modify</button>
 
-									<tbody>
+								<button th:if="${formmode}=='view'" type="button" class="btn btn-sm btn-primary"
+									onclick="deleteform(this);" id="btnDeleteView">Delete</button>
 
-										<tr style="font-size: smaller; cursor: pointer;"
-											th:each="userProfile, iterStat : ${userProfiles}" th:attr="
-                                data-userid=${userProfile.userid},
-                                data-entity_flg=${userProfile.entity_flg}
-                            " onclick="fnClickSelect(this)">
+								<button th:if="${formmode}=='verify' AND ${userProfile?.entity_flg}=='N'" type="button"
+									class="btn btn-sm btn-primary" th:attr="data-userid=${userProfile?.userid}, data-entry_user=${userProfile?.entry_user}, data-modify_user=${userProfile?.modify_user}"
+									onclick="verifyform(this);" id="btnVerify">Verify</button>
 
-											<td style="width: 8%;" th:text="${iterStat.count}">
-												1
-											</td>
+								<!-- <button th:if="${formmode}=='edit' AND ${userProfile?.entity_flg}=='Y'" type="button"
+									class="btn btn-sm btn-primary" th:attr="data-userid=${userProfile?.userid}"
+									onclick="passwordReset(this);" id="btnpassrst">PasswordReset</button> -->
 
-											<td style="width: 13%;" th:text="${userProfile.userid}">
-												456
-											</td>
+								<button th:if="${formmode}=='delete'" type="button" class="btn btn-sm btn-primary"
+									onclick="deleteform(this);" id="btnDelete">Delete</button>
 
-											<td style="width: 16%;" th:text="${userProfile.username}">
-												TEST
-											</td>
+								<button th:if="${formmode}=='cancel'" type="button" class="btn btn-sm btn-primary"
+									onclick="cancelform(this);" id="btnCancel">Cancel</button>
 
-											<td style="width: 14%;" th:text="${userProfile.empid}">
-												123
-											</td>
+								<button th:if="${formmode}=='add'" type="button" class="btn btn-sm btn-primary"
+									id="btnSubmit" onclick="submitform(this);" th:attr="data-formmode='add'">Submit</button>
 
-											<td style="width: 14%;" th:text="${userProfile.branch_code}">
-												123
-											</td>
+								<button th:if="${formmode}=='edit'" type="button" class="btn btn-sm btn-primary"
+									id="btnSubmit" onclick="editsubmitform(this);" th:attr="data-formmode='edit'">Submit</button>
 
-											<td style="width: 17%;" th:text="${userProfile.branch_name}">
-												CHENNAI
-											</td>
-
-											<th:block th:switch="${userProfile.entity_flg}">
-
-												<td style="width: 18%; color: green;" th:case="'Y'">
-													Active
-												</td>
-
-												<td style="width: 18%; color: red;" th:case="'N'">
-													UnVerified
-												</td>
-
-											</th:block>
-
-										</tr>
-
-									</tbody>
-
-								</table>
-
+								<button type="button" class="btn btn-sm btn-primary" id="btnBack" onclick="back()">Back</button>
 							</div>
+						</form>
+					</div>
 
-							<!-- Footer -->
-							<div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
-
-								<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">
-									Home
-								</button>
-
-								<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">
-									Back
-								</button>
-
+					<!-- ENTRY USER / TIME AUDIT SECTION -->
+					<div class="entry-box" th:if="${formmode}!='add'"
+						style="border: 1px solid #36404a; padding: 15px; margin-top: 15px; margin-bottom: 15px; background-color: #ffffff; border-radius: 4px; border-top: 2px solid #2B506F;">
+						<div class="row formline">
+							<label class="col-sm-2">Entry User</label>
+							<div class="col-sm-2">
+								<input type="text" th:value="${userProfile?.entry_user}" class="form-control form-control-sm" readonly />
 							</div>
-
+							<label class="col-sm-2">Modify User</label>
+							<div class="col-sm-2">
+								<input type="text" th:value="${userProfile?.modify_user}" class="form-control form-control-sm" readonly />
+							</div>
+							<label class="col-sm-2">Verify User</label>
+							<div class="col-sm-2">
+								<input type="text" th:value="${userProfile?.auth_user}" class="form-control form-control-sm" readonly />
+							</div>
 						</div>
-
+						<div class="row formline">
+							<label class="col-sm-2">Entry Time</label>
+							<div class="col-sm-2">
+								<input type="text" th:value="${#dates.format(userProfile?.entry_time, 'dd-MM-yyyy HH:mm')}" class="form-control form-control-sm" readonly />
+							</div>
+							<label class="col-sm-2">Modify Time</label>
+							<div class="col-sm-2">
+								<input type="text" th:value="${#dates.format(userProfile?.modify_time, 'dd-MM-yyyy HH:mm')}" class="form-control form-control-sm" readonly />
+							</div>
+							<label class="col-sm-2">Verify Time</label>
+							<div class="col-sm-2">
+								<input type="text" th:value="${#dates.format(userProfile?.auth_time, 'dd-MM-yyyy HH:mm')}" class="form-control form-control-sm" readonly />
+							</div>
+						</div>
 					</div>
 
 				</div>
 			</div>
 		</div>
+
 	</div>
+
+	<!-- ========================================================================= -->
+	<!-- MODALS -->
+	<!-- ========================================================================= -->
+	<!-- Alert Modal -->
+	<div class="modal fade" id="alert" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #2B506F; color: white;">
+					<h5 class="modal-title" style="font-size: 14px;">BLRS - Notification</h5>
+					<button type="button" class="close text-white" data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body text-center" style="background-color: #c6ccd2; padding: 20px;">
+					<p id="alertmsg" style="font-size: 15px; font-weight: bold; margin: 0;"></p>
+				</div>
+				<div class="modal-footer" style="background-color: #c6ccd2; justify-content: center;">
+					<button type="button" class="btn btn-primary btn-sm px-4" data-dismiss="modal" onclick="list();">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Delete Modal -->
+	<div class="modal fade" id="datadelete" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #2B506F; color: white;">
+					<h5 class="modal-title" style="font-size: 14px;">BLRS - Confirm Delete</h5>
+					<button type="button" class="close text-white" data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body text-center" style="color: #f15362; background-color: #c6ccd2; font-weight: bold; padding: 20px;">
+					Are you sure you want to delete this user?
+				</div>
+				<div class="modal-footer" style="background-color: #c6ccd2;">
+					<button type="button" class="btn btn-primary btn-sm px-3" onclick="submitformdelete(this);">Submit</button>
+					<button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Cancel Modal -->
+	<div class="modal fade" id="datacancel" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #2B506F; color: white;">
+					<h5 class="modal-title" style="font-size: 14px;">BLRS - Confirm Cancel</h5>
+					<button type="button" class="close text-white" data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body text-center" style="background-color: #c6ccd2; font-weight: bold; padding: 20px;">
+					Are you sure you want to cancel changes?
+				</div>
+				<div class="modal-footer" style="background-color: #c6ccd2;">
+					<button type="button" class="btn btn-primary btn-sm px-3" onclick="submitformcancel(this);">Submit</button>
+					<button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Reset Password Modal -->
+	<div class="modal fade" id="resetpassword" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header" style="background-color: #2B506F; color: white;">
+					<h5 class="modal-title" style="font-size: 14px;">RESET PASSWORD</h5>
+					<button type="button" class="close text-white" data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body" style="background-color: #c6ccd2; padding: 20px;">
+					<form id="passformreset" method="post">
+						<input type="hidden" id="userid1" name="userid1" />
+						<div class="form-group row">
+							<label class="col-sm-5 font-weight-bold" for="newpass1">New Password :</label>
+							<input class="form-control form-control-sm col-sm-6" type="password" id="newpass1" name="newpass1" required />
+						</div>
+						<div class="form-group row">
+							<label class="col-sm-5 font-weight-bold" for="Connewpass1">Confirm New Password :</label>
+							<input class="form-control form-control-sm col-sm-6" type="password" id="Connewpass1" name="Connewpass1" required />
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer" style="background-color: #c6ccd2;">
+					<button type="button" class="btn btn-primary btn-sm px-3" onclick="submitresetpassword(this);">Submit</button>
+					<button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Image Show Modal -->
+	<div class="modal fade" id="imageshow" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content" style="max-width: 600px;">
+				<div class="modal-header" style="background-color: #2B506F; color: white;">
+					<h5 class="modal-title" style="font-size: 14px;">User Profile Photo</h5>
+					<button type="button" class="close text-white" data-dismiss="modal">×</button>
+				</div>
+				<div class="modal-body text-center p-3">
+					<img class="img-fluid rounded" id="doc_image" style="max-height: 400px;" alt="User Photo">
+				</div>
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn btn-sm btn-primary px-4" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Loader Modal -->
+	<div class="modal fade" id="loader1" data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content" style="background: transparent; border: none;">
+				<div class="modal-body text-center">
+					<div class="spinner-border text-light" style="width: 3rem; height: 3rem;" role="status">
+						<span class="sr-only">Loading...</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </body>
 
 </html>

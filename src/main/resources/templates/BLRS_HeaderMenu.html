@@ -325,7 +325,7 @@
 
 		function logoutfunc() {
 
-			location.href = "/BGLS/logoutsub";
+			location.href = "/BLRS/logout";
 
 		}
 	</script>
@@ -335,7 +335,7 @@
 			var userphoto = document.getElementById("userphoto").value;
 			$.ajax({
 				type: 'GET',
-				url: '/BGLS/userprofileimage?userphoto=' + encodeURIComponent(userphoto),
+				url: '/BLRS/userprofileimage?userphoto=' + encodeURIComponent(userphoto),
 				success: function (response) {
 					var element = document.getElementById("photoCapture123");
 
