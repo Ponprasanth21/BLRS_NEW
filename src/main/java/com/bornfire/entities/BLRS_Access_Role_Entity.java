@@ -50,6 +50,14 @@ public class BLRS_Access_Role_Entity {
 		this.role_id = role_id;
 	}
 
+	public String getUserId() {
+		return role_id;
+	}
+
+	public void setUserId(String userId) {
+		this.role_id = userId;
+	}
+
 	public String getRole_desc() {
 		return role_desc;
 	}

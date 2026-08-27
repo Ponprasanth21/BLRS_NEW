@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bornfire.config.PasswordEncryption;
+import com.bornfire.config.AES;
 import com.bornfire.entities.BLRS_UserProfile_Entity;
 import com.bornfire.entities.BLRS_UserProfile_Repo;
 
@@ -42,32 +42,31 @@ public class UserProfileService {
 		return new BLRS_UserProfile_Entity();
 	}
 
-	public String addUser(BLRS_UserProfile_Entity userProfile, String formmode, String inputUser)
-			throws NoSuchAlgorithmException, InvalidKeySpecException {
+	public String addUser(BLRS_UserProfile_Entity userProfile, String formmode, String inputUser) {
 
 		String msg = "";
+		try {
+			if (userProfile == null || userProfile.getUserid() == null || userProfile.getUserid().trim().isEmpty()) {
+				return "User ID cannot be empty";
+			}
+			userProfile.setUserid(userProfile.getUserid().trim());
 
-		if (userProfile == null || userProfile.getUserid() == null || userProfile.getUserid().trim().isEmpty()) {
-			return "User ID cannot be empty";
-		}
-		userProfile.setUserid(userProfile.getUserid().trim());
-
-		if (formmode == null || formmode.trim().isEmpty()) {
-			formmode = "add";
-		}
-
-		if ("add".equalsIgnoreCase(formmode)) {
-			Optional<BLRS_UserProfile_Entity> existing = userProfileRep.findById(userProfile.getUserid());
-			if (existing.isPresent() && !"Y".equalsIgnoreCase(existing.get().getDel_flg())) {
-				return "User ID already exists!";
+			if (formmode == null || formmode.trim().isEmpty()) {
+				formmode = "add";
 			}
 
-			String rawPassword = (userProfile.getPassword() != null && !userProfile.getPassword().isEmpty())
-					? userProfile.getPassword()
-					: this.defaultPassword;
+			if ("add".equalsIgnoreCase(formmode)) {
+				Optional<BLRS_UserProfile_Entity> existing = userProfileRep.findById(userProfile.getUserid());
+				if (existing.isPresent() && !"Y".equalsIgnoreCase(existing.get().getDel_flg())) {
+					return "User ID already exists!";
+				}
 
-			String encryptedPassword = PasswordEncryption.getEncryptedPassword(rawPassword);
-			userProfile.setPassword(encryptedPassword);
+				String rawPassword = (userProfile.getPassword() != null && !userProfile.getPassword().isEmpty())
+						? userProfile.getPassword()
+						: this.defaultPassword;
+
+				String encryptedPassword = AES.encrypt(rawPassword);
+				userProfile.setPassword(encryptedPassword);
 
 			if ("Active".equalsIgnoreCase(userProfile.getLogin_status())) {
 				userProfile.setUser_locked_flg("N");
@@ -129,6 +128,10 @@ public class UserProfileService {
 
 			userProfileRep.save(userProfile);
 			msg = "User Modified Successfully";
+		}
+		} catch (Exception e) {
+			logger.error("Error in addUser: ", e);
+			msg = "Error occurred while saving user profile";
 		}
 
 		return msg;
@@ -226,7 +229,7 @@ public class UserProfileService {
 			}
 
 			String rawPass = (newPass != null && !newPass.trim().isEmpty()) ? newPass : this.defaultPassword;
-			String encryptedPassword = PasswordEncryption.getEncryptedPassword(rawPass);
+			String encryptedPassword = AES.encrypt(rawPass);
 
 			Optional<BLRS_UserProfile_Entity> opt = userProfileRep.findById(targetUserId.trim());
 			if (opt.isPresent()) {
@@ -263,11 +266,11 @@ public class UserProfileService {
 			}
 			BLRS_UserProfile_Entity user = opt.get();
 
-			if (!PasswordEncryption.validatePassword(old_password, user.getPassword())) {
+			if (!AES.validatePassword(old_password, user.getPassword())) {
 				return "Current password does not match!";
 			}
 
-			String encNewPass = PasswordEncryption.getEncryptedPassword(new_password);
+			String encNewPass = AES.encrypt(new_password);
 			user.setPassword(encNewPass);
 			user.setModify_user(userid.trim());
 			user.setModify_time(new Date());

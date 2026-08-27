@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bornfire.entities.BLRS_Access_Role_Entity;
-import com.bornfire.entities.BLRS_AuditTablePojo;
 import com.bornfire.entities.BLRS_UserProfile_Entity;
 import com.bornfire.entities.BLRS_UserProfile_Repo;
 import com.bornfire.services.BLRS_AccessRoleService;
@@ -69,7 +68,7 @@ public class NavigationController {
 			@RequestParam(required = false) String userid) {
 		String loginUser = (String) req.getSession().getAttribute("USERID");
 		if (loginUser == null) loginUser = "SYSTEM";
-		return loginServices.passwordReset(userid, "Bornfire@123", loginUser);
+		return userProfileService.passwordReset(userid, "Bornfire@123", loginUser);
 	}
 
 	@RequestMapping(value = "rest_password", method = RequestMethod.POST)
@@ -77,7 +76,7 @@ public class NavigationController {
 	public String rest_password(@RequestParam("old_password") String old_password,
 			@RequestParam("new_password") String new_password, @RequestParam("user_id") String userid, Model md,
 			HttpServletRequest rq) {
-		String msg = loginServices.changePassword(old_password, new_password, userid);
+		String msg = userProfileService.changePassword(old_password, new_password, userid);
 		md.addAttribute("message", "success");
 		return msg;
 	}
@@ -352,7 +351,7 @@ public class NavigationController {
 			userphoto = (String) req.getSession().getAttribute("USERID");
 		}
 		if (userphoto != null) {
-			BLRS_UserProfile_Entity user = loginServices.getUser(userphoto);
+			BLRS_UserProfile_Entity user = userProfileService.getUser(userphoto);
 			if (user != null && user.getPhoto() != null && user.getPhoto().length > 0) {
 				return Base64.getEncoder().encodeToString(user.getPhoto());
 			}
@@ -440,26 +439,6 @@ public class NavigationController {
 	public String Guarantorreports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
 		md.addAttribute("formmode", formmode != null ? formmode : "list");
 		return "BLRS_Guarantorreports";
-	}
-
-	@RequestMapping(value = "Useroperation", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Useroperation(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-
-		if (formmode == null || formmode.equals("list")) {
-			md.addAttribute("formmode", "list");
-		}
-
-		return "BLRS_Useroperation";
-	}
-
-	@RequestMapping(value = "Businessoperation", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Businessoperation(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-
-		if (formmode == null || formmode.equals("list")) {
-			md.addAttribute("formmode", "list");
-		}
-
-		return "BLRS_Businessoperation";
 	}
 
 }

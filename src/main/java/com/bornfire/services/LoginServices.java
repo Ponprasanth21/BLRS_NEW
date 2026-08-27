@@ -230,16 +230,18 @@ public class LoginServices {
 
 		BLRS_UserProfile_Entity userProfile = userProfileRep.getRole(userId);
 		BLRS_Access_Role_Entity accessRole = access_Role_Repo.getRole(userId);
-		if (Objects.nonNull(userProfile.getUserid())) {
+		if (userProfile != null && Objects.nonNull(userProfile.getUserid())) {
 			userProfile.setEntity_flg("Y");
 			userProfile.setAuth_user(inputUser);
 			userProfile.setAuth_time(new Date());
 			userProfileRep.save(userProfile);
 
-			accessRole.setEntity_flg("Y");
-			accessRole.setAuth_user(inputUser);
-			accessRole.setAuth_time(new Date());
-			access_Role_Repo.save(accessRole);
+			if (accessRole != null && accessRole.getRole_id() != null) {
+				accessRole.setEntity_flg("Y");
+				accessRole.setAuth_user(inputUser);
+				accessRole.setAuth_time(new Date());
+				access_Role_Repo.save(accessRole);
+			}
 
 			msg = "User Verified Successfully";
 
