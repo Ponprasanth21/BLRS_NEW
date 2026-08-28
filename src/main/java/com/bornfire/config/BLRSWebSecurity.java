@@ -43,6 +43,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bornfire.entities.BLRS_AuditTable;
@@ -222,6 +223,9 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 
 	}
 
+	@Autowired
+	private PlatformTransactionManager datasrcTransactionManager;
+
 	@Bean
 	public AuthenticationSuccessHandler blrsAuthSuccessHandle() {
 		return new AuthenticationSuccessHandler() {
@@ -229,52 +233,65 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 			@Override
 			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 					Authentication authentication) throws IOException, ServletException {
-				String auditID = sequence.generateRequestUUId();
-				Optional<BLRS_UserProfile_Entity> up = userProfileRep.findUserByUserId(authentication.getName());
+				new org.springframework.transaction.support.TransactionTemplate(datasrcTransactionManager).execute(status -> {
+					String auditID = sequence.generateRequestUUId();
+					Optional<BLRS_UserProfile_Entity> up = userProfileRep.findUserByUserId(authentication.getName());
 
-				BLRS_Control_Table up1 = bGLS_CONTROL_TABLE_REP.getTranDate();
-				System.out.println(up1.getTran_date());
+					BLRS_Control_Table up1 = bGLS_CONTROL_TABLE_REP.getTranDate();
 
-				BLRS_UserProfile_Entity user = up.get();
-				userProfileRep.save(user);
+					if (up.isPresent()) {
+						BLRS_UserProfile_Entity user = up.get();
+						userProfileRep.save(user);
 
-				request.getSession().setAttribute("TRANDATE", up1.getTran_date());
-				request.getSession().setAttribute("USERID", user.getUserid());
+						request.getSession().setAttribute("TRANDATE", up1 != null ? up1.getTran_date() : new Date());
+						request.getSession().setAttribute("USERID", user.getUserid());
 
-				System.out.println("THE PASSED USER ID IS " + user.getUserid());
+						String roleId = user.getRole_id();
+						BLRS_Access_Role_Entity accessRole = null;
+						if (roleId != null && !roleId.trim().isEmpty()) {
+							accessRole = access_Role_Repo.getRole(roleId.trim());
+						}
 
-				request.getSession().setAttribute("USERNAME", user.getUsername());
-				request.getSession().setAttribute("BRANCH_ID", user.getBranch_code());
-				request.getSession().setAttribute("BRANCH_DESC", user.getBranch_name());
-				request.getSession().setAttribute("ROLEID", "");
+						request.getSession().setAttribute("USERNAME", user.getUsername());
+						request.getSession().setAttribute("BRANCH_ID", user.getBranch_code());
+						request.getSession().setAttribute("BRANCH_DESC", user.getBranch_name());
+						request.getSession().setAttribute("ROLEID", (roleId != null) ? roleId : "");
+						request.getSession().setAttribute("WORKCLASS", (user.getWork_class() != null) ? user.getWork_class() : "");
+						request.getSession().setAttribute("PERMISSIONS", (user.getPermissions() != null) ? user.getPermissions() : "");
+						request.getSession().setAttribute("MENULIST", (accessRole != null && accessRole.getMenulist() != null) ? accessRole.getMenulist() : "");
+						request.getSession().setAttribute("ADMIN", (accessRole != null && "Y".equalsIgnoreCase(accessRole.getAdmin())) ? "Y" : "N");
+						request.getSession().setAttribute("OPERATIONS", (accessRole != null && "Y".equalsIgnoreCase(accessRole.getOperations())) ? "Y" : "N");
+						request.getSession().setAttribute("INQUIRIES", (accessRole != null && "Y".equalsIgnoreCase(accessRole.getInquiries())) ? "Y" : "N");
+						request.getSession().setAttribute("REPORTS", (accessRole != null && "Y".equalsIgnoreCase(accessRole.getReports())) ? "Y" : "N");
+						request.getSession().setAttribute("AUDIT_LOGS", (accessRole != null && ("Y".equalsIgnoreCase(accessRole.getAudit_logs()) || "Y".equalsIgnoreCase(accessRole.getAudit_operations()))) ? "Y" : "N");
+						request.getSession().setAttribute("IPSRoleMenu", accessRole != null ? accessRole : new BLRS_Access_Role_Entity());
+						request.getSession().setAttribute("PASSWORD", user.getPassword());
+						request.getSession().setAttribute("LOGIN_TIME",
+								LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
 
-				// request.getSession().setAttribute("permissions", access_role);
-				/* request.getSession().setAttribute("PERMISSIONS", user.getPermissions()); */
-				/* request.getSession().setAttribute("WORKCLASS", user.getWork_class()); */
-				request.getSession().setAttribute("PASSWORD", user.getPassword());
-				request.getSession().setAttribute("LOGIN_TIME",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
-
-				BLRS_AuditTable audit = new BLRS_AuditTable();
-				LocalDateTime currentDateTime = LocalDateTime.now();
-				Date dateValue = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
-				audit.setAudit_date(new Date());
-				audit.setEntry_time(dateValue);
-				audit.setEntry_user(user.getUserid());
-				audit.setFunc_code("LOGIN");
-				audit.setRemarks("Login Successfully");
-				audit.setAudit_table("BGLSUSERPROFILE");
-				audit.setAudit_screen("LOGIN");
-				audit.setEvent_id(user.getUserid());
-				audit.setEvent_name(user.getUsername());
-				audit.setModi_details("Login Successfully");
-				BLRS_UserProfile_Entity auth_user = userProfileRep.getRole(user.getUserid());
-				String auth_user_val = auth_user.getAuth_user();
-				Date auth_user_date = auth_user.getAuth_time();
-				audit.setAuth_user(auth_user_val);
-				audit.setAuth_time(auth_user_date);
-				audit.setAudit_ref_no(auditID.toString());
-				bGLSAuditTable_Rep.save(audit);
+						BLRS_AuditTable audit = new BLRS_AuditTable();
+						LocalDateTime currentDateTime = LocalDateTime.now();
+						Date dateValue = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+						audit.setAudit_date(new Date());
+						audit.setEntry_time(dateValue);
+						audit.setEntry_user(user.getUserid());
+						audit.setFunc_code("LOGIN");
+						audit.setRemarks("Login Successfully");
+						audit.setAudit_table("BGLSUSERPROFILE");
+						audit.setAudit_screen("LOGIN");
+						audit.setEvent_id(user.getUserid());
+						audit.setEvent_name(user.getUsername());
+						audit.setModi_details("Login Successfully");
+						BLRS_UserProfile_Entity auth_user = userProfileRep.getRole(user.getUserid());
+						if (auth_user != null) {
+							audit.setAuth_user(auth_user.getAuth_user());
+							audit.setAuth_time(auth_user.getAuth_time());
+						}
+						audit.setAudit_ref_no(auditID.toString());
+						bGLSAuditTable_Rep.save(audit);
+					}
+					return null;
+				});
 
 				response.sendRedirect("Dashboard");
 			}
@@ -291,28 +308,36 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 			@Override
 			public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response,
 					Authentication authentication) throws IOException, ServletException {
-				Optional<BLRS_UserProfile_Entity> up = userProfileRep.findById(authentication.getName());
+				new org.springframework.transaction.support.TransactionTemplate(datasrcTransactionManager).execute(status -> {
+					if (authentication != null && authentication.getName() != null) {
+						String username = authentication.getName();
+						Optional<BLRS_UserProfile_Entity> up = userProfileRep.findUserByUserId(username);
 
-				BLRS_UserProfile_Entity user = up.get();
-				BLRS_AuditTable audit = new BLRS_AuditTable();
-				String Number1 = sequence.generateRequestUUId();
-				audit.setAudit_date(new Date());
-				audit.setEntry_time(new Date());
-				audit.setEntry_user(user.getUserid());
-				audit.setFunc_code("LOGOUT");
-				audit.setRemarks("Logout Successfully");
-				audit.setAudit_table("BGLSUSERPROFILE");
-				audit.setAudit_screen("LOGOUT");
-				audit.setEvent_id(user.getUserid());
-				audit.setEvent_name(user.getUsername());
-				BLRS_UserProfile_Entity auth_user = userProfileRep.getRole(user.getUserid());
-				String auth_user_val = auth_user.getAuth_user();
-				Date auth_user_date = auth_user.getAuth_time();
-				audit.setAuth_user(auth_user_val);
-				audit.setAuth_time(auth_user_date);
-				audit.setModi_details("Logout Successfully");
-				audit.setAudit_ref_no(Number1.toString());
-				bGLSAuditTable_Rep.save(audit);
+						if (up.isPresent()) {
+							BLRS_UserProfile_Entity user = up.get();
+							BLRS_AuditTable audit = new BLRS_AuditTable();
+							String Number1 = sequence.generateRequestUUId();
+							audit.setAudit_date(new Date());
+							audit.setEntry_time(new Date());
+							audit.setEntry_user(user.getUserid());
+							audit.setFunc_code("LOGOUT");
+							audit.setRemarks("Logout Successfully");
+							audit.setAudit_table("BGLSUSERPROFILE");
+							audit.setAudit_screen("LOGOUT");
+							audit.setEvent_id(user.getUserid());
+							audit.setEvent_name(user.getUsername());
+							BLRS_UserProfile_Entity auth_user = userProfileRep.getRole(user.getUserid());
+							if (auth_user != null) {
+								audit.setAuth_user(auth_user.getAuth_user());
+								audit.setAuth_time(auth_user.getAuth_time());
+							}
+							audit.setModi_details("Logout Successfully");
+							audit.setAudit_ref_no(Number1);
+							bGLSAuditTable_Rep.save(audit);
+						}
+					}
+					return null;
+				});
 				response.sendRedirect("login?logout");
 			}
 		};

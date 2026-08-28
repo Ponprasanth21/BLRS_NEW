@@ -80,6 +80,11 @@ public class BLRSDataSource {
                 "false"
         );
 
+        properties.setProperty(
+                "hibernate.jdbc.lob.non_contextual_creation",
+                "true"
+        );
+
         return properties;
     }
 

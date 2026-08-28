@@ -344,19 +344,26 @@ public class NavigationController {
 		return accessRoleService.verifyRole(targetRole, loginUser);
 	}
 
-	@RequestMapping(value = "userprofileimage", method = RequestMethod.GET)
+	@RequestMapping(value = {"userprofileimage", "userprofileimage/{userid}"}, method = RequestMethod.GET)
 	@ResponseBody
-	public String userprofileimage(@RequestParam(required = false) String userphoto, HttpServletRequest req) {
-		if (userphoto == null || userphoto.isEmpty()) {
-			userphoto = (String) req.getSession().getAttribute("USERID");
+	public String userprofileimage(@RequestParam(value = "userphoto", required = false) String userphoto,
+			@RequestParam(value = "userid", required = false) String userid,
+			@PathVariable(value = "userid", required = false) String pathUserid,
+			HttpServletRequest req) {
+		String targetId = (userphoto != null && !userphoto.trim().isEmpty()) ? userphoto : userid;
+		if (targetId == null || targetId.trim().isEmpty()) {
+			targetId = pathUserid;
 		}
-		if (userphoto != null) {
-			BLRS_UserProfile_Entity user = userProfileService.getUser(userphoto);
+		if (targetId == null || targetId.trim().isEmpty()) {
+			targetId = (String) req.getSession().getAttribute("USERID");
+		}
+		if (targetId != null && !targetId.trim().isEmpty()) {
+			BLRS_UserProfile_Entity user = userProfileService.getUser(targetId.trim());
 			if (user != null && user.getPhoto() != null && user.getPhoto().length > 0) {
 				return Base64.getEncoder().encodeToString(user.getPhoto());
 			}
 		}
-		return "Photo content is null";
+		return "";
 	}
 
 	// ---------------------------------------------------------------------------------------------------------------

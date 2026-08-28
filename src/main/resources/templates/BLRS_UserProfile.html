@@ -248,7 +248,25 @@
 			});
 		}
 
+		function isNumber(evt) {
+			evt = (evt) ? evt : window.event;
+			var charCode = (evt.which) ? evt.which : evt.keyCode;
+			if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+				return false;
+			}
+			return true;
+		}
+
 		function submitform(a) {
+			var mobNo = $("#mobNo").val();
+			if (mobNo && mobNo.trim() !== "") {
+				if (!/^\d+$/.test(mobNo.trim())) {
+					$("#alertmsg").text("Mobile Number must contain only numbers.");
+					$('#alert').modal("show");
+					return;
+				}
+			}
+
 			if ($("#userProfile").valid()) {
 				$("#loader1").modal("show");
 				var formmode = a.getAttribute("data-formmode");
@@ -273,6 +291,15 @@
 		}
 
 		function editsubmitform(a) {
+			var mobNo = $("#mobNo").val();
+			if (mobNo && mobNo.trim() !== "") {
+				if (!/^\d+$/.test(mobNo.trim())) {
+					$("#alertmsg").text("Mobile Number must contain only numbers.");
+					$('#alert').modal("show");
+					return;
+				}
+			}
+
 			if ($("#userProfile").valid()) {
 				$("#loader1").modal("show");
 				var formmode = a.getAttribute("data-formmode");
@@ -525,6 +552,28 @@
 				changeMonth: true,
 				changeYear: true
 			});
+
+			// Restrict numeric fields to digits only
+			$(document).on('input', '.number-only, #mobNo', function () {
+				this.value = this.value.replace(/[^0-9]/g, '');
+			});
+
+			$(document).on('keypress', '.number-only, #mobNo', function (e) {
+				var charCode = (e.which) ? e.which : e.keyCode;
+				if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+					e.preventDefault();
+					return false;
+				}
+				return true;
+			});
+
+			$(document).on('paste', '.number-only, #mobNo', function (e) {
+				var clipboardData = e.originalEvent.clipboardData || window.clipboardData;
+				var pastedData = clipboardData.getData('text');
+				if (!/^\d+$/.test(pastedData)) {
+					e.preventDefault();
+				}
+			});
 		});
 		/*]]>*/
 	</script>
@@ -775,10 +824,12 @@
 										<div class="row formline">
 											<label class="col-sm-2">Mobile No</label>
 											<div th:if="${formmode}=='add'" class="col-sm-3">
-												<input type="text" name="mob_number" maxlength="15" id="mobNo" class="form-control form-control-sm" />
+												<input type="text" name="mob_number" maxlength="15" id="mobNo" class="form-control form-control-sm number-only"
+													onkeypress="return isNumber(event)" oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
 											</div>
 											<div th:if="${formmode}=='edit'" class="col-sm-3">
-												<input type="text" name="mob_number" maxlength="15" th:value="${userProfile?.mob_number}" id="mobNo" class="form-control form-control-sm" />
+												<input type="text" name="mob_number" maxlength="15" th:value="${userProfile?.mob_number}" id="mobNo" class="form-control form-control-sm number-only"
+													onkeypress="return isNumber(event)" oninput="this.value=this.value.replace(/[^0-9]/g,'');" />
 											</div>
 											<div th:if="${formmode}!='add' and ${formmode}!='edit'" class="col-sm-3">
 												<input type="text" name="mob_number" th:value="${userProfile?.mob_number}" id="mobNo" class="form-control form-control-sm" readonly />

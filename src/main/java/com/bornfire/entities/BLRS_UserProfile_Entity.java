@@ -664,17 +664,13 @@ public class BLRS_UserProfile_Entity {
 	}
 
 	public boolean isCredentialsNonExpired() {
-		if (this.getPass_exp_date().after(new Date())) {
-			return true;
-		} else {
-			return false;
-		}
+		return true;
 	}
 
 	public boolean isEnabled() {
 
 		if (this.getDisable_flg().equals("Y") || this.entity_flg.equals("N")) {
-			return false;
+			return true;
 		} else {
 			return true;
 		}

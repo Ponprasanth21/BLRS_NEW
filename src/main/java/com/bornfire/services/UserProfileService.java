@@ -36,7 +36,11 @@ public class UserProfileService {
 	}
 
 	public BLRS_UserProfile_Entity getUser(String id) {
-		if (id != null && userProfileRep.existsById(id.trim())) {
+		if (id != null && !id.trim().isEmpty()) {
+			Optional<BLRS_UserProfile_Entity> opt = userProfileRep.findUserByUserId(id.trim());
+			if (opt.isPresent()) {
+				return opt.get();
+			}
 			return userProfileRep.findById(id.trim()).orElse(new BLRS_UserProfile_Entity());
 		}
 		return new BLRS_UserProfile_Entity();

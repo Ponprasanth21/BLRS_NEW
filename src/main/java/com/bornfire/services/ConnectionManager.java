@@ -4,15 +4,42 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+@Service
 public class ConnectionManager {
-	Connection conn;
+
+	@Autowired(required = false)
+	private DataSource dataSource;
+
+	@Value("${datasrc.url:${spring.datasource.url:jdbc:postgresql://117.247.111.70:5432/blrs}}")
+	private String url;
+
+	@Value("${datasrc.username:${spring.datasource.username:blrs_app}}")
+	private String username;
+
+	@Value("${datasrc.password:${spring.datasource.password:blrs@123}}")
+	private String password;
+
+	@Value("${spring.datasource.driver-class-name:org.postgresql.Driver}")
+	private String driverClassName;
+
+	private Connection conn;
 
 	public Connection getConnection() {
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+			if (dataSource != null) {
+				return dataSource.getConnection();
+			}
 
-			conn = DriverManager.getConnection("jdbc:oracle:thin:@122.165.217.18:1522/BAJ", "BAJ", "baj");
+			if (driverClassName != null && !driverClassName.isEmpty()) {
+				Class.forName(driverClassName);
+			}
+			conn = DriverManager.getConnection(url, username, password);
 
 		} catch (SQLException sqlexcp) {
 			sqlexcp.printStackTrace();
@@ -21,5 +48,41 @@ public class ConnectionManager {
 		}
 
 		return conn;
+	}
+
+	public Connection getConnection(String dbUrl, String user, String pass) {
+		try {
+			if (driverClassName != null && !driverClassName.isEmpty()) {
+				Class.forName(driverClassName);
+			}
+			return DriverManager.getConnection(dbUrl, user, pass);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 }
