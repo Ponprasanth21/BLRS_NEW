@@ -124,14 +124,131 @@
 			font-size: 12px;
 		}
 
-		.card-header {
-			background-color: #2B506F !important;
-			color: white;
+		/*.card-header {
+			background-color: #b8c2cc;
+					    border-bottom: 1px solid #9faab4;
 		}
 
 		.card-footer {
-			background-color: #2B506F !important;
+			background-color: rgb(192, 192, 192) !important;
 			padding: 6px;
+		}*/
+		/* PAGE */
+		body {
+		    background-color: #f8fafc !important;
+		    color: #1e293b;
+		}
+
+		/* MAIN CARD */
+		.card {
+		    background-color: #ffffff;
+		    border: 1px solid #d5d9dc;
+		}
+
+		/* CARD HEADER */
+		.card-header {
+		    background-color: #b8c2cc !important;
+		    border-bottom: 1px solid #9faab4 !important;
+		    color: #333333;
+		}
+
+		/* HEADER TEXT */
+		.card-header h6 {
+		    color: #333333 !important;
+		}
+
+		/* FORM BODY */
+		.card-body {
+		    background-color: #f4f4f4;
+		}
+
+		/* LABELS */
+		.formline label {
+		    color: #333333 !important;
+		}
+
+		/* INPUTS */
+		.form-control {
+		    background-color: #ffffff !important;
+		    color: #333333 !important;
+		    border: 1px solid #999999 !important;
+		}
+
+		/* READONLY INPUTS */
+		.form-control[readonly] {
+		    background-color: #ffffff !important;
+		    color: #333333 !important;
+		}
+
+		/* INPUT FOCUS */
+		.form-control:focus {
+		    border-color: #777777 !important;
+		    box-shadow: none !important;
+		}
+
+		/* TABLE HEADER */
+		#usertable thead th {
+		    background-color: #f1f5f9 !important;
+		    color: #1e293b !important;
+		    border-color: #d4d7da !important;
+		}
+
+		/* TABLE DATA */
+		#usertable td {
+		    background-color: #ffffff !important;
+		    color: #333333 !important;
+		    border-right: 1px solid #d4d7da !important;
+		    border-bottom: 1px solid #d4d7da !important;
+		}
+
+		/* TABLE HOVER */
+		#usertable tbody tr:hover td {
+		    background-color: #f4f4f4 !important;
+		}
+
+		/* FOOTER */
+		.card-footer {
+		    background-color: #e9ecef !important;
+		    border-top: 1px solid #d5d9dc !important;
+		}
+
+		/* BUTTONS */
+		.btn-primary {
+		    background-color: #007bff !important;
+		    border-color: #007bff !important;
+		    color: #ffffff !important;
+		}
+
+		.btn-primary:hover {
+		    background-color: #0069d9 !important;
+		    border-color: #0062cc !important;
+		}
+
+		/* ROLE AND RIGHTS HEADER */
+		.role-rights-header {
+		    background-color: #b8c2cc !important;
+		    color: #333333 !important;
+		}
+
+		/* ENTRY/AUDIT BOX */
+		.entry-box {
+		    background-color: #ffffff !important;
+		    border: 1px solid #d5d9dc !important;
+		    border-top: 2px solid #b8c2cc !important;
+		}
+
+		/* LINKS / INFO ICON */
+		.underline {
+		    color: #007bff !important;
+		}
+
+		/* SCROLLBAR */
+		.table-scroll-container {
+		    scrollbar-color: #999999 transparent;
+		}
+
+		.table-scroll-container::-webkit-scrollbar-thumb {
+		    background-color: #999999;
 		}
 
 		.btn-primary {
@@ -592,9 +709,9 @@
 				<div class="col-sm-12">
 					<div class="card">
 						<div class="card-header d-flex justify-content-between align-items-center"
-							style="background-color: #2B506F; min-height: 50px;">
+							style="background-color: #d5d9dc; min-height: 50px;">
 							<div>
-								<h6 style="color: white; margin: 0; font-size: 1.2rem">User Profile - LIST</h6>
+								<h6 style="color: rgb(0, 0, 0); margin: 0; font-size: 1.2rem">User Profile - LIST</h6>
 							</div>
 							<div class="d-flex align-items-center" style="gap: 8px;">
 								<button type="button" class="btn btn-sm btn-primary" id="btnAdd" onclick="adduser();">
