@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
-@Table(name = "BGLS_AUDIT_TABLE")
+@Table(name = "BLRS_AUDIT_TABLE")
 public class BLRS_AuditTable {
 
 	@Id

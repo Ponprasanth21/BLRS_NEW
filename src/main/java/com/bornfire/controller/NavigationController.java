@@ -3,8 +3,10 @@ package com.bornfire.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,12 +28,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.bornfire.entities.BLRS_Access_Role_Entity;
+import com.bornfire.entities.BLRS_AuditTable_Rep;
 import com.bornfire.entities.BLRS_UserProfile_Entity;
 import com.bornfire.entities.BLRS_UserProfile_Repo;
 import com.bornfire.services.BLRS_AccessRoleService;
 import com.bornfire.services.ListofDataService;
 import com.bornfire.services.LoginServices;
 import com.bornfire.services.UserProfileService;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 @Controller
 public class NavigationController {
@@ -53,12 +58,16 @@ public class NavigationController {
 	@Autowired
 	private ListofDataService listofdataService;
 
+	@Autowired
+	private BLRS_AuditTable_Rep AuditTable_Rep;
+
 	// ---------------------------------------------------------------------------------------------------------------
 	// Login & Password Reset
 	// ---------------------------------------------------------------------------------------------------------------
 
 	@RequestMapping(value = "changePasswordLogin", method = { RequestMethod.GET, RequestMethod.POST })
-	public String changePasswordLogin(@RequestParam(required = false) String formmode, Model md, HttpServletRequest req) {
+	public String changePasswordLogin(@RequestParam(required = false) String formmode, Model md,
+			HttpServletRequest req) {
 		return "BLRS_ChangePasswordLogin";
 	}
 
@@ -67,7 +76,8 @@ public class NavigationController {
 	public String resetPassword(@RequestParam(required = false) String formmode, Model md, HttpServletRequest req,
 			@RequestParam(required = false) String userid) {
 		String loginUser = (String) req.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		return userProfileService.passwordReset(userid, "Bornfire@123", loginUser);
 	}
 
@@ -91,9 +101,91 @@ public class NavigationController {
 	// ---------------------------------------------------------------------------------------------------------------
 
 	@RequestMapping(value = "Useroperation", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Useroperation(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+	public String Useroperation(@RequestParam(required = false) String formmode,
+			@RequestParam(required = false) String Fromdate, @RequestParam(required = false) String Todate,
+			@RequestParam(required = false) String userid, @RequestParam(required = false) Optional<Integer> page,
+			@RequestParam(value = "size", required = false) Optional<Integer> size, Model md, HttpServletRequest req) {
 
-		if (formmode == null || formmode.equals("list")) {
+		String roleId = (String) req.getSession().getAttribute("ROLEID");
+		md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
+
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		dateFormat.setLenient(false);
+
+		Calendar cal = Calendar.getInstance();
+
+		String fromDateStr;
+		String toDateStr;
+
+		Date fromDate;
+		Date toDate;
+
+		try {
+
+			// --------------------------------
+			// 1. DEFAULT DATE
+			// --------------------------------
+			if (Fromdate == null || Fromdate.trim().isEmpty()) {
+				fromDateStr = dateFormat.format(cal.getTime());
+			} else {
+				fromDateStr = Fromdate;
+			}
+
+			if (Todate == null || Todate.trim().isEmpty()) {
+				toDateStr = dateFormat.format(cal.getTime());
+			} else {
+				toDateStr = Todate;
+			}
+
+			// --------------------------------
+			// 2. PARSE FRONTEND DATE
+			// --------------------------------
+			fromDate = dateFormat.parse(fromDateStr);
+			toDate = dateFormat.parse(toDateStr);
+
+			System.out.println("From Date : " + fromDateStr);
+			System.out.println("To Date   : " + toDateStr);
+
+			// --------------------------------
+			// 3. SEND TO FRONTEND
+			// --------------------------------
+			md.addAttribute("Fromdate", fromDateStr);
+			md.addAttribute("Todate", toDateStr);
+
+			md.addAttribute("menuname", "User Activity Audits");
+
+			// --------------------------------
+			// 4. GET AUDIT DATA
+			// --------------------------------
+			md.addAttribute("AuditList", AuditTable_Rep.getauditListOpeartion(fromDate, toDate));
+
+			md.addAttribute("auditflag", "auditflag");
+			md.addAttribute("formmode", "list");
+
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+
+			// If invalid date comes from frontend,
+			// show today's date instead
+
+			String today = dateFormat.format(cal.getTime());
+
+			try {
+				Date todayDate = dateFormat.parse(today);
+
+				md.addAttribute("Fromdate", today);
+				md.addAttribute("Todate", today);
+
+				md.addAttribute("menuname", "User Activity Audits");
+
+				md.addAttribute("AuditList", AuditTable_Rep.getauditListOpeartion(todayDate, todayDate));
+
+			} catch (ParseException ex) {
+				ex.printStackTrace();
+			}
+
+			md.addAttribute("auditflag", "auditflag");
 			md.addAttribute("formmode", "list");
 		}
 
@@ -101,10 +193,81 @@ public class NavigationController {
 	}
 
 	@RequestMapping(value = "Businessoperation", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Businessoperation(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+	public String Businessoperation(@RequestParam(required = false) String formmode,
+			@RequestParam(required = false) String Fromdate, @RequestParam(required = false) String Todate,
+			@RequestParam(required = false) String userid, @RequestParam(required = false) Optional<Integer> page,
+			@RequestParam(value = "size", required = false) Optional<Integer> size, Model md, HttpServletRequest req) {
 
-		if (formmode == null || formmode.equals("list")) {
+		String roleId = (String) req.getSession().getAttribute("ROLEID");
+		md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
+
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		dateFormat.setLenient(false);
+
+		Calendar cal = Calendar.getInstance();
+
+		String fromDateStr;
+		String toDateStr;
+
+		Date fromDate;
+		Date toDate;
+
+		try {
+
+			// Default = current date
+			if (Fromdate == null || Fromdate.trim().isEmpty()) {
+				fromDateStr = dateFormat.format(cal.getTime());
+			} else {
+				fromDateStr = Fromdate;
+			}
+
+			if (Todate == null || Todate.trim().isEmpty()) {
+				toDateStr = dateFormat.format(cal.getTime());
+			} else {
+				toDateStr = Todate;
+			}
+
+			// Convert frontend date to Java Date
+			fromDate = dateFormat.parse(fromDateStr);
+			toDate = dateFormat.parse(toDateStr);
+
+			System.out.println("Business From Date : " + fromDateStr);
+			System.out.println("Business To Date   : " + toDateStr);
+
+			md.addAttribute("menuname", "Service Audits");
+			md.addAttribute("auditflag", "auditflag");
 			md.addAttribute("formmode", "list");
+
+			// Selected/default date records
+			md.addAttribute("AuditList", AuditTable_Rep.getbusinessListOpeartion(fromDate, toDate));
+
+			// Keep selected dates in frontend
+			md.addAttribute("Fromdate", fromDateStr);
+			md.addAttribute("Todate", toDateStr);
+
+		} catch (ParseException e) {
+
+			e.printStackTrace();
+
+			// Invalid date -> today's records
+			String today = dateFormat.format(cal.getTime());
+
+			try {
+
+				Date todayDate = dateFormat.parse(today);
+
+				md.addAttribute("menuname", "Service Audits");
+				md.addAttribute("auditflag", "auditflag");
+				md.addAttribute("formmode", "list");
+
+				md.addAttribute("AuditList", AuditTable_Rep.getbusinessListOpeartion(todayDate, todayDate));
+
+				md.addAttribute("Fromdate", today);
+				md.addAttribute("Todate", today);
+
+			} catch (ParseException ex) {
+				ex.printStackTrace();
+			}
 		}
 
 		return "BLRS_Businessoperation";
@@ -152,7 +315,7 @@ public class NavigationController {
 		return "BLRS_UserProfile";
 	}
 
-	@RequestMapping(value = {"createUser", "editUser"}, method = RequestMethod.POST)
+	@RequestMapping(value = { "createUser", "editUser" }, method = RequestMethod.POST)
 	@ResponseBody
 	public String createUser(@RequestParam("formmode") String formmode,
 			@ModelAttribute BLRS_UserProfile_Entity userProfile,
@@ -160,7 +323,8 @@ public class NavigationController {
 			throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 
 		if (file != null && !file.isEmpty()) {
 			userProfile.setPhoto(file.getBytes());
@@ -174,7 +338,8 @@ public class NavigationController {
 	public String verifyUser(@RequestParam(value = "userid", required = false) String userid,
 			@ModelAttribute BLRS_UserProfile_Entity userProfile, Model md, HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		String targetUser = (userid != null && !userid.isEmpty()) ? userid : userProfile.getUserid();
 		return userProfileService.verifyUser(targetUser, loginUser);
 	}
@@ -184,7 +349,8 @@ public class NavigationController {
 	public String deleteUser(@RequestParam(value = "userid", required = false) String userid,
 			@ModelAttribute BLRS_UserProfile_Entity userProfile, Model md, HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		String targetUser = (userid != null && !userid.isEmpty()) ? userid : userProfile.getUserid();
 		return userProfileService.deleteUser(targetUser, "Y", loginUser);
 	}
@@ -194,22 +360,26 @@ public class NavigationController {
 	public String cancelUser(@RequestParam(value = "userid", required = false) String userid,
 			@ModelAttribute BLRS_UserProfile_Entity userProfile, Model md, HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		String targetUser = (userid != null && !userid.isEmpty()) ? userid : userProfile.getUserid();
 		return userProfileService.cancelUser(targetUser, loginUser);
 	}
 
-	@RequestMapping(value = {"passwordResetUser", "passwordReset", "passwordReset1"}, method = {RequestMethod.GET, RequestMethod.POST})
+	@RequestMapping(value = { "passwordResetUser", "passwordReset", "passwordReset1" }, method = { RequestMethod.GET,
+			RequestMethod.POST })
 	@ResponseBody
 	public String passwordResetUser(@RequestParam(value = "userid", required = false) String userid,
 			@RequestParam(value = "userid1", required = false) String userid1,
 			@RequestParam(value = "newpass", required = false) String newpass,
 			@RequestParam(value = "password", required = false) String newPass, Model md, HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		String targetUser = (userid != null && !userid.isEmpty()) ? userid : userid1;
 		String pass = (newpass != null && !newpass.isEmpty()) ? newpass : newPass;
-		if (pass == null || pass.isEmpty()) pass = "Bornfire@123";
+		if (pass == null || pass.isEmpty())
+			pass = "Bornfire@123";
 		return userProfileService.passwordReset(targetUser, pass, loginUser);
 	}
 
@@ -284,7 +454,7 @@ public class NavigationController {
 		return "BLRS_Accesscontrol";
 	}
 
-	@RequestMapping(value = {"createRole", "createAccessRole"}, method = RequestMethod.POST)
+	@RequestMapping(value = { "createRole", "createAccessRole" }, method = RequestMethod.POST)
 	@ResponseBody
 	public String createRole(@RequestParam(value = "formmode", required = false) String formmode,
 			@ModelAttribute BLRS_Access_Role_Entity accessRole,
@@ -293,10 +463,11 @@ public class NavigationController {
 			@RequestParam(value = "auditLogsValue", required = false) String auditLogsValue,
 			@RequestParam(value = "operationsValue", required = false) String operationsValue,
 			@RequestParam(value = "inquiriesValue", required = false) String inquiriesValue,
-			@RequestParam(value = "reportsValue", required = false) String reportsValue,
-			Model md, HttpServletRequest rq) {
+			@RequestParam(value = "reportsValue", required = false) String reportsValue, Model md,
+			HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 
 		if (formmode == null || formmode.trim().isEmpty()) {
 			formmode = "add";
@@ -305,11 +476,16 @@ public class NavigationController {
 		if (finalString != null && !finalString.isEmpty()) {
 			accessRole.setMenulist(finalString);
 		}
-		if (adminValue != null) accessRole.setAdmin(adminValue);
-		if (auditLogsValue != null) accessRole.setAudit_logs(auditLogsValue);
-		if (operationsValue != null) accessRole.setOperations(operationsValue);
-		if (inquiriesValue != null) accessRole.setInquiries(inquiriesValue);
-		if (reportsValue != null) accessRole.setReports(reportsValue);
+		if (adminValue != null)
+			accessRole.setAdmin(adminValue);
+		if (auditLogsValue != null)
+			accessRole.setAudit_logs(auditLogsValue);
+		if (operationsValue != null)
+			accessRole.setOperations(operationsValue);
+		if (inquiriesValue != null)
+			accessRole.setInquiries(inquiriesValue);
+		if (reportsValue != null)
+			accessRole.setReports(reportsValue);
 
 		return accessRoleService.addRole(accessRole, formmode, loginUser);
 	}
@@ -319,7 +495,8 @@ public class NavigationController {
 	public String verifyRole(@RequestParam(value = "role_id", required = false) String roleId,
 			@ModelAttribute BLRS_Access_Role_Entity accessRole, Model md, HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		String targetRole = (roleId != null && !roleId.isEmpty()) ? roleId : accessRole.getRole_id();
 		return accessRoleService.verifyRole(targetRole, loginUser);
 	}
@@ -329,7 +506,8 @@ public class NavigationController {
 	public String deleteRole(@RequestParam(value = "role_id", required = false) String roleId,
 			@ModelAttribute BLRS_Access_Role_Entity accessRole, Model md, HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		String targetRole = (roleId != null && !roleId.isEmpty()) ? roleId : accessRole.getRole_id();
 		return accessRoleService.deleteRole(targetRole, loginUser);
 	}
@@ -339,17 +517,17 @@ public class NavigationController {
 	public String cancelRole(@RequestParam(value = "role_id", required = false) String roleId,
 			@ModelAttribute BLRS_Access_Role_Entity accessRole, Model md, HttpServletRequest rq) {
 		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null) loginUser = "SYSTEM";
+		if (loginUser == null)
+			loginUser = "SYSTEM";
 		String targetRole = (roleId != null && !roleId.isEmpty()) ? roleId : accessRole.getRole_id();
 		return accessRoleService.verifyRole(targetRole, loginUser);
 	}
 
-	@RequestMapping(value = {"userprofileimage", "userprofileimage/{userid}"}, method = RequestMethod.GET)
+	@RequestMapping(value = { "userprofileimage", "userprofileimage/{userid}" }, method = RequestMethod.GET)
 	@ResponseBody
 	public String userprofileimage(@RequestParam(value = "userphoto", required = false) String userphoto,
 			@RequestParam(value = "userid", required = false) String userid,
-			@PathVariable(value = "userid", required = false) String pathUserid,
-			HttpServletRequest req) {
+			@PathVariable(value = "userid", required = false) String pathUserid, HttpServletRequest req) {
 		String targetId = (userphoto != null && !userphoto.trim().isEmpty()) ? userphoto : userid;
 		if (targetId == null || targetId.trim().isEmpty()) {
 			targetId = pathUserid;
@@ -425,7 +603,8 @@ public class NavigationController {
 	}
 
 	@RequestMapping(value = "Loanaccountprofileinquiry", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Loanaccountprofileinquiry(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+	public String Loanaccountprofileinquiry(@RequestParam(required = false) String formmode, Model md,
+			HttpServletRequest rq) {
 		md.addAttribute("formmode", formmode != null ? formmode : "list");
 		return "BLRS_LoanAccountProfileInquiries";
 	}

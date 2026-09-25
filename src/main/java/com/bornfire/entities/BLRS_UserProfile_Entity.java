@@ -16,7 +16,7 @@ import org.springframework.security.core.GrantedAuthority;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "BLRS_USER_PROFILE", schema = "public")
+@Table(name = "BLRS_USER_PROFILE", schema = "blrs")
 public class BLRS_UserProfile_Entity {
 	private static final long serialVersionUID = 1L;
 	private String bank_code;

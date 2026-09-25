@@ -504,7 +504,7 @@
 			</li>
 
 			<!-- AUDITLOGS -->
-			<li class="nav-item" th:if="${session.AUDIT_LOGS == 'Y' or session.ROLEID == 'ADM' or session.ROLEID == 'ADMIN' or session.WORKCLASS == 'Admin' or (session.MENULIST != null and (session.MENULIST.contains('Audit') or session.MENULIST.contains('User Operation')))}">
+			<li class="nav-item">
 				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
 					data-target="#collapseSubItems5" aria-controls="collapseSubItems5" aria-expanded="false">Audit
 					Logs</a>

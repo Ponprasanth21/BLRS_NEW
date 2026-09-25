@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BLRS_CONTROL_TABLE_REP extends JpaRepository<BLRS_Control_Table, Date> {
 
-	@Query(value = "SELECT * FROM public.\"BLRS_CONTROL_TABLE\"", nativeQuery = true)
+	@Query(value = "SELECT * FROM blrs.blrs_control_table", nativeQuery = true)
 	BLRS_Control_Table getTranDate();
 
 	@Query(value = "SELECT * FROM BLRS_CONTROL_TABLE", nativeQuery = true)
