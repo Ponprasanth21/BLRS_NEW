@@ -1,38 +1,53 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
 	<!-- BAJ VERSION 1.0.1  -->
+
 	<meta charset="UTF-8">
+
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<title>BLRS</title>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
 		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+
 	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
 		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+
 	<link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
 		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+
 	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
 		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
 
 	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+
 	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
 		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+
 	<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
 		th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+
 	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
 		th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+
 	<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
 		th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
+
 	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
 		th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
 		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
+
 	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
 
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 
 	<style>
@@ -44,39 +59,34 @@
 			color: #1e293b;
 		}
 
-		
-
 		.container-manager {
-			width: 83.5%;
+			width: 100%;
+			max-width: 1140px;
 			padding-right: 15px;
 			padding-left: 15px;
 			margin-right: auto;
-			margin-left: 16% !important;
+			margin-left: auto;
 			margin-top: 80px;
 		}
 
 		/* =========================================================
 		   REMINDER REPORT
 		   ========================================================= */
-
 		.reminder-body {
 		    min-height: 300px;
 		    background-color: #f4f4f4;
 		    border: 1px solid #ddd;
 		    padding: 45px 20px;
 		}
-
 		.reminder-form {
 		    width: 450px;
 		    margin: 0 auto;
 		}
-
 		.form-row-custom {
 		    display: flex;
 		    align-items: center;
 		    margin-bottom: 14px;
 		}
-
 		.form-row-custom label {
 		    width: 130px;
 		    margin-bottom: 0;
@@ -84,7 +94,6 @@
 		    font-size: 13px;
 		    font-weight: 500;
 		}
-
 		.report-select {
 		    width: 180px;
 		    height: 27px;
@@ -95,19 +104,70 @@
 		    border-radius: 3px;
 		    background-color: #fff;
 		}
-
 		.reminder-footer {
 		    background-color: #e9ecef;
 		    border-top: 0;
 		    text-align: center;
 		    padding: 12px;
 		}
-
 		.reminder-footer .big-btn {
 		    min-width: 48px;
 		    margin: 0 3px;
 		    padding: 4px 10px;
 		    font-size: 12px;
+		}
+
+		@media (max-width: 767.98px) {
+			.container-manager {
+				width: 100%;
+				max-width: 100%;
+				margin-top: 75px;
+				padding-right: 10px;
+				padding-left: 10px;
+			}
+
+			.reminder-form {
+				width: 100%;
+				max-width: 450px;
+			}
+
+			.form-row-custom {
+				flex-wrap: wrap;
+				align-items: flex-start;
+			}
+
+			.form-row-custom label {
+				width: 100%;
+				margin-bottom: 4px;
+			}
+
+			.report-select {
+				width: 100%;
+				max-width: 180px;
+			}
+		}
+
+		@media (max-width: 575.98px) {
+			.container-manager .col-sm-11 {
+				padding-right: 5px;
+				padding-left: 5px;
+			}
+
+			.reminder-body {
+				padding: 30px 15px;
+			}
+
+			.reminder-form {
+				width: 100%;
+			}
+
+			.report-select {
+				max-width: 100%;
+			}
+
+			.reminder-footer .big-btn {
+				margin: 3px;
+			}
 		}
 	</style>
 
@@ -116,37 +176,53 @@
 		    alert("Report generated successfully!");
 		}
 		</script>
+
 </head>
 
 <body>
+
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
 	<div class="container-manager">
+
 		<div class="row d-flex justify-content-center">
+
 			<div class="col-sm-11 mt-2">
 
 				<div th:if="${formmode}=='list'">
+
 					<div class="panel panel-primary filterable">
+
 						<div class="card">
+
 							<div class="card">
 
 							    <!-- Header -->
+
 							    <div class="card-header" style="background-color: #b8c2cc">
+
 							        <div class="float-left">
+
 							            <h6>List of Reminder Report</h6>
+
 							        </div>
+
 							    </div>
 
 							    <!-- Body -->
+
 							    <div class="card-body reminder-body">
 
 							        <div class="reminder-form">
 
 							            <!-- Month -->
+
 							            <div class="form-row-custom">
 
 							                <label for="month">
+
 							                    Month
+
 							                </label>
 
 							                <select id="month"
@@ -154,16 +230,27 @@
 							                        class="form-control report-select">
 
 							                    <option value="01">January</option>
+
 							                    <option value="02">February</option>
+
 							                    <option value="03">March</option>
+
 							                    <option value="04">April</option>
+
 							                    <option value="05">May</option>
+
 							                    <option value="06">June</option>
+
 							                    <option value="07">July</option>
+
 							                    <option value="08">August</option>
+
 							                    <option value="09">September</option>
+
 							                    <option value="10">October</option>
+
 							                    <option value="11">November</option>
+
 							                    <option value="12">December</option>
 
 							                </select>
@@ -171,11 +258,15 @@
 							            </div>
 
 
+
 							            <!-- Year -->
+
 							            <div class="form-row-custom">
 
 							                <label for="year">
+
 							                    Year
+
 							                </label>
 
 							                <select id="year"
@@ -186,6 +277,7 @@
 							                            th:value="${year}"
 							                            th:text="${year}"
 							                            th:selected="${year == T(java.time.Year).now().getValue()}">
+
 							                    </option>
 
 							                </select>
@@ -193,11 +285,15 @@
 							            </div>
 
 
+
 							            <!-- Reminder Type -->
+
 							            <div class="form-row-custom">
 
 							                <label for="reminderType">
+
 							                    Reminder Type
+
 							                </label>
 
 							                <select id="reminderType"
@@ -207,7 +303,9 @@
 							                    <option value="">Select</option>
 
 							                    <option value="FIRST">First Reminder</option>
+
 							                    <option value="SECOND">Second Reminder</option>
+
 							                    <option value="FINAL">Final Reminder</option>
 
 							                </select>
@@ -215,11 +313,15 @@
 							            </div>
 
 
+
 							            <!-- Scheme Code -->
+
 							            <div class="form-row-custom">
 
 							                <label for="schemeCode">
+
 							                    Scheme Code
+
 							                </label>
 
 							                <select id="schemeCode"
@@ -231,6 +333,7 @@
 							                    <option th:each="scheme : ${schemeList}"
 							                            th:value="${scheme}"
 							                            th:text="${scheme}">
+
 							                    </option>
 
 							                </select>
@@ -238,11 +341,15 @@
 							            </div>
 
 
+
 							            <!-- Department -->
+
 							            <div class="form-row-custom">
 
 							                <label for="department">
+
 							                    Department
+
 							                </label>
 
 							                <select id="department"
@@ -254,6 +361,7 @@
 							                    <option th:each="department : ${departmentList}"
 							                            th:value="${department}"
 							                            th:text="${department}">
+
 							                    </option>
 
 							                </select>
@@ -265,28 +373,36 @@
 							    </div>
 
 
+
 							    <!-- Footer -->
+
 							    <div class="card-footer reminder-footer">
 
 							        <button type="button"
 							                class="btn-primary big-btn"
 							                id="btnHome"
 							                onclick="window.location.href='/BLRS/Dashboard';">
+
 							            Home
+
 							        </button>
 
 							        <button type="button"
 							                class="btn-primary big-btn"
 							                id="btnGenerate"
 							                onclick="generateReminderReport();">
+
 							            Generate
+
 							        </button>
 
 							        <button type="button"
 							                class="btn-primary big-btn"
 							                id="btnBack"
 							                onclick="window.history.back();">
+
 							            Back
+
 							        </button>
 
 							    </div>
@@ -294,10 +410,15 @@
 							</div>
 
 					</div>
+
 				</div>
+
 			</div>
+
 		</div>
+
 	</div>
+
 </body>
 
 </html>

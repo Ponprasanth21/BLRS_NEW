@@ -1,4 +1,5 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" th:fragment="header">
 
 <head>
@@ -6,532 +7,1142 @@
 	<title>BLRS</title>
 
 	<script src="/js/maxcdn.js" th:src="@{/js/maxcdn.js}"></script>
+
 	<link rel="stylesheet" type="text/css" href="/css/loader.css" th:href="@{/css/loader2.css}">
+
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+
 	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
+
 		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+
 	<script src="/webjars/jquery-form/4.2.2/jquery.form.min.js"
+
 		th:src="@{/webjars/jquery-form/4.2.2/jquery.form.min.js}"></script>
+
 	<script src="/webjars/jquery-validation/1.19.0/jquery.validate.min.js"
+
 		th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
 
 	<style>
-		body {
-			font-size: 0.8rem;
+
+		/* Horizontal top navigation — keeps the existing page content unchanged */
+
+		body { font-size: 0.8rem; padding-top: 70px; }
+
+		.navbar.fixed-top {
+
+			background: #2d3942 !important;
+
+			height: 70px !important;
+
+			padding: 0 18px;
+
+			box-shadow: 0 3px 12px rgba(0,0,0,.18) !important;
+
+			z-index: 1050;
+
+			flex-wrap: nowrap;
+
 		}
 
-		#loadingContent img {
-			width: 100px;
-			height: 100px;
-			margin-bottom: 10px;
-		}
+		.navbar > .col-sm-12 {
 
-		#loadingModal {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: none;
 			display: flex;
-			justify-content: center;
+
 			align-items: center;
-			z-index: 9999;
-			backdrop-filter: blur(5px);
-		}
 
-		#loadingContent {
-			text-align: center;
-			background-color: none;
-			z-index: 10000;
-		}
+			justify-content: space-between;
 
-		.header1 {
-			background-color: #83b5ec;
-		}
+			gap: 18px;
 
-		.dropdown-menu>li {
-			margin-left: 10px;
-		}
+			width: 100%;
 
-		.error {
-			color: red;
-			padding-left: 10px;
-		}
+			min-width: 0;
 
-		#menu {
-			background-color: #7593b3;
-			position: absolute;
-			position: fixed;
-			width: 16.5%;
-			top: 70px;
-			left: -1px;
-			overflow-y: auto;
-			height: 100%;
-		}
-
-		#menu>ul>li>a {
-			display: block;
-			background-color: #2b506f;
-			color: #f1eaea;
-			font-size: 13px;
-			border-bottom: 2px solid white;
-			/* Changed to solid white */
-		}
-
-		#menu>ul>li>a:hover {
-			background-color: #7593b3;
-			color: #f1eaea;
-		}
-
-		.sidenav>li>ul>li>a:hover {
-			color: 7593b3;
-		}
-
-		.sidenav>li>ul>li>a {
-			padding: .2rem .2rem !important;
-		}
-
-		#dropico {
-			float: right;
-		}
-
-		.submenu1>ul>li>a {
-			display: block;
-			background-color: red;
-			color: #f1eaea;
-			font-size: 13px;
-		}
-
-		#headerdiv {
-			top: 50%;
-			left: 40%;
-			height: 50px;
-			color: black;
-			position: absolute;
-			text-align: center;
-			margin: -20px 0 0 -0px;
 		}
 
 		#showmenu {
+
+			flex: 0 0 auto;
+
+			max-width: 100px !important;
+
+			max-height: 48px !important;
+
 			font-weight: 700;
-			font-size: larger;
+
 		}
 
-		nav {
-			background-color: #fafafa;
+		#menu {
+
+			position: static;
+
+			width: auto;
+
+			height: auto;
+
+			overflow: visible;
+
+			background: transparent;
+
+			flex: 1 1 auto;
+
+			min-width: 0;
+
+			margin: 0 8px;
+
+		}
+
+		#navAccordion {
+
+			display: flex;
+
+			align-items: center;
+
+			justify-content: space-around;
+
+			flex-flow: row nowrap;
+
+			gap: 2px;
+
+			margin: 0;
+
+			padding: 0;
+
+			width: 100%;
+
+		}
+
+		#menu #navAccordion > li {
+
+			position: relative;
+
+			flex: 0 0 auto;
+
+			margin: 0;
+
+		}
+
+		#menu #navAccordion > li > a {
+
+			display: flex;
+
+			align-items: center;
+
+			white-space: nowrap;
+
+			padding: 14px 12px !important;
+
+			border: 0;
+
+			border-radius: 4px;
+
+			background: transparent;
+
+			color: #f3f5f7;
+
+			font-size: 13px;
+
+			font-weight: 600;
+
+			line-height: 1.2;
+
+			transition: background .18s ease;
+
+		}
+
+		#menu #navAccordion > li > a:hover,
+
+		#menu #navAccordion > li > a:focus,
+
+		#menu #navAccordion > li > a.nav-link-show {
+
+			background: #36596a;
+
+			color: #fff;
+
+		}
+
+		#menu .nav-link-collapse:after {
+
+			content: '\f0d7';
+
+			font-family: 'Font Awesome 5 Free';
+
+			font-weight: 900;
+
+			color: #dce4e9;
+
+			margin-left: 7px;
+
+			float: none;
+
+		}
+
+		#menu .nav-link-show:after { content: '\f0d8'; }
+
+		#menu .dropdown-menu {
+
+			display: none;
+
+			position: absolute;
+
+			top: 100%;
+
+			left: 0;
+
+			min-width: 220px;
+
+			margin: 0;
+
+			padding: 6px 0;
+
+			background: #fff;
+
+			border: 1px solid rgba(0,0,0,.08);
+
+			border-radius: 7px;
+
+			box-shadow: 0 10px 28px rgba(0,0,0,.18);
+
+			z-index: 2000;
+
+		}
+
+		#menu li:hover > .dropdown-menu,
+
+		#menu li:focus-within > .dropdown-menu,
+
+		#menu li.menu-open > .dropdown-menu {
+
+			display: block;
+
+		}
+
+		#menu .dropdown-menu > li { margin: 0; position: relative; }
+
+		#menu .dropdown-menu > li > a {
+
+			display: block;
+
+			padding: 10px 16px !important;
+
+			color: #263f55;
+
+			background: #fff;
+
+			font-size: 13px;
+
+			font-weight: 500;
+
+			white-space: nowrap;
+
+		}
+
+		#menu .dropdown-menu > li > a:hover,
+
+		#menu .dropdown-menu > li > a:focus {
+
+			background: #edf2f5;
+
+			color: #173b58;
+
+		}
+
+		#menu .nested-dropdown {
+
+			top: 0;
+
+			left: 100%;
+
+			margin-left: 2px;
+
 		}
 
 		.user-profile-card {
-			display: flex;
-			align-items: center;
-			gap: 12px;
-			padding: 6px 12px;
-			border-radius: 8px;
-			background-color: transparent;
-			border: none;
-			transition: all 0.2s ease;
-		}
 
+			display: flex;
+
+			align-items: center;
+
+			gap: 9px;
+
+			padding: 4px 8px;
+
+			border-radius: 8px;
+
+			background: transparent;
+
+			border: none;
+
+			flex: 0 0 auto;
+
+			color: #f3f5f7;
+
+		}
 
 		.avatar-wrapper {
+
 			position: relative;
-			width: 55px;
-			height: 55px;
+
+			width: 34px;
+
+			height: 34px;
+
 			border-radius: 50%;
+
 			overflow: hidden;
-			border: none;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
 			display: flex;
+
 			align-items: center;
+
 			justify-content: center;
-			background-color: #e2e8f0;
+
+			background: #e2e8f0;
+
+			flex: 0 0 auto;
+
 		}
 
-		.avatar-img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
+		.avatar-img { width: 100%; height: 100%; object-fit: cover; }
 
 		.avatar-fallback {
-			width: 100%;
-			height: 100%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			background-color: #3b82f6;
-			color: #ffffff;
-			font-size: 1.3rem;
+
+			width: 100%; height: 100%;
+
+			display: flex; align-items: center; justify-content: center;
+
+			background: #3b82f6; color: #fff; font-size: 1.1rem;
+
 		}
 
-		.user-details-info {
-			display: flex;
-			flex-direction: column;
-			justify-content: center;
-			line-height: 1.25;
+		.user-details-info { display: flex; flex-direction: column; justify-content: center; line-height: 1.2; }
+
+		.user-name { font-size: 12px; font-weight: 700; color: #f3f5f7; text-transform: uppercase; margin: 0; }
+
+		.user-meta { display: none; }
+
+		#headerdiv { display: none; }
+
+        /* ================================================================
+
+           UNIVERSAL BODY / PAGE LAYOUT
+
+           Common alignment for every screen using this header.
+
+           ================================================================ */
+
+        html, body {
+
+            width: 100%;
+
+            min-height: 100%;
+
+        }
+
+        body {
+
+            margin: 0;
+
+            padding-top: 100px;
+
+            min-height: 100vh;
+
+            background: #f5f7fa;
+
+            overflow-x: hidden;
+
+        }
+
+        /* One common centered work area for every page. */
+
+        #blrsPageContent {
+
+            width: 100%;
+
+            max-width: 100px;
+
+            min-height: calc(100vh - 70px);
+
+            margin: 0 auto;
+
+            padding: 28px 24px 40px;
+
+            box-sizing: border-box;
+
+        }
+
+        /* Existing page wrappers should use the full centered work area. */
+
+        #blrsPageContent > .container,
+
+        #blrsPageContent > .container-fluid,
+
+        #blrsPageContent > .content,
+
+        #blrsPageContent > section,
+
+        #blrsPageContent > form,
+
+        #blrsPageContent > .card,
+
+        #blrsPageContent > .table-responsive,
+
+        #blrsPageContent > .dataTables_wrapper,
+
+        #blrsPageContent > .row {
+
+            width: 100%;
+
+            max-width: 1450px;
+
+            margin-left: auto !important;
+
+            margin-right: auto !important;
+
+            box-sizing: border-box;
+
+        }
+
+        /* Bootstrap rows otherwise have negative left/right margins. */
+
+        #blrsPageContent > .row {
+
+            margin-left: auto !important;
+
+            margin-right: auto !important;
+
+            justify-content: center;
+
+        }
+
+        /* Cards, forms and tables stay centered and never run into the edges. */
+
+        #blrsPageContent .card,
+
+        #blrsPageContent .table-responsive,
+
+        #blrsPageContent .dataTables_wrapper {
+
+            margin-left: auto;
+
+            margin-right: auto;
+
+            box-sizing: border-box;
+
+        }
+
+        #blrsPageContent table {
+
+            max-width: 100%;
+
+            margin-left: auto;
+
+            margin-right: auto;
+
+        }
+
+        /* If an individual page already uses .content, preserve its content. */
+
+        .content {
+
+            width: 100%;
+
+            max-width: 1450px;
+
+            margin: 0 auto;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+        .content > .container,
+
+        .content > .container-fluid,
+
+        .content > .row,
+
+        .content > section,
+
+        .content > form,
+
+        .content > .card,
+
+        .content > .table-responsive,
+
+        .content > .dataTables_wrapper {
+
+            width: 100%;
+
+            max-width: 1450px;
+
+            margin-left: auto !important;
+
+            margin-right: auto !important;
+
+            box-sizing: border-box;
+
+        }
+
+        .content > .row {
+
+            justify-content: center;
+
+        }
+
+        /* Keep the page visually balanced on normal desktop screens. */
+
+        @media (min-width: 768px) {
+
+            #blrsPageContent {
+
+                padding-left: 32px;
+
+                padding-right: 32px;
+
+            }
+
+        }
+
+        @media (max-width: 767px) {
+
+            #blrsPageContent {
+
+                max-width: 100%;
+
+                padding: 20px 12px 30px;
+
+            }
+
+        }
+
+		ul { list-style: none; }
+
+		a { text-decoration: none !important; }
+
+		.error { color: red; padding-left: 10px; }
+
+		#loadingContent img { width: 100px; height: 100px; margin-bottom: 10px; }
+
+		#loadingModal {
+
+			position: fixed; inset: 0; width: 100%; height: 100%;
+
+			background-color: transparent; display: flex; justify-content: center;
+
+			align-items: center; z-index: 9999; backdrop-filter: blur(5px);
+
 		}
 
-		.user-name {
-			font-size: 0.85rem;
-			font-weight: 700;
-			color: #0f172a;
-			text-transform: uppercase;
-			margin-bottom: 2px;
+		#loadingContent { text-align: center; background-color: transparent; z-index: 10000; }
+
+		.modal-backdrop { width: 200vw; height: 200vh; }
+
+		section { padding-left: 15px; }
+
+		.form-control:focus, .btn-primary.focus, .btn-primary:focus { box-shadow: unset !important; }
+
+		@media (max-width: 1200px) {
+
+			.navbar.fixed-top { padding: 0 10px; }
+
+			.navbar > .col-sm-12 { gap: 8px; }
+
+			#menu { margin: 0; }
+
+			#menu #navAccordion > li > a { padding: 12px 7px !important; font-size: 12px; }
+
 		}
 
-		.user-meta {
-			display: flex;
-			align-items: center;
-			gap: 8px;
-			font-size: 0.85rem;
-			color: #475569;
-			font-weight: 500;
+		@media (max-width: 900px) {
+
+            .content {
+
+                max-width: 100%;
+
+                padding: 0 10px;
+
+            }
+
+			body { padding-top: 70px; }
+
+			.navbar.fixed-top { overflow-x: auto; }
+
+			.navbar > .col-sm-12 { width: max-content; min-width: 100%; }
+
+			#menu { flex: 0 0 auto; }
+
+			#navAccordion { width: max-content; justify-content: flex-start; }
+
+			.user-profile-card { margin-left: 8px; }
+
 		}
 
-		.user-id {
-			font-style: normal;
+
+		/* ================================================================
+		   FINAL PAGE CENTER ALIGNMENT FIX
+		   Prevent Bootstrap/grid/content from shifting to the right.
+		   ================================================================ */
+		html, body {
+			width: 100% !important;
+			margin: 0 !important;
+			overflow-x: hidden !important;
 		}
 
-		.user-meta-divider {
-			color: #cbd5e1;
+		body {
+			padding-top: 100px !important;
+			background: #f5f7fa;
 		}
 
-		.user-login {
-			font-style: normal;
+		#blrsPageContent {
+			width: 100% !important;
+			max-width: 1500px !important;
+			min-height: calc(100vh - 100px) !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			padding: 28px 24px 40px !important;
+			box-sizing: border-box !important;
+			position: relative !important;
+			left: auto !important;
+			right: auto !important;
+			transform: none !important;
 		}
 
-		#pagetitle {
-			top: 114%;
-			left: 50%;
-			height: 50px;
-			color: #e80909;
-			position: absolute;
-			text-align: center;
-			margin: -25px 0 0 -31px;
+		#blrsPageContent > .container,
+		#blrsPageContent > .container-fluid,
+		#blrsPageContent > .content,
+		#blrsPageContent > section,
+		#blrsPageContent > form,
+		#blrsPageContent > .card,
+		#blrsPageContent > .table-responsive,
+		#blrsPageContent > .dataTables_wrapper,
+		#blrsPageContent > .row {
+			width: 100% !important;
+			max-width: 1450px !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			box-sizing: border-box !important;
 		}
 
-		#logoutmenu {
-			display: none;
-			position: absolute;
-			z-index: 1031;
-			width: 200px;
-			background-color: #dee2e6;
-			box-shadow: 3px 1px 11px 1px #888888;
-			border-radius: 5px;
-			background-color: #dee2e6;
-			right: 0px;
-			top: 70px;
-			border: 2px solid #4d8cb9;
-			position: fixed;
+		#blrsPageContent > .row {
+			justify-content: center !important;
 		}
 
-		#ques {
-			margin-top: -54px;
-			float: right;
-			padding: 65px;
+		#blrsPageContent .content {
+			width: 100% !important;
+			max-width: 1450px !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			padding-left: 0 !important;
+			padding-right: 0 !important;
+			box-sizing: border-box !important;
 		}
 
-		.logout {
-			color: #2e7bd0;
+		#blrsPageContent .container,
+		#blrsPageContent .container-fluid {
+			width: 100% !important;
+			max-width: 1450px !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			box-sizing: border-box !important;
 		}
 
-		.content {
-			margin-top: 100px;
+		#blrsPageContent .row {
+			width: 100% !important;
+			max-width: 1450px !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			justify-content: center !important;
+			box-sizing: border-box !important;
 		}
 
-		html {
-			zoom: 0.7;
+		#blrsPageContent .card,
+		#blrsPageContent .table-responsive,
+		#blrsPageContent .dataTables_wrapper {
+			width: 100% !important;
+			max-width: 1450px !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			box-sizing: border-box !important;
 		}
 
-		label {
-			text-align: left;
+		#blrsPageContent section {
+			padding-left: 0 !important;
+			padding-right: 0 !important;
 		}
 
-		.modal-backdrop {
-			width: 200vw;
-			height: 200vh;
+		#blrsPageContent table {
+			width: 100% !important;
+			max-width: 100% !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
 		}
 
-		section {
-			padding-left: 15px;
+		@media (min-width: 768px) {
+			#blrsPageContent {
+				padding-left: 24px !important;
+				padding-right: 24px !important;
+			}
 		}
 
-		.form-control:focus {
-			color: #495057;
-			outline: 0;
-			box-shadow: unset !important;
+		@media (max-width: 767px) {
+			#blrsPageContent {
+				max-width: 100% !important;
+				padding: 20px 10px 30px !important;
+			}
 		}
 
-		.btn-primary.focus,
-		.btn-primary:focus {
-			box-shadow: unset !important;
-		}
-
-		.nav-link-collapse:after {
-			float: right;
-			content: '\f067';
-			font-family: 'Font Awesome 5 Free';
-			color: red;
-		}
-
-		.nav-link-show:after {
-			float: right;
-			content: '\f068';
-			font-family: 'Font Awesome 5 Free';
-			color: red;
-		}
-
-		ul {
-			list-style: none
-		}
-
-		li a {
-			color: #fffdfdbf;
-		}
-
-		a {
-			text-decoration: none !important;
-		}
-
-		#showmenu1 {
-			width: 55px;
-			height: 55px;
-			border-radius: 50%;
-			object-fit: cover;
-		}
 	</style>
+
 	<script type="text/javascript">
+
 		/*<![CDATA[*/
 
 		/* Re-Direction Functionality */
+
 		function contentLoad(a) {
 
 			location.href = "/BLRS/" + a.id;
+
 		}
 
 		/* LogOut Functionality */
+
 		function logout() {
+
 			$("#datalogout").modal("toggle");
+
 		}
 
 		$(document).ready(function () {
+
 			$('.nav-link-collapse').on('click', function () {
+
 				$('.nav-link-collapse').not(this).removeClass('nav-link-show');
+
 				$(this).toggleClass('nav-link-show');
+
 			});
 
-			imageuserprofile();
+			$(document).on('click', function (event) {
+
+				if (!$(event.target).closest('#menu').length) {
+
+					$('#menu li').removeClass('menu-open');
+
+					$('#menu .nav-link-collapse').removeClass('nav-link-show');
+
+				}
+
+			});
+
+            // Put normal page content into one centered shell without changing page HTML/content.
+
+            if (!document.getElementById('blrsPageContent')) {
+
+                var pageShell = document.createElement('main');
+
+                pageShell.id = 'blrsPageContent';
+
+                var bodyChildren = Array.from(document.body.children);
+
+                bodyChildren.forEach(function (node) {
+
+                    if (node === pageShell || node.tagName === 'NAV' || node.id === 'loadingModal' || node.id === 'datalogout' || node.tagName === 'SCRIPT' || node.tagName === 'INPUT') return;
+
+                    pageShell.appendChild(node);
+
+                });
+
+                document.body.insertBefore(pageShell, document.getElementById('loadingModal') || null);
+
+            }
+
+            imageuserprofile();
+
 		});
 
 		function logoutfunc() {
+
 			location.href = "/BLRS/logout";
+
 		}
 
 		function imageuserprofile() {
+
 			var userphotoEl = document.getElementById("userphoto");
+
 			if (!userphotoEl || !userphotoEl.value) return;
+
 			var userphoto = userphotoEl.value;
 
 			$.ajax({
+
 				type: 'GET',
+
 				url: '/BLRS/userprofileimage?userphoto=' + encodeURIComponent(userphoto),
+
 				success: function (response) {
+
 					var element = document.getElementById("photoCapture123");
+
 					if (!element) return;
 
 					if (response && response.trim() !== "" 
+
 						&& !response.startsWith("No records found")
+
 						&& !response.startsWith("Photo content is null")) {
+
 						element.innerHTML = '<img src="data:image/jpeg;base64,' + response.trim() + '" class="avatar-img" alt="User Profile" />';
+
 					} else {
+
 						element.innerHTML = '<i class="fas fa-user-circle" style="font-size: 2.2rem; color: #ffffff;"></i>';
+
 					}
+
 				},
+
 				error: function () {
+
 					var element = document.getElementById("photoCapture123");
+
 					if (element) {
+
 						element.innerHTML = '<i class="fas fa-user-circle" style="font-size: 2.2rem; color: #ffffff;"></i>';
+
 					}
+
 				}
+
 			});
+
 		}
+
 	</script>
 
 </head>
 
 <body>
+
 	<input type="hidden" id="activemenu" th:value="${menu}" />
+
 	<nav class="navbar fixed-top navbar-expand-md navbar-dark mb-3"
+
 		style="box-shadow: 6px 6px 12px #888888; height: 70px">
+
 		<input type="text" name="userphoto" id="userphoto" th:value="${session.USERID}" hidden />
+
 		<div class="col-sm-12 d-flex justify-content-between align-items-center">
+
 			<img th:src="@{/images/mcs_logotrans.png}" class="img-fluid" style="max-width: 100px; max-height: 55px;"
+
 				id="showmenu" alt="Bornfire">
 
-			<div id="headerdiv">
-				<h3 class="text-center">LOAN RECOVERY SYSTEM</h3>
-			</div>
+			<div id="menu" class="top-menu">
 
-			<div class="col-sm-8"></div>
-
-			<!-- User Profile Card -->
-			<div class="user-profile-card">
-				<div class="avatar-wrapper">
-					<div id="photoCapture123" class="avatar-fallback">
-						<i class="fas fa-user-circle" style="font-size: 2.2rem; color: #ffffff;"></i>
-					</div>
-				</div>
-				<div class="user-details-info">
-					<div class="user-name" th:text="${session.USERNAME}">SURESH</div>
-					<div class="user-meta">
-						<span class="user-id" th:text="'ID: ' + ${session.USERID}">ID: EMP01</span>
-						<span class="user-meta-divider">|</span>
-						<span class="user-login" th:text="'LOGIN: ' + ${session.LOGIN_TIME}">LOGIN: 10:23:17</span>
-					</div>
-				</div>
-			</div>
-		</div>
-	</nav>
-
-	<!-- <input type="text"
-       name="userphoto"
-       id="userphoto"
-       th:value="${session.USERID}"
-       class="form-control-sm bg-white border border-dark"
-       style="font-size: 20px; width: 150px;"
-       readonly /> -->
-
-
-	<div id="menu">
 		<ul class="navbar-nav mr-auto sidenav" id="navAccordion">
+
 			<!-- HOME PAGE -->
+
 			<li class="nav-item">
+
 				<a class="nav-link pl-3 pt-4" data-toggle="collapse" href="#" id="Dashboard"
+
 					onclick="contentLoad(this)">Home</a>
+
 			</li>
 
 			<!-- ADMIN -->
+
 			<li class="nav-item" th:if="${session.ADMIN == 'Y' or session.ROLEID == 'ADM' or session.ROLEID == 'ADMIN' or session.WORKCLASS == 'Admin' or (session.MENULIST != null and session.MENULIST.contains('Admin'))}">
+
 				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+
 					data-target="#collapseSubItems1" aria-controls="collapseSubItems1" aria-expanded="false">Admin</a>
-				<ul class="nav-second-level collapse" id="collapseSubItems1" data-parent="#navAccordion">
+
+				<ul class="nav-second-level dropdown-menu" id="collapseSubItems1" data-parent="#navAccordion">
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Userprofile" href="#" onclick="contentLoad(this)">User
+
 							Profile</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Accesscontrol" href="#" onclick="contentLoad(this)">Access Controls</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Batchjobscheduler" href="#" onclick="contentLoad(this)">Batch Job
+
 							Scheduler</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Batchjobalert" href="#" onclick="contentLoad(this)">Batch Job Alert</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link nav-link-collapse" href="#" data-toggle="collapse"
+
 							data-target="#collapseSubParameters" aria-controls="collapseSubParameters" aria-expanded="false">Parameters</a>
-						<ul class="nav-third-level collapse" id="collapseSubParameters" style="padding-left: 20px;">
+
+						<ul class="nav-third-level dropdown-menu nested-dropdown" id="collapseSubParameters" style="padding-left: 20px;">
+
 							<li class="nav-item">
+
 								<a class="nav-link" id="EmailandSMS" href="#" onclick="contentLoad(this)">Email and SMS</a>
+
 							</li>
+
 							<li class="nav-item">
+
 								<a class="nav-link" id="Reminder" href="#" onclick="contentLoad(this)">Reminder</a>
+
 							</li>
+
 						</ul>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Loanaccountprofile" href="#" onclick="contentLoad(this)">Loan Account
+
 							Profile</a>
+
 					</li>
+
 				</ul>
+
 			</li>
 
 			<!-- OPERATIONS -->
+
 			<li class="nav-item" th:if="${session.OPERATIONS == 'Y' or session.ROLEID == 'ADM' or session.ROLEID == 'ADMIN' or session.WORKCLASS == 'Admin' or (session.MENULIST != null and session.MENULIST.contains('Operations'))}">
+
 				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+
 					data-target="#collapseSubItems2" aria-controls="collapseSubItems2"
+
 					aria-expanded="false">Operations</a>
-				<ul class="nav-second-level collapse" id="collapseSubItems2" data-parent="#navAccordion">
+
+				<ul class="nav-second-level dropdown-menu" id="collapseSubItems2" data-parent="#navAccordion">
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Remindergeneration" href="#" onclick="contentLoad(this)">Reminder
+
 							Generation</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Dispatchdetails" href="#" onclick="contentLoad(this)">Dispatch Details</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Batchjobexecution" href="#" onclick="contentLoad(this)">Batch Job
+
 							Execution</a>
+
 					</li>
+
 				</ul>
+
 			</li>
 
 			<!-- INQUIRIES -->
+
 			<li class="nav-item" th:if="${session.INQUIRIES == 'Y' or session.ROLEID == 'ADM' or session.ROLEID == 'ADMIN' or session.WORKCLASS == 'Admin' or (session.MENULIST != null and session.MENULIST.contains('Inquiries'))}">
+
 				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+
 					data-target="#collapseSubItems3" aria-controls="collapseSubItems3"
+
 					aria-expanded="false">Inquiries</a>
-				<ul class="nav-second-level collapse" id="collapseSubItems3" data-parent="#navAccordion">
+
+				<ul class="nav-second-level dropdown-menu" id="collapseSubItems3" data-parent="#navAccordion">
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Loanaccountprofileinquiry" href="#" onclick="contentLoad(this)">Loan Account
+
 							Profile</a>
+
 					</li>
+
 				</ul>
+
 			</li>
 
 			<!-- REPORTS -->
+
 			<li class="nav-item" th:if="${session.REPORTS == 'Y' or session.ROLEID == 'ADM' or session.ROLEID == 'ADMIN' or session.WORKCLASS == 'Admin' or (session.MENULIST != null and session.MENULIST.contains('Reports'))}">
+
 				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+
 					data-target="#collapseSubItems4" aria-controls="collapseSubItems4" aria-expanded="false">Reports</a>
-				<ul class="nav-second-level collapse" id="collapseSubItems4" data-parent="#navAccordion">
+
+				<ul class="nav-second-level dropdown-menu" id="collapseSubItems4" data-parent="#navAccordion">
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Overduereports" href="#" onclick="contentLoad(this)">List of
+
 							Overdue Reports</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Reminderreports" href="#" onclick="contentLoad(this)">List of Reminder
+
 							Reports</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Guarantorreports" href="#" onclick="contentLoad(this)">List of Guarantor
+
 							Reports</a>
+
 					</li>
+
 				</ul>
+
 			</li>
 
 			<!-- AUDITLOGS -->
+
 			<li class="nav-item">
+
 				<a class="nav-link nav-link-collapse pl-3" href="#" id="hasSubItems" data-toggle="collapse"
+
 					data-target="#collapseSubItems5" aria-controls="collapseSubItems5" aria-expanded="false">Audit
+
 					Logs</a>
-				<ul class="nav-second-level collapse" id="collapseSubItems5" data-parent="#navAccordion">
+
+				<ul class="nav-second-level dropdown-menu" id="collapseSubItems5" data-parent="#navAccordion">
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Useroperation" href="#" onclick="contentLoad(this)">User
+
 							Operations</a>
+
 					</li>
+
 					<li class="nav-item">
+
 						<a class="nav-link" id="Businessoperation" href="#" onclick="contentLoad(this)">Business
+
 							Operations</a>
+
 					</li>
+
 				</ul>
+
 			</li>
 
 			<!-- LOG OUT -->
+
 			<li class="nav-item">
+
 				<a class="nav-link pl-3" data-toggle="collapse" href="#logout" id="logout"
+
 					onclick="contentLoad(this)">Logout</a>
+
 			</li>
+
 		</ul>
-	</div>
-	<!------------------------------------------------------------------- Loading Modal ------------------------------------------------------>
-	<div id="loadingModal" style="display: none;">
-		<div id="loadingContent">
-			<img th:src=@{/images/Loading.gif} alt="Loading...">
+
+			</div>
+
+<!-- User Profile Card -->
+
+			<div class="user-profile-card">
+
+				<div class="avatar-wrapper">
+
+					<div id="photoCapture123" class="avatar-fallback">
+
+						<i class="fas fa-user-circle" style="font-size: 2.2rem; color: #ffffff;"></i>
+
+					</div>
+
+				</div>
+
+				<div class="user-details-info">
+
+					<div class="user-name" th:text="${session.USERNAME}">SURESH</div>
+
+					<div class="user-meta">
+
+						<span class="user-id" th:text="'ID: ' + ${session.USERID}">ID: EMP01</span>
+
+						<span class="user-meta-divider">|</span>
+
+						<span class="user-login" th:text="'LOGIN: ' + ${session.LOGIN_TIME}">LOGIN: 10:23:17</span>
+
+					</div>
+
+				</div>
+
+			</div>
+
 		</div>
+
+	</nav>
+
+	<!-- <input type="text"
+
+       name="userphoto"
+
+       id="userphoto"
+
+       th:value="${session.USERID}"
+
+       class="form-control-sm bg-white border border-dark"
+
+       style="font-size: 20px; width: 150px;"
+
+       readonly /> -->
+
+
+
+
+	<!------------------------------------------------------------------- Loading Modal ------------------------------------------------------>
+
+	<div id="loadingModal" style="display: none;">
+
+		<div id="loadingContent">
+
+			<img th:src=@{/images/Loading.gif} alt="Loading...">
+
+		</div>
+
 	</div>
 
 </body>

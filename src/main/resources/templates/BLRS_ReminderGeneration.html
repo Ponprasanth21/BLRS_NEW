@@ -1,501 +1,464 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<!-- BAJ VERSION 1.0.1  -->
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>BLRS</title>
+    <!-- BAJ VERSION 1.0.1 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BLRS</title>
 
-	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
-		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
-		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
-		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
-		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
+          th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+    <link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
+          th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+    <link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
+          th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
 
-	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
-	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
-		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
-	<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
-		th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
-	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
-		th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
-	<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
-		th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
-	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
-		th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
+    <script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+    <script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
+            th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+    <script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
+            th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+    <script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
+            th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+    <script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
+            th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
+    <script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
+            th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
+    <link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
+          th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
+    <script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
+    <link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
+    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 
-	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
-		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
-	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
-	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
+        body {
+            background-color: #f8fafc !important;
+            font-family: 'Outfit', sans-serif !important;
+            color: #1e293b;
+            overscroll-behavior: none !important;
+            margin: 0;
+            padding-top: 70px;
+            overflow-x: hidden;
+        }
 
-	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+        /* =========================================================
+           MAIN CONTAINER - CENTERED
+           ========================================================= */
+        .container-manager {
+            width: 100% !important;
+            max-width: 1500px !important;
+            padding-right: 15px !important;
+            padding-left: 15px !important;
+            margin-right: auto !important;
+            margin-left: auto !important;
+            margin-top: 15px !important;
+            margin-bottom: 40px !important;
+            box-sizing: border-box !important;
+        }
 
-		body {
-			background-color: #f8fafc !important;
-			font-family: 'Outfit', sans-serif !important;
-			color: #1e293b;
-			overscroll-behavior: none !important;
-		}
+        .container-manager > .row {
+            width: 100% !important;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
+        }
 
-		/* .container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 15.5%;
-			margin-top: 80px;
-			margin-bottom: 80px;
-		} */
+        .container-manager > .row > .col-sm-11 {
+            margin-left: auto !important;
+            margin-right: auto !important;
+            box-sizing: border-box !important;
+        }
 
-		.container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 16% !important;
-			margin-top: 80px;
-		}
+        /* =========================================================
+           KPI CARD STYLES
+           ========================================================= */
+        .kpi-card {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
 
-		/* KPI Card Styles */
-		.kpi-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			position: relative;
-			overflow: hidden;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        }
 
-		.kpi-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-		}
+        .kpi-icon-container {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
 
-		.kpi-icon-container {
-			width: 42px;
-			height: 42px;
-			border-radius: 8px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-bottom: 12px;
-		}
+        .kpi-title {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
 
-		.kpi-title {
-			font-size: 0.78rem;
-			font-weight: 600;
-			color: #64748b;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-		}
+        .kpi-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-		.kpi-value {
-			font-size: 1.3rem;
-			font-weight: 700;
-			color: #0f172a;
-			margin-top: 4px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
+        .border-left-teal { border-left: 4px solid #0d9488; }
+        .border-left-rose { border-left: 4px solid #e11d48; }
+        .border-left-indigo { border-left: 4px solid #4f46e5; }
+        .border-left-emerald { border-left: 4px solid #10b981; }
+        .border-left-orange { border-left: 4px solid #f97316; }
+        .border-left-violet { border-left: 4px solid #8b5cf6; }
 
-		/* Specific Borders for KPI Cards */
-		.border-left-teal {
-			border-left: 4px solid #0d9488;
-		}
+        .bg-teal-light { background-color: #f0fdfa; }
+        .text-teal { color: #0d9488; }
+        .bg-rose-light { background-color: #fff1f2; }
+        .text-rose { color: #e11d48; }
+        .bg-indigo-light { background-color: #e0e7ff; }
+        .text-indigo { color: #4f46e5; }
+        .bg-emerald-light { background-color: #ecfdf5; }
+        .text-emerald { color: #10b981; }
+        .bg-orange-light { background-color: #fff7ed; }
+        .text-orange { color: #f97316; }
+        .bg-violet-light { background-color: #f5f3ff; }
+        .text-violet { color: #8b5cf6; }
 
-		.border-left-rose {
-			border-left: 4px solid #e11d48;
-		}
+        .chart-card {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            height: 100%;
+        }
 
-		.border-left-indigo {
-			border-left: 4px solid #4f46e5;
-		}
+        .chart-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
 
-		.border-left-emerald {
-			border-left: 4px solid #10b981;
-		}
+        .table-card {
+            background: #ffffff;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            height: 100%;
+        }
 
-		.border-left-orange {
-			border-left: 4px solid #f97316;
-		}
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 0;
+        }
 
-		.border-left-violet {
-			border-left: 4px solid #8b5cf6;
-		}
+        .custom-table th {
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            border-top: none;
+        }
 
-		/* Icon Container Color Combinations */
-		.bg-teal-light {
-			background-color: #f0fdfa;
-		}
+        .custom-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-size: 0.82rem;
+            vertical-align: middle;
+        }
 
-		.text-teal {
-			color: #0d9488;
-		}
+        .custom-table tr:hover td { background-color: #f8fafc; }
+        .custom-table tr:last-child td { border-bottom: none; }
 
-		.bg-rose-light {
-			background-color: #fff1f2;
-		}
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
 
-		.text-rose {
-			color: #e11d48;
-		}
+        .status-success { background-color: #d1fae5; color: #065f46; }
+        .status-warning { background-color: #fef3c7; color: #92400e; }
+        .status-danger { background-color: #fee2e2; color: #991b1b; }
+        .status-info { background-color: #e0f2fe; color: #075985; }
 
-		.bg-indigo-light {
-			background-color: #e0e7ff;
-		}
+        .table-responsive::-webkit-scrollbar { width: 6px; height: 6px; }
+        .table-responsive::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+        .table-responsive::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .table-responsive::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-		.text-indigo {
-			color: #4f46e5;
-		}
+        .btn-primary {
+            background-color: #007bff !important;
+            border-color: #007bff !important;
+            color: #ffffff !important;
+        }
 
-		.bg-emerald-light {
-			background-color: #ecfdf5;
-		}
+        .btn-primary:hover {
+            background-color: #0069d9 !important;
+            border-color: #0062cc !important;
+        }
 
-		.text-emerald {
-			color: #10b981;
-		}
+        .big-btn {
+            padding: 4px 14px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+        }
 
-		.bg-orange-light {
-			background-color: #fff7ed;
-		}
+        @media (max-width: 900px) {
+            body { padding-top: 70px; }
+            .container-manager {
+                max-width: 100% !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+                margin-top: 12px !important;
+            }
+            .container-manager > .row > .col-sm-11 {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    </style>
 
-		.text-orange {
-			color: #f97316;
-		}
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function home() {
+            location.href = './Dashboard';
+        }
 
-		.bg-violet-light {
-			background-color: #f5f3ff;
-		}
+        function Back() {
+            window.history.back();
+        }
 
-		.text-violet {
-			color: #8b5cf6;
-		}
+        function generateFile() {
+            alert("File generated successfully!");
+        }
 
-		/* Chart Card Styles */
-		.chart-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-
-		.chart-title {
-			font-size: 0.95rem;
-			font-weight: 600;
-			color: #334155;
-			margin-bottom: 16px;
-			padding-bottom: 12px;
-			border-bottom: 1px solid #f1f5f9;
-		}
-
-		/* Table Card Styles */
-		.table-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-
-		.custom-table {
-			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0;
-			margin-bottom: 0;
-		}
-
-		.custom-table th {
-			background: #f8fafc;
-			color: #64748b;
-			font-size: 0.72rem;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-			padding: 10px 14px;
-			border-bottom: 1px solid #e2e8f0;
-			border-top: none;
-		}
-
-		.custom-table td {
-			padding: 10px 14px;
-			border-bottom: 1px solid #f1f5f9;
-			color: #475569;
-			font-size: 0.82rem;
-			vertical-align: middle;
-		}
-
-		.custom-table tr:hover td {
-			background-color: #f8fafc;
-		}
-
-		.custom-table tr:last-child td {
-			border-bottom: none;
-		}
-
-		/* Status Badges */
-		.status-badge {
-			display: inline-flex;
-			align-items: center;
-			padding: 2px 8px;
-			border-radius: 9999px;
-			font-size: 0.72rem;
-			font-weight: 600;
-		}
-
-		.status-success {
-			background-color: #d1fae5;
-			color: #065f46;
-		}
-
-		.status-warning {
-			background-color: #fef3c7;
-			color: #92400e;
-		}
-
-		.status-danger {
-			background-color: #fee2e2;
-			color: #991b1b;
-		}
-
-		.status-info {
-			background-color: #e0f2fe;
-			color: #075985;
-		}
-
-		/* Scrollbar Styling */
-		.table-responsive::-webkit-scrollbar {
-			width: 6px;
-			height: 6px;
-		}
-
-		.table-responsive::-webkit-scrollbar-track {
-			background: #f1f5f9;
-			border-radius: 4px;
-		}
-
-		.table-responsive::-webkit-scrollbar-thumb {
-			background: #cbd5e1;
-			border-radius: 4px;
-		}
-
-		.table-responsive::-webkit-scrollbar-thumb:hover {
-			background: #94a3b8;
-		}
-	</style>
-
-	<script th:inline="javascript">
-		/*<![CDATA[*/
-		function home() {
-			location.href = './Dashboard';
-		}
-
-		function Back() {
-			window.history.back();
-		}
-
-		function generateFile() {
-			alert("File generated successfully!");
-		}
-
-		function toggleSelectAll(source) {
-			var checkboxes = document.getElementsByName('selectedReminders');
-			for (var i = 0; i < checkboxes.length; i++) {
-				checkboxes[i].checked = source.checked;
-			}
-		}
-		/*]]>*/
-	</script>
+        function toggleSelectAll(source) {
+            var checkboxes = document.getElementsByName('selectedReminders');
+            for (var i = 0; i < checkboxes.length; i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+        /*]]>*/
+    </script>
 </head>
 
 <body>
-	<div th:insert="BLRS_HeaderMenu :: header"></div>
+    <div th:insert="BLRS_HeaderMenu :: header"></div>
 
-	<div class="container-manager">
-		<div class="row d-flex justify-content-center">
-			<div class="col-sm-11 mt-2">
+    <div class="container-manager">
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-11 mt-2">
+                <div th:if="${formmode}=='list'">
+                    <div class="panel panel-primary filterable">
+                        <div class="card"
+                             style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
 
-				<div th:if="${formmode}=='list'">
-					<div class="panel panel-primary filterable">
-						<div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
-							<!-- Card Header -->
-							<div class="card-header" style="background-color: #e9ecef; display: flex; justify-content: space-between; align-items: center;">
-								<div class="float-left">
-									<h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">REMINDER GENERATOR</h6>
-								</div>
-								<div class="float-right">
-									<button type="button" class="btn-primary big-btn" id="btnFileGenerate" onclick="generateFile();">File Generate</button>
-								</div>
-							</div>
+                            <!-- Card Header -->
+                            <div class="card-header"
+                                 style="background-color: #e9ecef; display: flex; justify-content: space-between; align-items: center;">
+                                <div class="float-left">
+                                    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">
+                                        REMINDER GENERATOR
+                                    </h6>
+                                </div>
+                                <div class="float-right">
+                                    <button type="button"
+                                            class="btn-primary big-btn"
+                                            id="btnFileGenerate"
+                                            onclick="generateFile();">
+                                        File Generate
+                                    </button>
+                                </div>
+                            </div>
 
-							<!-- Card Body -->
-							<div class="card-body p-0" style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
+                            <!-- Card Body -->
+                            <div class="card-body p-0"
+                                 style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
 
-								<!-- Table -->
-								<table class="table table-bordered table-striped table-hover mb-0" id="reminderGenTable" style="width: 100%; font-size: 0.83rem;">
-									<thead style="background-color: #f1f5f9; color: #334155;">
-										<tr>
-											<th style="width: 40px; text-align: center;" class="align-middle">
-												<input type="checkbox" onclick="toggleSelectAll(this)">
-											</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">SCHEME CODE</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">CUSTOMER ID</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">ACCOUNT NUMBER</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">NAME OF BORROWER</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="text-right align-middle">OVERDUE</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">DEPARTMENT</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">REMINDER SENT</th>
-										</tr>
-									</thead>
-									<tbody>
-										<th:block th:if="${reminders != null and !#lists.isEmpty(reminders)}">
-											<tr th:each="rem : ${reminders}">
-												<td class="text-center align-middle">
-													<input type="checkbox" name="selectedReminders" th:value="${rem.accountNumber}">
-												</td>
-												<td th:text="${rem.schemeCode}">MQL1</td>
-												<td th:text="${rem.customerId}">010100953</td>
-												<td th:text="${rem.accountNumber}">010100953LN00003</td>
-												<td th:text="${rem.borrowerName}">HOSENALLY SALIM RAZA</td>
-												<td class="text-right" th:text="${rem.overdue}">70,667.26</td>
-												<td th:text="${rem.department}">WMA</td>
-												<td th:text="${rem.reminderSent}">Reminder-3</td>
-											</tr>
-										</th:block>
-										<th:block th:if="${reminders == null or #lists.isEmpty(reminders)}">
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>MQL1</td>
-												<td>010100953</td>
-												<td>010100953LN00003</td>
-												<td>HOSENALLY SALIM RAZA</td>
-												<td class="text-right">70,667.26</td>
-												<td>WMA</td>
-												<td>Reminder-3</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PLN1</td>
-												<td>010078911</td>
-												<td>010078911LN00002</td>
-												<td>OOGARAH MANSRAZ SUDHIR</td>
-												<td class="text-right">59,459.22</td>
-												<td>HTLH</td>
-												<td>Reminder-3</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PLN1</td>
-												<td>010158419</td>
-												<td>010158419LN00001</td>
-												<td>MEKEN LOUIS MAX</td>
-												<td class="text-right">169,648.26</td>
-												<td>CHCL</td>
-												<td>Reminder-3</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PLN1</td>
-												<td>010158643</td>
-												<td>010158643LN00001</td>
-												<td>MOHUNG BIBI AMEENAH</td>
-												<td class="text-right">13,204.18</td>
-												<td>AMTE</td>
-												<td>Reminder-3</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>SSL1</td>
-												<td>010159142</td>
-												<td>010159142LN00001</td>
-												<td>TIRBHOWAN ISSWARWANTEE</td>
-												<td class="text-right">0.00</td>
-												<td>SSL</td>
-												<td></td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PLN1</td>
-												<td>010051469</td>
-												<td>010051469LN00001</td>
-												<td>PERIANEN RAJ</td>
-												<td class="text-right">207,934.04</td>
-												<td>MRA</td>
-												<td>Reminder-1</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PPL1</td>
-												<td>010052493</td>
-												<td>010052493LN00001</td>
-												<td>RAMDIN DYANESHWAR</td>
-												<td class="text-right">115,684.04</td>
-												<td>PSIC</td>
-												<td>Reminder-3</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PLN1</td>
-												<td>010053116</td>
-												<td>010053116LN00001</td>
-												<td>VEERASAMY BACTARAJ</td>
-												<td class="text-right">1,001,859.78</td>
-												<td>AMB</td>
-												<td>Reminder-3</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PPL1</td>
-												<td>010074139</td>
-												<td>010074139LN00002</td>
-												<td>RAMSAMY LOUIS JACQUES</td>
-												<td class="text-right">-24.48</td>
-												<td>MPL</td>
-												<td>Reminder-1</td>
-											</tr>
-											<tr>
-												<td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-												<td>PLN1</td>
-												<td>010071235</td>
-												<td>010071235LN00001</td>
-												<td>VALAYDON KHERVIN</td>
-												<td class="text-right">44,788.81</td>
-												<td>PLCE</td>
-												<td>Reminder-3</td>
-											</tr>
-										</th:block>
-									</tbody>
-								</table>
-							</div>
+                                <!-- Table -->
+                                <table class="table table-bordered table-striped table-hover mb-0"
+                                       id="reminderGenTable"
+                                       style="width: 100%; font-size: 0.83rem;">
+                                    <thead style="background-color: #f1f5f9; color: #334155;">
+                                        <tr>
+                                            <th style="width: 40px; text-align: center;" class="align-middle">
+                                                <input type="checkbox" onclick="toggleSelectAll(this)">
+                                            </th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">SCHEME CODE</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">CUSTOMER ID</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">ACCOUNT NUMBER</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">NAME OF BORROWER</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="text-right align-middle">OVERDUE</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">DEPARTMENT</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">REMINDER SENT</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <th:block th:if="${reminders != null and !#lists.isEmpty(reminders)}">
+                                            <tr th:each="rem : ${reminders}">
+                                                <td class="text-center align-middle">
+                                                    <input type="checkbox" name="selectedReminders" th:value="${rem.accountNumber}">
+                                                </td>
+                                                <td th:text="${rem.schemeCode}">MQL1</td>
+                                                <td th:text="${rem.customerId}">010100953</td>
+                                                <td th:text="${rem.accountNumber}">010100953LN00003</td>
+                                                <td th:text="${rem.borrowerName}">HOSENALLY SALIM RAZA</td>
+                                                <td class="text-right" th:text="${rem.overdue}">70,667.26</td>
+                                                <td th:text="${rem.department}">WMA</td>
+                                                <td th:text="${rem.reminderSent}">Reminder-3</td>
+                                            </tr>
+                                        </th:block>
 
-							<!-- Card Footer -->
-							<div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
-								<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
-								<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                        <th:block th:if="${reminders == null or #lists.isEmpty(reminders)}">
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>MQL1</td>
+                                                <td>010100953</td>
+                                                <td>010100953LN00003</td>
+                                                <td>HOSENALLY SALIM RAZA</td>
+                                                <td class="text-right">70,667.26</td>
+                                                <td>WMA</td>
+                                                <td>Reminder-3</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PLN1</td>
+                                                <td>010078911</td>
+                                                <td>010078911LN00002</td>
+                                                <td>OOGARAH MANSRAZ SUDHIR</td>
+                                                <td class="text-right">59,459.22</td>
+                                                <td>HTLH</td>
+                                                <td>Reminder-3</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PLN1</td>
+                                                <td>010158419</td>
+                                                <td>010158419LN00001</td>
+                                                <td>MEKEN LOUIS MAX</td>
+                                                <td class="text-right">169,648.26</td>
+                                                <td>CHCL</td>
+                                                <td>Reminder-3</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PLN1</td>
+                                                <td>010158643</td>
+                                                <td>010158643LN00001</td>
+                                                <td>MOHUNG BIBI AMEENAH</td>
+                                                <td class="text-right">13,204.18</td>
+                                                <td>AMTE</td>
+                                                <td>Reminder-3</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>SSL1</td>
+                                                <td>010159142</td>
+                                                <td>010159142LN00001</td>
+                                                <td>TIRBHOWAN ISSWARWANTEE</td>
+                                                <td class="text-right">0.00</td>
+                                                <td>SSL</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PLN1</td>
+                                                <td>010051469</td>
+                                                <td>010051469LN00001</td>
+                                                <td>PERIANEN RAJ</td>
+                                                <td class="text-right">207,934.04</td>
+                                                <td>MRA</td>
+                                                <td>Reminder-1</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PPL1</td>
+                                                <td>010052493</td>
+                                                <td>010052493LN00001</td>
+                                                <td>RAMDIN DYANESHWAR</td>
+                                                <td class="text-right">115,684.04</td>
+                                                <td>PSIC</td>
+                                                <td>Reminder-3</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PLN1</td>
+                                                <td>010053116</td>
+                                                <td>010053116LN00001</td>
+                                                <td>VEERASAMY BACTARAJ</td>
+                                                <td class="text-right">1,001,859.78</td>
+                                                <td>AMB</td>
+                                                <td>Reminder-3</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PPL1</td>
+                                                <td>010074139</td>
+                                                <td>010074139LN00002</td>
+                                                <td>RAMSAMY LOUIS JACQUES</td>
+                                                <td class="text-right">-24.48</td>
+                                                <td>MPL</td>
+                                                <td>Reminder-1</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
+                                                <td>PLN1</td>
+                                                <td>010071235</td>
+                                                <td>010071235LN00001</td>
+                                                <td>VALAYDON KHERVIN</td>
+                                                <td class="text-right">44,788.81</td>
+                                                <td>PLCE</td>
+                                                <td>Reminder-3</td>
+                                            </tr>
+                                        </th:block>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Card Footer -->
+                            <div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
+                                <button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
+                                <button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
-
 </html>

@@ -16,7 +16,8 @@
 	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
 		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
 
-	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
+	<script src="/webjars/jquery/3.4.1/jquery.min.js"
+		th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
 	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
 		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
 	<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
@@ -30,7 +31,8 @@
 
 	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
 		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
-	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
+	<script src="/webjars/chartjs/2.8.0/Chart.min.js"
+		th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
 
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
@@ -43,25 +45,36 @@
 			font-family: 'Outfit', sans-serif !important;
 			color: #1e293b;
 			overscroll-behavior: none !important;
+			margin: 0;
+			padding-top: 70px;
+			overflow-x: hidden;
 		}
 
-		/* .container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 15.5%;
-			margin-top: 80px;
-			margin-bottom: 80px;
-		} */
-
+		/* Centered main page container */
 		.container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 16% !important;
-			margin-top: 80px;
+			width: 100% !important;
+			max-width: 1500px !important;
+			padding-right: 15px !important;
+			padding-left: 15px !important;
+			margin-right: auto !important;
+			margin-left: auto !important;
+			margin-top: 15px !important;
+			margin-bottom: 40px !important;
+			box-sizing: border-box !important;
+		}
+
+		.container-manager > .row {
+			width: 100% !important;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			justify-content: center !important;
+			box-sizing: border-box !important;
+		}
+
+		.container-manager > .row > .col-sm-11 {
+			margin-left: auto !important;
+			margin-right: auto !important;
+			box-sizing: border-box !important;
 		}
 
 		/* KPI Card Styles */
@@ -113,78 +126,26 @@
 		}
 
 		/* Specific Borders for KPI Cards */
-		.border-left-teal {
-			border-left: 4px solid #0d9488;
-		}
-
-		.border-left-rose {
-			border-left: 4px solid #e11d48;
-		}
-
-		.border-left-indigo {
-			border-left: 4px solid #4f46e5;
-		}
-
-		.border-left-emerald {
-			border-left: 4px solid #10b981;
-		}
-
-		.border-left-orange {
-			border-left: 4px solid #f97316;
-		}
-
-		.border-left-violet {
-			border-left: 4px solid #8b5cf6;
-		}
+		.border-left-teal { border-left: 4px solid #0d9488; }
+		.border-left-rose { border-left: 4px solid #e11d48; }
+		.border-left-indigo { border-left: 4px solid #4f46e5; }
+		.border-left-emerald { border-left: 4px solid #10b981; }
+		.border-left-orange { border-left: 4px solid #f97316; }
+		.border-left-violet { border-left: 4px solid #8b5cf6; }
 
 		/* Icon Container Color Combinations */
-		.bg-teal-light {
-			background-color: #f0fdfa;
-		}
-
-		.text-teal {
-			color: #0d9488;
-		}
-
-		.bg-rose-light {
-			background-color: #fff1f2;
-		}
-
-		.text-rose {
-			color: #e11d48;
-		}
-
-		.bg-indigo-light {
-			background-color: #e0e7ff;
-		}
-
-		.text-indigo {
-			color: #4f46e5;
-		}
-
-		.bg-emerald-light {
-			background-color: #ecfdf5;
-		}
-
-		.text-emerald {
-			color: #10b981;
-		}
-
-		.bg-orange-light {
-			background-color: #fff7ed;
-		}
-
-		.text-orange {
-			color: #f97316;
-		}
-
-		.bg-violet-light {
-			background-color: #f5f3ff;
-		}
-
-		.text-violet {
-			color: #8b5cf6;
-		}
+		.bg-teal-light { background-color: #f0fdfa; }
+		.text-teal { color: #0d9488; }
+		.bg-rose-light { background-color: #fff1f2; }
+		.text-rose { color: #e11d48; }
+		.bg-indigo-light { background-color: #e0e7ff; }
+		.text-indigo { color: #4f46e5; }
+		.bg-emerald-light { background-color: #ecfdf5; }
+		.text-emerald { color: #10b981; }
+		.bg-orange-light { background-color: #fff7ed; }
+		.text-orange { color: #f97316; }
+		.bg-violet-light { background-color: #f5f3ff; }
+		.text-violet { color: #8b5cf6; }
 
 		/* Chart Card Styles */
 		.chart-card {
@@ -299,6 +260,32 @@
 		.table-responsive::-webkit-scrollbar-thumb:hover {
 			background: #94a3b8;
 		}
+
+		/* Mobile */
+		@media (max-width: 767.98px) {
+			.container-manager {
+				max-width: 100% !important;
+				padding-left: 10px !important;
+				padding-right: 10px !important;
+				margin-top: 10px !important;
+			}
+
+			.container-manager > .row > .col-sm-11 {
+				padding-left: 0 !important;
+				padding-right: 0 !important;
+				max-width: 100% !important;
+				flex: 0 0 100% !important;
+			}
+
+			.card-body {
+				overflow-x: auto;
+			}
+
+			.d-flex.justify-content-between.align-items-center {
+				flex-wrap: wrap;
+				gap: 10px;
+			}
+		}
 	</style>
 
 	<script th:inline="javascript">
@@ -312,9 +299,11 @@
 		}
 		/*]]>*/
 	</script>
+
 </head>
 
 <body>
+
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
 	<div class="container-manager">
@@ -323,19 +312,26 @@
 
 				<div th:if="${formmode}=='list'">
 					<div class="panel panel-primary filterable">
-						<div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
+
+						<div class="card"
+							style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
+
 							<!-- Card Header -->
 							<div class="card-header" style="background-color: #e9ecef;">
 								<div class="float-left">
-									<h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">LIST OF OVERDUE ACCOUNTS</h6>
+									<h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">
+										LIST OF OVERDUE ACCOUNTS
+									</h6>
 								</div>
 							</div>
 
 							<!-- Card Body -->
-							<div class="card-body p-3" style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
+							<div class="card-body p-3"
+								style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
 
 								<!-- Table Controls -->
 								<div class="d-flex justify-content-between align-items-center mb-3">
+
 									<div class="d-flex align-items-center" style="font-size: 0.85rem;">
 										<select class="custom-select custom-select-sm mr-2" style="width: 70px;">
 											<option value="10" selected>10</option>
@@ -345,14 +341,19 @@
 										</select>
 										<span>records per page</span>
 									</div>
+
 									<div class="d-flex align-items-center" style="font-size: 0.85rem;">
 										<label class="mb-0 mr-2">Search:</label>
 										<input type="search" class="form-control form-control-sm" style="width: 200px;">
 									</div>
+
 								</div>
 
 								<!-- Table -->
-								<table class="table table-bordered table-hover mb-0" id="overdueAccountsTable" style="width: 100%; font-size: 0.83rem;">
+								<table class="table table-bordered table-hover mb-0"
+									id="overdueAccountsTable"
+									style="width: 100%; font-size: 0.83rem;">
+
 									<thead style="background-color: #f1f5f9; color: #334155;">
 										<tr>
 											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">SCHEME CODE</th>
@@ -364,7 +365,9 @@
 											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">STATUS</th>
 										</tr>
 									</thead>
+
 									<tbody>
+
 										<th:block th:if="${overdueAccounts != null and !#lists.isEmpty(overdueAccounts)}">
 											<tr th:each="acct : ${overdueAccounts}">
 												<td th:text="${acct.schemeCode}">CLN2</td>
@@ -376,7 +379,9 @@
 												<td th:text="${acct.status}">PAID</td>
 											</tr>
 										</th:block>
+
 										<th:block th:if="${overdueAccounts == null or #lists.isEmpty(overdueAccounts)}">
+
 											<tr>
 												<td>CLN2</td>
 												<td>010096076</td>
@@ -386,6 +391,7 @@
 												<td>0</td>
 												<td>PAID</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010143135</td>
@@ -395,6 +401,7 @@
 												<td>10</td>
 												<td>OVERDUE</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010078846</td>
@@ -404,6 +411,7 @@
 												<td>2</td>
 												<td>PAID</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010061298</td>
@@ -413,6 +421,7 @@
 												<td>2</td>
 												<td>OVERDUE</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010032480</td>
@@ -422,6 +431,7 @@
 												<td>2</td>
 												<td>OVERDUE</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010081184</td>
@@ -431,6 +441,7 @@
 												<td>13</td>
 												<td>OVERDUE</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010079997</td>
@@ -440,6 +451,7 @@
 												<td>.65</td>
 												<td>PAID</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010075160</td>
@@ -449,6 +461,7 @@
 												<td>5</td>
 												<td>OVERDUE</td>
 											</tr>
+
 											<tr>
 												<td>CLN4</td>
 												<td>010071920</td>
@@ -458,6 +471,7 @@
 												<td>4</td>
 												<td>OVERDUE</td>
 											</tr>
+
 											<tr>
 												<td>CPL1</td>
 												<td>010060125</td>
@@ -467,13 +481,18 @@
 												<td>1.29</td>
 												<td>OVERDUE</td>
 											</tr>
+
 										</th:block>
+
 									</tbody>
 								</table>
 
 								<!-- Pagination / Info Bar -->
-								<div class="d-flex justify-content-between align-items-center mt-3" style="font-size: 0.85rem;">
+								<div class="d-flex justify-content-between align-items-center mt-3"
+									style="font-size: 0.85rem;">
+
 									<div>Showing 1 to 10 of 3,015 entries</div>
+
 									<nav>
 										<ul class="pagination pagination-sm mb-0">
 											<li class="page-item"><a class="page-link" href="#">Previous</a></li>
@@ -487,20 +506,38 @@
 											<li class="page-item"><a class="page-link" href="#">Next</a></li>
 										</ul>
 									</nav>
+
 								</div>
+
 							</div>
 
 							<!-- Card Footer -->
-							<div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
-								<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
-								<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
+							<div class="card-footer text-center border-top-0"
+								style="background-color: #e9ecef;">
+
+								<button type="button"
+									class="btn-primary big-btn"
+									id="btnHome"
+									onclick="home();">
+									Home
+								</button>
+
+								<button type="button"
+									class="btn-primary big-btn"
+									id="btnBack"
+									onclick="Back();">
+									Back
+								</button>
+
 							</div>
+
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
 	</div>
-</body>
 
+</body>
 </html>

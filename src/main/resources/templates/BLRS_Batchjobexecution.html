@@ -30,7 +30,8 @@
 
 	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
 		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
-	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
+	<script src="/webjars/chartjs/2.8.0/Chart.min.js"
+		th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
 
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
@@ -43,25 +44,36 @@
 			font-family: 'Outfit', sans-serif !important;
 			color: #1e293b;
 			overscroll-behavior: none !important;
+			margin: 0;
+			padding-top: 70px;
+			overflow-x: hidden;
 		}
 
-		/* .container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 15.5%;
-			margin-top: 80px;
-			margin-bottom: 80px;
-		} */
-
+		/* Centered main page container */
 		.container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 16% !important;
-			margin-top: 80px;
+			width: 100% !important;
+			max-width: 1500px !important;
+			padding-right: 15px !important;
+			padding-left: 15px !important;
+			margin-right: auto !important;
+			margin-left: auto !important;
+			margin-top: 15px !important;
+			margin-bottom: 40px !important;
+			box-sizing: border-box !important;
+		}
+
+		.container-manager > .row {
+			width: 100% !important;
+			margin-left: 0 !important;
+			margin-right: 0 !important;
+			justify-content: center !important;
+			box-sizing: border-box !important;
+		}
+
+		.container-manager > .row > .col-sm-11 {
+			margin-left: auto !important;
+			margin-right: auto !important;
+			box-sizing: border-box !important;
 		}
 
 		/* KPI Card Styles */
@@ -113,78 +125,26 @@
 		}
 
 		/* Specific Borders for KPI Cards */
-		.border-left-teal {
-			border-left: 4px solid #0d9488;
-		}
-
-		.border-left-rose {
-			border-left: 4px solid #e11d48;
-		}
-
-		.border-left-indigo {
-			border-left: 4px solid #4f46e5;
-		}
-
-		.border-left-emerald {
-			border-left: 4px solid #10b981;
-		}
-
-		.border-left-orange {
-			border-left: 4px solid #f97316;
-		}
-
-		.border-left-violet {
-			border-left: 4px solid #8b5cf6;
-		}
+		.border-left-teal { border-left: 4px solid #0d9488; }
+		.border-left-rose { border-left: 4px solid #e11d48; }
+		.border-left-indigo { border-left: 4px solid #4f46e5; }
+		.border-left-emerald { border-left: 4px solid #10b981; }
+		.border-left-orange { border-left: 4px solid #f97316; }
+		.border-left-violet { border-left: 4px solid #8b5cf6; }
 
 		/* Icon Container Color Combinations */
-		.bg-teal-light {
-			background-color: #f0fdfa;
-		}
-
-		.text-teal {
-			color: #0d9488;
-		}
-
-		.bg-rose-light {
-			background-color: #fff1f2;
-		}
-
-		.text-rose {
-			color: #e11d48;
-		}
-
-		.bg-indigo-light {
-			background-color: #e0e7ff;
-		}
-
-		.text-indigo {
-			color: #4f46e5;
-		}
-
-		.bg-emerald-light {
-			background-color: #ecfdf5;
-		}
-
-		.text-emerald {
-			color: #10b981;
-		}
-
-		.bg-orange-light {
-			background-color: #fff7ed;
-		}
-
-		.text-orange {
-			color: #f97316;
-		}
-
-		.bg-violet-light {
-			background-color: #f5f3ff;
-		}
-
-		.text-violet {
-			color: #8b5cf6;
-		}
+		.bg-teal-light { background-color: #f0fdfa; }
+		.text-teal { color: #0d9488; }
+		.bg-rose-light { background-color: #fff1f2; }
+		.text-rose { color: #e11d48; }
+		.bg-indigo-light { background-color: #e0e7ff; }
+		.text-indigo { color: #4f46e5; }
+		.bg-emerald-light { background-color: #ecfdf5; }
+		.text-emerald { color: #10b981; }
+		.bg-orange-light { background-color: #fff7ed; }
+		.text-orange { color: #f97316; }
+		.bg-violet-light { background-color: #f5f3ff; }
+		.text-violet { color: #8b5cf6; }
 
 		/* Chart Card Styles */
 		.chart-card {
@@ -242,13 +202,8 @@
 			vertical-align: middle;
 		}
 
-		.custom-table tr:hover td {
-			background-color: #f8fafc;
-		}
-
-		.custom-table tr:last-child td {
-			border-bottom: none;
-		}
+		.custom-table tr:hover td { background-color: #f8fafc; }
+		.custom-table tr:last-child td { border-bottom: none; }
 
 		/* Status Badges */
 		.status-badge {
@@ -260,25 +215,10 @@
 			font-weight: 600;
 		}
 
-		.status-success {
-			background-color: #d1fae5;
-			color: #065f46;
-		}
-
-		.status-warning {
-			background-color: #fef3c7;
-			color: #92400e;
-		}
-
-		.status-danger {
-			background-color: #fee2e2;
-			color: #991b1b;
-		}
-
-		.status-info {
-			background-color: #e0f2fe;
-			color: #075985;
-		}
+		.status-success { background-color: #d1fae5; color: #065f46; }
+		.status-warning { background-color: #fef3c7; color: #92400e; }
+		.status-danger { background-color: #fee2e2; color: #991b1b; }
+		.status-info { background-color: #e0f2fe; color: #075985; }
 
 		/* Scrollbar Styling */
 		.table-responsive::-webkit-scrollbar {
@@ -298,6 +238,23 @@
 
 		.table-responsive::-webkit-scrollbar-thumb:hover {
 			background: #94a3b8;
+		}
+
+		/* Mobile */
+		@media (max-width: 767.98px) {
+			.container-manager {
+				max-width: 100% !important;
+				padding-left: 10px !important;
+				padding-right: 10px !important;
+				margin-top: 10px !important;
+			}
+
+			.container-manager > .row > .col-sm-11 {
+				padding-left: 0 !important;
+				padding-right: 0 !important;
+				max-width: 100% !important;
+				flex: 0 0 100% !important;
+			}
 		}
 	</style>
 
@@ -319,6 +276,7 @@
 </head>
 
 <body>
+
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
 	<div class="container-manager">
@@ -327,7 +285,10 @@
 
 				<div th:if="${formmode}=='list'">
 					<div class="panel panel-primary filterable">
-						<div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
+
+						<div class="card"
+							style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
+
 							<!-- Card Header -->
 							<div class="card-header" style="background-color: #e9ecef;">
 								<div class="float-left">
@@ -336,10 +297,14 @@
 							</div>
 
 							<!-- Card Body -->
-							<div class="card-body p-0" style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
+							<div class="card-body p-0"
+								style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
 
 								<!-- Table -->
-								<table class="table table-bordered table-hover mb-0" id="batchExecutionTable" style="width: 100%; font-size: 0.83rem;">
+								<table class="table table-bordered table-hover mb-0"
+									id="batchExecutionTable"
+									style="width: 100%; font-size: 0.83rem;">
+
 									<thead style="background-color: #f1f5f9; color: #334155;">
 										<tr>
 											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Job Id</th>
@@ -350,6 +315,7 @@
 											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1; width: 100px;" class="text-center">Action</th>
 										</tr>
 									</thead>
+
 									<tbody>
 										<th:block th:if="${batchExecutions != null and !#lists.isEmpty(batchExecutions)}">
 											<tr th:each="job : ${batchExecutions}">
@@ -359,107 +325,168 @@
 												<td th:text="${#dates.format(job.nextRunDate, 'dd-MM-yyyy')}">06-01-2019</td>
 												<td th:text="${job.status}">COMPLETED</td>
 												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3" th:onclick="'runJob(\'' + ${job.jobId} + '\')'">Run</button>
+													<button type="button"
+														class="btn btn-primary btn-sm px-3"
+														th:onclick="'runJob(\'' + ${job.jobId} + '\')'">
+														Run
+													</button>
 												</td>
 											</tr>
 										</th:block>
+
 										<th:block th:if="${batchExecutions == null or #lists.isEmpty(batchExecutions)}">
+
 											<tr>
 												<td>FIN001</td>
 												<td>Finacle Extraction</td>
 												<td>05-01-2019</td>
 												<td>06-01-2019</td>
 												<td>COMPLETED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('FIN001');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('FIN001');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ009</td>
 												<td>MQL_JOB</td>
 												<td>11-01-2019</td>
 												<td>12-01-2019</td>
 												<td>COMPLETED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ009');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ009');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ002</td>
 												<td>SCHEME_FOR_PLBPA</td>
 												<td>06-01-2019</td>
 												<td>07-01-2019</td>
 												<td>COMPLETED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ002');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ002');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ006</td>
 												<td>CLN4</td>
 												<td>11-01-2019</td>
 												<td>12-01-2019</td>
 												<td>COMPLETED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ006');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ006');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ007</td>
 												<td>TEST_JOB</td>
 												<td>10-01-2019</td>
 												<td>10-01-2019</td>
 												<td>COMPLETED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ007');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ007');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ004</td>
 												<td>TEST_JOB_DAILY</td>
 												<td>09-01-2019</td>
 												<td>09-01-2019</td>
 												<td></td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ004');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ004');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ001</td>
 												<td>WEEKLY_REM</td>
 												<td>08-01-2019</td>
 												<td>08-01-2019</td>
 												<td>COMPLETED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ001');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ001');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ005</td>
 												<td>CLN2</td>
 												<td>11-01-2019</td>
 												<td>11-01-2019</td>
 												<td>COMPLETED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ005');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ005');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ008</td>
 												<td>PLN1_JOB</td>
 												<td>10-01-2019</td>
 												<td>10-01-2019</td>
 												<td>STARTED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ008');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ008');">Run</button>
+												</td>
 											</tr>
+
 											<tr>
 												<td>BJ003</td>
 												<td>ALL</td>
 												<td>06-01-2019</td>
 												<td>14-01-2019</td>
 												<td>STARTED</td>
-												<td class="text-center align-middle"><button type="button" class="btn btn-primary btn-sm px-3" onclick="runJob('BJ003');">Run</button></td>
+												<td class="text-center align-middle">
+													<button type="button" class="btn btn-primary btn-sm px-3"
+														onclick="runJob('BJ003');">Run</button>
+												</td>
 											</tr>
+
 										</th:block>
 									</tbody>
 								</table>
 							</div>
 
 							<!-- Card Footer -->
-							<div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
-								<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
-								<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
+							<div class="card-footer text-center border-top-0"
+								style="background-color: #e9ecef;">
+
+								<button type="button"
+									class="btn-primary big-btn"
+									id="btnHome"
+									onclick="home();">
+									Home
+								</button>
+
+								<button type="button"
+									class="btn-primary big-btn"
+									id="btnBack"
+									onclick="Back();">
+									Back
+								</button>
 							</div>
+
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</div>
 	</div>
-</body>
 
+</body>
 </html>
