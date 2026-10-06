@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -58,7 +60,10 @@ public class BLRS_UserProfile_Entity {
 	private String login_status;
 	private String virtual_flg;
 	private String work_class;
+	
+	@Column(name = "MOB_NUMBER")
 	private String mob_number;
+	
 	private String email_id;
 	private String role_id;
 	private String role_desc;
@@ -91,7 +96,9 @@ public class BLRS_UserProfile_Entity {
 	private String user_locked_flg;
 	private Integer no_of_attmp;
 	private String disable_flg;
-	@Lob
+	
+	@Basic(fetch = FetchType.LAZY)
+	@Column(name = "photo", columnDefinition = "bytea")
 	private byte[] photo;
 	private String domain_id;
 	private String new_user_flg;
@@ -598,6 +605,7 @@ public class BLRS_UserProfile_Entity {
 		this.login_status = login_status;
 		this.virtual_flg = virtual_flg;
 		this.work_class = work_class;
+		
 		this.mob_number = mob_number;
 		this.email_id = email_id;
 		this.role_id = role_id;

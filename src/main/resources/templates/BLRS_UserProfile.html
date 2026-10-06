@@ -719,22 +719,26 @@
 
 					success: function (responseText) {
 
-						$("#loader1").modal("hide");
+					    $("#loader1").one("hidden.bs.modal", function () {
 
-						$("#alertmsg").text(responseText);
+					        $("#alertmsg").text(responseText);
+					        $("#alert").modal("show");
 
-						$('#alert').modal("show");
+					    });
 
+					    $("#loader1").modal("hide");
 					},
 
 					error: function () {
 
-						$("#loader1").modal("hide");
+					    $("#loader1").one("hidden.bs.modal", function () {
 
-						$("#alertmsg").text("Error occurred while processing request.");
+					        $("#alertmsg").text("Error occurred while processing request.");
+					        $("#alert").modal("show");
 
-						$('#alert').modal("show");
+					    });
 
+					    $("#loader1").modal("hide");
 					}
 
 				};
