@@ -35,16 +35,20 @@
 			background-color: #f8fafc !important;
 			font-family: 'Outfit', sans-serif !important;
 			color: #1e293b;
-			overscroll-behavior: none !important;
+			overscroll-behavior: !important;
+			
 		}
+		
 		.container-manager {
 			width: 100%;
-			max-width: 1200px;
-			padding-right: 15px;
-			padding-left: 15px;
+			max-width: 100%;
+			padding-right: 6%;
+			padding-left: 6%;
 			margin-right: auto;
 			margin-left: auto;
-			margin-top: 20px;
+			margin-top: 10px;
+			
+
 		}
 		/* KPI Card Styles */
 		.kpi-card {
@@ -215,6 +219,16 @@
 				padding-right: 5px;
 			}
 		}
+		
+
+		html, body {
+		    width: 100% !important;
+		    margin: 0 !important;
+		    overflow-x: hidden !important;
+		    overflow-y: visible !important;
+		}
+
+		
 	</style>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
@@ -245,7 +259,7 @@
 								</div>
 							</div>
 							<!-- Card Body -->
-							<div class="card-body d-flex flex-column align-items-center" style="padding: 12px 25px; overflow: hidden; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
+							<div class="card-body d-flex flex-column align-items-center" style="padding: 12px 25px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; ">
 								<form id="parameterForm" style="width: 100%; max-width: 500px;" onsubmit="event.preventDefault(); submitForm();">
 									<!-- Fieldset 1: Email -->
 									<fieldset style="border: 1px solid #cbd5e1; padding: 10px 20px 8px 20px; border-radius: 4px; margin-bottom: 10px; max-width: 500px;">
