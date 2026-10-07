@@ -262,9 +262,30 @@
             window.history.back();
         }
 
-        function generateFile() {
-            alert("File generated successfully!");
-        }
+		function generateFile() {
+		    var checked = document.querySelectorAll('input[name="selectedReminders"]:checked');
+		    if (checked.length === 0) {
+		        alert("Please select at least one record");
+		        return;
+		    }
+
+		    var form = document.getElementById('reminderForm');
+
+		    // old hidden inputs clear
+		    form.querySelectorAll('input.hid-sel').forEach(function (e) { e.remove(); });
+
+		    // checked values-ah form-kulla copy
+		    checked.forEach(function (cb) {
+		        var h = document.createElement('input');
+		        h.type = 'hidden';
+		        h.name = 'selectedReminders';
+		        h.value = cb.value;
+		        h.className = 'hid-sel';
+		        form.appendChild(h);
+		    });
+
+		    form.submit();
+		}
 
         function toggleSelectAll(source) {
             var checkboxes = document.getElementsByName('selectedReminders');
@@ -286,6 +307,9 @@
                     <div class="panel panel-primary filterable">
                         <div class="card"
                              style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
+							 <form id="reminderForm" th:action="@{/generateReminderFile}" method="post">
+								<!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+								</form>
 
                             <!-- Card Header -->
                             <div class="card-header"
@@ -301,7 +325,7 @@
                                             id="btnFileGenerate"
                                             onclick="generateFile();">
                                         File Generate
-                                    </button>
+                                    </buFtton>
                                 </div>
                             </div>
 
@@ -327,125 +351,24 @@
                                             <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="align-middle">REMINDER SENT</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <th:block th:if="${reminders != null and !#lists.isEmpty(reminders)}">
-                                            <tr th:each="rem : ${reminders}">
-                                                <td class="text-center align-middle">
-                                                    <input type="checkbox" name="selectedReminders" th:value="${rem.accountNumber}">
-                                                </td>
-                                                <td th:text="${rem.schemeCode}">MQL1</td>
-                                                <td th:text="${rem.customerId}">010100953</td>
-                                                <td th:text="${rem.accountNumber}">010100953LN00003</td>
-                                                <td th:text="${rem.borrowerName}">HOSENALLY SALIM RAZA</td>
-                                                <td class="text-right" th:text="${rem.overdue}">70,667.26</td>
-                                                <td th:text="${rem.department}">WMA</td>
-                                                <td th:text="${rem.reminderSent}">Reminder-3</td>
-                                            </tr>
-                                        </th:block>
-
-                                        <th:block th:if="${reminders == null or #lists.isEmpty(reminders)}">
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>MQL1</td>
-                                                <td>010100953</td>
-                                                <td>010100953LN00003</td>
-                                                <td>HOSENALLY SALIM RAZA</td>
-                                                <td class="text-right">70,667.26</td>
-                                                <td>WMA</td>
-                                                <td>Reminder-3</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PLN1</td>
-                                                <td>010078911</td>
-                                                <td>010078911LN00002</td>
-                                                <td>OOGARAH MANSRAZ SUDHIR</td>
-                                                <td class="text-right">59,459.22</td>
-                                                <td>HTLH</td>
-                                                <td>Reminder-3</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PLN1</td>
-                                                <td>010158419</td>
-                                                <td>010158419LN00001</td>
-                                                <td>MEKEN LOUIS MAX</td>
-                                                <td class="text-right">169,648.26</td>
-                                                <td>CHCL</td>
-                                                <td>Reminder-3</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PLN1</td>
-                                                <td>010158643</td>
-                                                <td>010158643LN00001</td>
-                                                <td>MOHUNG BIBI AMEENAH</td>
-                                                <td class="text-right">13,204.18</td>
-                                                <td>AMTE</td>
-                                                <td>Reminder-3</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>SSL1</td>
-                                                <td>010159142</td>
-                                                <td>010159142LN00001</td>
-                                                <td>TIRBHOWAN ISSWARWANTEE</td>
-                                                <td class="text-right">0.00</td>
-                                                <td>SSL</td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PLN1</td>
-                                                <td>010051469</td>
-                                                <td>010051469LN00001</td>
-                                                <td>PERIANEN RAJ</td>
-                                                <td class="text-right">207,934.04</td>
-                                                <td>MRA</td>
-                                                <td>Reminder-1</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PPL1</td>
-                                                <td>010052493</td>
-                                                <td>010052493LN00001</td>
-                                                <td>RAMDIN DYANESHWAR</td>
-                                                <td class="text-right">115,684.04</td>
-                                                <td>PSIC</td>
-                                                <td>Reminder-3</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PLN1</td>
-                                                <td>010053116</td>
-                                                <td>010053116LN00001</td>
-                                                <td>VEERASAMY BACTARAJ</td>
-                                                <td class="text-right">1,001,859.78</td>
-                                                <td>AMB</td>
-                                                <td>Reminder-3</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PPL1</td>
-                                                <td>010074139</td>
-                                                <td>010074139LN00002</td>
-                                                <td>RAMSAMY LOUIS JACQUES</td>
-                                                <td class="text-right">-24.48</td>
-                                                <td>MPL</td>
-                                                <td>Reminder-1</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center align-middle"><input type="checkbox" name="selectedReminders"></td>
-                                                <td>PLN1</td>
-                                                <td>010071235</td>
-                                                <td>010071235LN00001</td>
-                                                <td>VALAYDON KHERVIN</td>
-                                                <td class="text-right">44,788.81</td>
-                                                <td>PLCE</td>
-                                                <td>Reminder-3</td>
-                                            </tr>
-                                        </th:block>
-                                    </tbody>
+									<tbody>
+									    <tr th:each="rem : ${reminders}">
+									        <td class="text-center align-middle">
+									            <input type="checkbox" name="selectedReminders" th:value="${rem.acct_num}">
+									        </td>
+									        <td th:text="${rem.schem_code}"></td>
+									        <td th:text="${rem.cust_id}"></td>
+									        <td th:text="${rem.acct_num}"></td>
+									        <td th:text="${rem.acct_name}"></td>
+									        <td class="text-right"
+									            th:text="${rem.overdue != null} ? ${#numbers.formatDecimal(rem.overdue, 1, 'COMMA', 2, 'POINT')} : '0.00'"></td>
+									        <td th:text="${rem.dept}"></td>
+									        <td th:text="${rem.rem_send}"></td>
+									    </tr>
+									    <tr th:if="${reminders == null or #lists.isEmpty(reminders)}">
+									        <td colspan="8" class="text-center text-muted">No records found</td>
+									    </tr>
+									</tbody>
                                 </table>
                             </div>
 
