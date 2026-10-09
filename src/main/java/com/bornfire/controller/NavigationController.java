@@ -45,6 +45,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import com.bornfire.services.BLRS_ReminderGeneratorService;
 
+// ---------- 1. IMPORTS (top, with other imports) ----------
+import com.bornfire.entities.BLRS_BatchJobScheduler_Entity;
+import com.bornfire.services.BLRS_BatchJobSchedulerService;
+
 @Controller
 public class NavigationController {
 
@@ -70,6 +74,14 @@ public class NavigationController {
 	
 	@Autowired
 	private BLRS_ReminderGeneratorService reminderGenService;
+	
+
+
+
+		// ---------- 2. AUTOWIRED (with other @Autowired fields) ----------
+		// If you already added the fully-qualified version earlier, REPLACE it with this one.
+		@Autowired
+		private BLRS_BatchJobSchedulerService batchJobService;
 
 	// ---------------------------------------------------------------------------------------------------------------
 	// Login & Password Reset
@@ -557,11 +569,68 @@ public class NavigationController {
 	// ---------------------------------------------------------------------------------------------------------------
 	// Other Menu Placeholders
 	// ---------------------------------------------------------------------------------------------------------------
+	// =====================================================================
+	// NavigationController.java  -  Batch Job Scheduler changes only
+	// =====================================================================
 
+	
+
+
+	// ---------- 3. REPLACE the existing "Batchjobscheduler" method completely ----------
 	@RequestMapping(value = "Batchjobscheduler", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Batchjobscheduler(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
+	public String Batchjobscheduler(@RequestParam(required = false) String formmode,
+			@RequestParam(required = false) String job_id, Model md, HttpServletRequest rq) {
+
+		String roleId = (String) rq.getSession().getAttribute("ROLEID");
+		md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
+
+		String mode = (formmode == null || formmode.trim().isEmpty()) ? "list" : formmode.trim().toLowerCase();
+
+		if ("add".equals(mode)) {
+			md.addAttribute("BatchJob", batchJobService.getNewJob());
+		} else if ("edit".equals(mode) || "view".equals(mode) || "verify".equals(mode)) {
+			BLRS_BatchJobScheduler_Entity job = batchJobService.getJob(job_id);
+			if (job == null) {
+				mode = "list";
+			} else {
+				md.addAttribute("BatchJob", job);
+			}
+		} else {
+			mode = "list";
+		}
+
+		if ("list".equals(mode)) {
+			md.addAttribute("BatchJobList", batchJobService.getJobList());
+		} else {
+			md.addAttribute("SchemeCodes", batchJobService.getSchemeCodes());
+			md.addAttribute("Departments", batchJobService.getDepartments());
+			md.addAttribute("ReminderTypes", batchJobService.getReminderTypes());
+			md.addAttribute("Periodicities", batchJobService.getPeriodicities());
+		}
+
+		md.addAttribute("formmode", mode);
 		return "BLRS_BatchJobScheduler";
+	}
+
+
+	// ---------- 4. NEW methods (paste right below the method above) ----------
+	@RequestMapping(value = "createBatchJob", method = RequestMethod.POST)
+	@ResponseBody
+	public String createBatchJob(@RequestParam("formmode") String formmode,
+			@ModelAttribute BLRS_BatchJobScheduler_Entity batchJob, HttpServletRequest rq) {
+		String loginUser = (String) rq.getSession().getAttribute("USERID");
+		if (loginUser == null)
+			loginUser = "SYSTEM";
+		return batchJobService.saveJob(batchJob, formmode, loginUser);
+	}
+
+	@RequestMapping(value = "verifyBatchJob", method = RequestMethod.POST)
+	@ResponseBody
+	public String verifyBatchJob(@RequestParam("job_id") String jobId, HttpServletRequest rq) {
+		String loginUser = (String) rq.getSession().getAttribute("USERID");
+		if (loginUser == null)
+			loginUser = "SYSTEM";
+		return batchJobService.verifyJob(jobId, loginUser);
 	}
 
 	@RequestMapping(value = "Batchjobalert", method = { RequestMethod.GET, RequestMethod.POST })
