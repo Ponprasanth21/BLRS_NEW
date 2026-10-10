@@ -179,6 +179,92 @@
         function Back() {
             window.history.back();
         }
+		
+
+		function openDetail(row) {
+		    document.getElementById("listSection").style.display = "none";
+		    document.getElementById("detailSection").style.display = "block";
+
+		    const data = row.dataset;
+
+		    const fields = {
+		        detailCustomerId: "customerId",
+		        detailAccountNumber: "accountNumber",
+		        detailBorrowerName: "borrowerName",
+		        detailCustomerIdLM: "customerId",
+		        detailCustomerName: "borrowerName",
+		        detailScheme: "scheme",
+		        detailLoanNumber: "accountNumber",
+		        detailDisbursementDate: "loanDisbursementDate",
+		        detailLoanAmount: "loanAmountApplied",
+		        detailOutstandingBalance: "loanOutstandingBalance",
+		        detailCapitalArrears: "loanCapitalArrears",
+		        detailInterestArrears: "loanInterestArrears",
+		        detailGuarantors: "numberOfGuarantors",
+		        detailInterestRate: "actualInterestRate",
+		        detailMonthsArrears: "numberOfMonthsInArrears",
+		        detailPaymentsReceived: "paymentsReceived",
+		        detailOverdueCustomerId: "customerId",
+		        detailOverdueCustomerName: "borrowerName",
+		        detailOverdueScheme: "scheme",
+		        detailOverdueAccountNo: "accountNumber",
+		        detailOverdueDepartment: "overdueDepartment",
+		        detailOverdueRecordDate: "overdueRecordDate",
+		        detailOverdueDisbursementDate: "overdueDisbursementDate",
+		        detailOverdueLoanAmount: "overdueLoanAmount",
+		        detailOverdueOutstandingBalance: "overdueOutstandingBalance",
+		        detailOverdueInterestRate: "overdueInterestRate",
+		        detailOverdueTotalArrears: "totalArrears",
+		        detailOverdueCapitalArrears: "overdueCapitalArrears",
+		        detailOverdueInterestArrears: "overdueInterestArrears",
+		        detailOverdueMonthArrears: "overdueMonthArrears",
+		        detailReminderSL: "reminderSlNo",
+		        detailReminderOverdues: "reminderOverdues",
+		        detailReminderAge: "reminderAge",
+		        detailReminderNo: "reminderNumber",
+		        detailReminderDate: "reminderDate",
+		        detailReminderCourierRef: "courierPostalReference",
+		        detailReminderCourierAck: "courierPostalAcknowledgement",
+		        detailReminderLoanee: "reminderLoanee",
+		        detailReminderGuarantor: "reminderGuarantor",
+		        detailRecoveryRecordDate: "recoveryRecordDate",
+		        detailRecoveryOutstanding: "recoveryLoanOutstanding",
+		        detailRecoveryPrincipal: "recoveryPrincipal",
+		        detailRecoveryInterest: "recoveryInterest",
+		        detailRecoveryTotal: "recoveryTotal",
+		        detailRecoveryReminderDate: "recoveryReminderDate",
+		        detailRecoveryDate: "recoveryDate",
+		        detailRecoveryAmount: "recoveryAmount",
+		        detailRecoveryOverdues: "recoveryOverdues",
+		        detailRecoveryAge: "recoveryAge",
+		        detailRecoveryStatus: "recoveryStatus",
+				detailMailingAddress: "mailingAddress",
+				detailEmailId: "emailId",
+				detailMobileNo: "mobileNo",
+				detailLoaneeReminder: "loaneeReminder",
+				reminderCustomerId: "customerId",
+				reminderBorrowerName: "borrowerName",
+				reminderScheme: "scheme",
+				reminderAccountNumber: "accountNumber",
+				recoveryCustomerId: "customerId",
+				recoveryBorrowerName: "borrowerName",
+				recoveryScheme: "scheme",
+				recoveryAccountNumber: "accountNumber",
+		    };
+
+		    Object.entries(fields).forEach(([id, key]) => {
+		        const element = document.getElementById(id);
+		        if (element) {
+		            element.textContent = data[key] || "N/A";
+		        }
+		    });
+		}
+
+		function goBackToList() {
+		    document.getElementById("detailSection").style.display = "none";
+		    document.getElementById("listSection").style.display = "block";
+		}
+
         /*]]>*/
     </script>
 </head>
@@ -186,8 +272,8 @@
 <body>
     <div th:insert="BLRS_HeaderMenu :: header"></div>
 
-    <div class="container-manager">
-        <div class="row d-flex justify-content-center">
+		<div id="listSection" class="container-manager">
+	        <div class="row d-flex justify-content-center">
             <div class="col-sm-11 mt-2">
                 <div th:if="${formmode}=='list'">
                     <div class="panel panel-primary filterable">
@@ -233,32 +319,71 @@
                                             <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">STATUS</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <th:block th:if="${overdueAccounts != null and !#lists.isEmpty(overdueAccounts)}">
-                                            <tr th:each="acct : ${overdueAccounts}">
-                                                <td th:text="${acct.schemeCode}">CLN2</td>
-                                                <td th:text="${acct.customerId}">010096076</td>
-                                                <td th:text="${acct.accountNumber}">010096076LN00001</td>
-                                                <td th:text="${acct.borrowerName}">KATHA PADIACHY THYAGESHWARI</td>
-                                                <td class="text-right" th:text="${acct.overdue}">0.00</td>
-                                                <td th:text="${acct.age}">0</td>
-                                                <td th:text="${acct.status}">PAID</td>
-                                            </tr>
-                                        </th:block>
 
-                                        <th:block th:if="${overdueAccounts == null or #lists.isEmpty(overdueAccounts)}">
-                                            <tr><td>CLN2</td><td>010096076</td><td>010096076LN00001</td><td>KATHA PADIACHY THYAGESHWARI</td><td class="text-right">0.00</td><td>0</td><td>PAID</td></tr>
-                                            <tr><td>CLN4</td><td>010143135</td><td>010143135LN00006</td><td>KISTNARAIN RAJEEVSING</td><td class="text-right">12,200.04</td><td>10</td><td>OVERDUE</td></tr>
-                                            <tr><td>CLN4</td><td>010078846</td><td>010078846LN00003</td><td>BANIPERSAD DEEPNARAIN</td><td class="text-right">-34.77</td><td>2</td><td>PAID</td></tr>
-                                            <tr><td>CLN4</td><td>010061298</td><td>010061298LN00005</td><td>PURSUN HARSHINI</td><td class="text-right">77.26</td><td>2</td><td>OVERDUE</td></tr>
-                                            <tr><td>CLN4</td><td>010032480</td><td>010032480LN00002</td><td>LATCHOOMUN PREMANUNDSING</td><td class="text-right">26.00</td><td>2</td><td>OVERDUE</td></tr>
-                                            <tr><td>CLN4</td><td>010081184</td><td>010081184LN00002</td><td>LUXIMAN NOEL CYRIL</td><td class="text-right">9,433.10</td><td>13</td><td>OVERDUE</td></tr>
-                                            <tr><td>CLN4</td><td>010079997</td><td>010079997LN00002</td><td>ITTOO PRUSHRAM</td><td class="text-right">-0.24</td><td>.65</td><td>PAID</td></tr>
-                                            <tr><td>CLN4</td><td>010075160</td><td>010075160LN00006</td><td>FRIQUIN JILL EVANS</td><td class="text-right">8,556.77</td><td>5</td><td>OVERDUE</td></tr>
-                                            <tr><td>CLN4</td><td>010071920</td><td>010071920LN00004</td><td>COURONNE MOHAMMAD SAMEER</td><td class="text-right">1,164.14</td><td>4</td><td>OVERDUE</td></tr>
-                                            <tr><td>CPL1</td><td>010060125</td><td>010060125LN00002</td><td>HOBASS RAHIMBUX NEEKAT NAAZ</td><td class="text-right">6,071.86</td><td>1.29</td><td>OVERDUE</td></tr>
-                                        </th:block>
-                                    </tbody>
+									<tbody>
+									    <tr th:each="acct : ${loanDetails}"
+									        th:attr="
+									            data-customer-id=${acct.customerId},
+									            data-account-number=${acct.accountNumber},
+									            data-borrower-name=${acct.borrowerName},
+									            data-mailing-address=${acct.mailingAddress},
+									            data-email-id=${acct.emailId},
+									            data-mobile-no=${acct.mobileNo},
+									            data-loanee-reminder=${acct.loaneeReminder},
+									            data-scheme=${acct.scheme},
+									            data-loan-disbursement-date=${acct.loanDisbursementDate},
+									            data-loan-amount-applied=${acct.loanAmountApplied},
+									            data-loan-outstanding-balance=${acct.loanOutstandingBalance},
+									            data-loan-capital-arrears=${acct.loanCapitalArrears},
+									            data-loan-interest-arrears=${acct.loanInterestArrears},
+									            data-number-of-guarantors=${acct.numberOfGuarantors},
+									            data-actual-interest-rate=${acct.actualInterestRate},
+									            data-number-of-months-in-arrears=${acct.numberOfMonthsInArrears},
+									            data-payments-received=${acct.paymentsReceived},
+									            data-overdue-department=${acct.overdueDepartment},
+									            data-overdue-record-date=${acct.overdueRecordDate},
+									            data-overdue-disbursement-date=${acct.overdueDisbursementDate},
+									            data-overdue-loan-amount=${acct.overdueLoanAmount},
+									            data-overdue-outstanding-balance=${acct.overdueOutstandingBalance},
+									            data-overdue-interest-rate=${acct.overdueInterestRate},
+									            data-total-arrears=${acct.totalArrears},
+									            data-overdue-capital-arrears=${acct.overdueCapitalArrears},
+									            data-overdue-interest-arrears=${acct.overdueInterestArrears},
+									            data-overdue-month-arrears=${acct.overdueMonthArrears},
+									            data-reminder-sl-no=${acct.reminderSlNo},
+									            data-reminder-overdues=${acct.reminderOverdues},
+									            data-reminder-age=${acct.reminderAge},
+									            data-reminder-number=${acct.reminderNumber},
+									            data-reminder-date=${acct.reminderDate},
+									            data-courier-postal-reference=${acct.courierPostalReference},
+									            data-courier-postal-acknowledgement=${acct.courierPostalAcknowledgement},
+									            data-reminder-loanee=${acct.reminderLoanee},
+									            data-reminder-guarantor=${acct.reminderGuarantor},
+									            data-recovery-record-date=${acct.recoveryRecordDate},
+									            data-recovery-loan-outstanding=${acct.recoveryLoanOutstanding},
+									            data-recovery-principal=${acct.recoveryPrincipal},
+									            data-recovery-interest=${acct.recoveryInterest},
+									            data-recovery-total=${acct.recoveryTotal},
+									            data-recovery-reminder-date=${acct.recoveryReminderDate},
+									            data-recovery-date=${acct.recoveryDate},
+									            data-recovery-amount=${acct.recoveryAmount},
+									            data-recovery-overdues=${acct.recoveryOverdues},
+									            data-recovery-age=${acct.recoveryAge},
+									            data-recovery-status=${acct.recoveryStatus}"
+									        onclick="openDetail(this)"
+									        style="cursor: pointer;">
+
+									        <td th:text="${acct.scheme != null ? acct.scheme : '-'}">-</td>
+									        <td th:text="${acct.customerId != null ? acct.customerId : '-'}">-</td>
+									        <td th:text="${acct.accountNumber != null ? acct.accountNumber : '-'}">-</td>
+									        <td th:text="${acct.borrowerName != null ? acct.borrowerName : '-'}">-</td>
+									        <td class="text-right"
+									            th:text="${acct.totalArrears != null ? acct.totalArrears : 0}">0</td>
+									        <td th:text="${acct.recoveryAge != null ? acct.recoveryAge : 0}">0</td>
+									        <td th:text="${acct.recoveryStatus != null ? acct.recoveryStatus : '-'}">-</td>
+									    </tr>
+									</tbody>
+
                                 </table>
 
                                 <!-- Pagination / Info Bar -->
@@ -291,5 +416,189 @@
             </div>
         </div>
     </div>
+	
+	<div id="detailSection" class="container-manager" style="display:none;">
+	    <div class="row d-flex justify-content-center">
+	        <div class="col-sm-11 mt-2">
+	            <div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1;">
+	                <div class="card-header" style="background-color: #e9ecef;">
+	                    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Loan Account Profile Detail</h6>
+	                </div>
+	                <div class="card-body p-3">
+	                    <!-- Tabs -->
+	                    <ul class="nav nav-tabs" id="detailTabs" role="tablist">
+	                        <li class="nav-item"><a class="nav-link active" id="loanee-tab" data-toggle="tab" href="#loanee" role="tab">Loanee</a></li>
+	                        <li class="nav-item"><a class="nav-link" id="guarantor-tab" data-toggle="tab" href="#guarantor" role="tab">Guarantor</a></li>
+	                        <li class="nav-item"><a class="nav-link" id="loanmaster-tab" data-toggle="tab" href="#loanmaster" role="tab">Loan Master</a></li>
+	                        <li class="nav-item"><a class="nav-link" id="overdues-tab" data-toggle="tab" href="#overdues" role="tab">Over dues</a></li>
+	                        <li class="nav-item"><a class="nav-link" id="reminders-tab" data-toggle="tab" href="#reminders" role="tab">Reminders</a></li>
+	                        <li class="nav-item"><a class="nav-link" id="recovery-tab" data-toggle="tab" href="#recovery" role="tab">Recovery</a></li>
+	                    </ul>
+	                    <div class="tab-content mt-3">
+	                        <div class="tab-pane fade show active" id="loanee" role="tabpanel">
+	                            <table class="custom-table">
+	                                <tr><th>Customer Id</th><td id="detailCustomerId"></td></tr>
+	                                <tr><th>Account Number</th><td id="detailAccountNumber"></td></tr>
+	                                <tr><th>Name of the Borrower</th><td id="detailBorrowerName"></td></tr>
+
+									<tr><th>Mailing Address</th><td id="detailMailingAddress">N/A</td></tr>
+									<tr><th>E-Mail Id</th><td id="detailEmailId">N/A</td></tr>
+									<tr><th>Mobile No</th><td id="detailMobileNo">N/A</td></tr>
+									<tr><th>Reminder</th><td id="detailLoaneeReminder">N/A</td></tr>
+
+	                            </table>
+	                        </div>
+	                        <div class="tab-pane fade" id="guarantor" role="tabpanel"><p>Content not available</p></div>
+	                        <div class="tab-pane fade" id="loanmaster" role="tabpanel">
+	                            <table class="custom-table">
+	                                <tr><th>Customer Id</th><td id="detailCustomerIdLM"></td></tr>
+									<tr><th>Customer Name</th><td id="detailCustomerName">N/A</td></tr>
+	                                <tr><th>Scheme</th><td id="detailScheme">N/A</td></tr>
+	                                <tr><th>Loan number</th><td id="detailLoanNumber"></td></tr>
+	                                <tr><th>Loan disbursement date</th><td id="detailDisbursementDate">N/A</td></tr>
+	                                <tr><th>Loan amount applied (Rs)</th><td id="detailLoanAmount">N/A</td></tr>
+	                                <tr><th>Outstanding balance (Rs)</th><td id="detailOutstandingBalance">N/A</td></tr>
+	                                <tr><th>Amount of capital in arrears (Rs)</th><td id="detailCapitalArrears">N/A</td></tr>
+	                                <tr><th>Amount of interest in arrears (Rs)</th><td id="detailInterestArrears">N/A</td></tr>
+	                                <tr><th>Number of guarantors</th><td id="detailGuarantors">N/A</td></tr>
+	                                <tr><th>Actual interest rate (%)</th><td id="detailInterestRate">N/A</td></tr>
+	                                <tr><th>Number of months in arrears</th><td id="detailMonthsArrears">N/A</td></tr>
+	                                <tr><th>Payments received</th><td id="detailPaymentsReceived">N/A</td></tr>
+	                            </table>
+	                        </div>
+	                        <div class="tab-pane fade" id="overdues" role="tabpanel">
+	                            <table class="custom-table">
+	                                <tr><th>Customer Id</th><td id="detailOverdueCustomerId"></td><th>Customer Name</th><td id="detailOverdueCustomerName">N/A</td></tr>
+	                                <tr><th>Scheme</th><td id="detailOverdueScheme">N/A</td><th>Account No</th><td id="detailOverdueAccountNo"></td></tr>
+	                            </table>
+	                            <br/>
+	                            <table class="custom-table table-bordered table-sm">
+	                                <tr>
+	                                    <th>Department</th>
+	                                    <th>Record Date</th>
+	                                    <th>Disbursement Date</th>
+	                                    <th>Loan Amount</th>
+	                                </tr>
+	                                <tr>
+	                                    <td id="detailOverdueDepartment">N/A</td>
+	                                    <td id="detailOverdueRecordDate">N/A</td>
+	                                    <td id="detailOverdueDisbursementDate">N/A</td>
+	                                    <td id="detailOverdueLoanAmount">N/A</td>
+	                                </tr>
+	                                <tr>
+	                                    <th>Outstanding Balance</th>
+	                                    <th>Interest Rate</th>
+	                                    <th>Total Arrears</th>
+	                                </tr>
+	                                <tr>
+	                                    <td id="detailOverdueOutstandingBalance">N/A</td>
+	                                    <td id="detailOverdueInterestRate">N/A</td>
+	                                    <td id="detailOverdueTotalArrears">N/A</td>
+	                                </tr>
+	                                <tr>
+	                                    <th>Capital Arrears</th>
+	                                    <th>Interest Arrears</th>
+	                                    <th>Month Arrears</th>
+	                                </tr>
+	                                <tr>
+	                                    <td id="detailOverdueCapitalArrears">N/A</td>
+	                                    <td id="detailOverdueInterestArrears">N/A</td>
+	                                    <td id="detailOverdueMonthArrears">N/A</td>
+	                                </tr>
+	                            </table>
+	                        </div>
+	                        <div class="tab-pane fade" id="reminders" role="tabpanel">
+	                            <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Reminder details</h6>
+	                            <br/>
+	                            <table class="custom-table">
+
+									<tr><th>Customer Id</th><td id="reminderCustomerId"></td><th>Customer Name</th><td id="reminderBorrowerName"></td></tr>
+									<tr><th>Scheme</th><td id="reminderScheme"></td><th>Account No</th><td id="reminderAccountNumber"></td></tr>
+
+	                            </table>
+	                            <br/>
+	                            <table class="custom-table table-bordered table-sm align-middle">
+	                                <thead>
+	                                    <tr>
+	                                        <th>SL</th>
+	                                        <th>Overdues</th>
+	                                        <th>Age</th>
+	                                        <th>Reminder No</th>
+	                                        <th>Reminder Date</th>
+	                                        <th>Courier/Postal Reference</th>
+	                                        <th>Courier/Postal Acknowledgement</th>
+	                                        <th>Loanee</th>
+	                                        <th>Guarantor</th>
+	                                    </tr>
+	                                </thead>
+	                                <tbody>
+	                                    <tr>
+	                                        <td id="detailReminderSL">N/A</td>
+	                                        <td id="detailReminderOverdues">N/A</td>
+	                                        <td id="detailReminderAge">N/A</td>
+	                                        <td id="detailReminderNo">N/A</td>
+	                                        <td id="detailReminderDate">N/A</td>
+	                                        <td id="detailReminderCourierRef">N/A</td>
+	                                        <td id="detailReminderCourierAck">N/A</td>
+	                                        <td id="detailReminderLoanee">N/A</td>
+	                                        <td id="detailReminderGuarantor">N/A</td>
+	                                    </tr>
+	                                </tbody>
+	                            </table>
+	                        </div>
+	                        <div class="tab-pane fade" id="recovery" role="tabpanel">
+	    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Recovery details</h6>
+	    <br/>
+	    <table class="custom-table">
+
+			<tr><th>Customer Id</th><td id="recoveryCustomerId"></td><th>Customer Name</th><td id="recoveryBorrowerName"></td></tr>
+			<tr><th>Scheme</th><td id="recoveryScheme"></td><th>Account No</th><td id="recoveryAccountNumber"></td></tr>
+
+	    </table>
+	    <br/>
+	    <table class="custom-table table-bordered table-sm align-middle">
+	        <thead>
+	            <tr>
+	                <th>Record Date</th>
+	                <th>Loan Outstanding</th>
+	                <th>Principal</th>
+	                <th>Interest</th>
+	                <th>Total</th>
+	                <th>Reminder Date</th>
+	                <th>Recovery Date</th>
+	                <th>Amount</th>
+	                <th>Overdues</th>
+	                <th>Age</th>
+	                <th>Status</th>
+	            </tr>
+	        </thead>
+	        <tbody>
+	            <tr>
+	                <td id="detailRecoveryRecordDate">N/A</td>
+	                <td id="detailRecoveryOutstanding">N/A</td>
+	                <td id="detailRecoveryPrincipal">N/A</td>
+	                <td id="detailRecoveryInterest">N/A</td>
+	                <td id="detailRecoveryTotal">N/A</td>
+	                <td id="detailRecoveryReminderDate">N/A</td>
+	                <td id="detailRecoveryDate">N/A</td>
+	                <td id="detailRecoveryAmount">N/A</td>
+	                <td id="detailRecoveryOverdues">N/A</td>
+	                <td id="detailRecoveryAge">N/A</td>
+	                <td id="detailRecoveryStatus">N/A</td>
+	            </tr>
+	        </tbody>
+	    </table>
+	</div>
+	                    </div>
+	                </div>
+	                <div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
+						<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
+						<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
 </body>
 </html>

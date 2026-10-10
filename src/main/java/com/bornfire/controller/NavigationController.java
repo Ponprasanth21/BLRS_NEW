@@ -47,7 +47,9 @@ import com.bornfire.services.BLRS_ReminderGeneratorService;
 
 // ---------- 1. IMPORTS (top, with other imports) ----------
 import com.bornfire.entities.BLRS_BatchJobScheduler_Entity;
+import com.bornfire.entities.BLRS_LoanAccountProfile_Entity;
 import com.bornfire.services.BLRS_BatchJobSchedulerService;
+import com.bornfire.services.BLRS_LoanAccountProfileService;
 
 @Controller
 public class NavigationController {
@@ -657,11 +659,25 @@ public class NavigationController {
 		return "BLRS_ReminderParameter";
 	}
 
-	@RequestMapping(value = "Loanaccountprofile", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Loanaccountprofile(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_LoanAccountProfile";
+	@RequestMapping(value = "Loanaccountprofile", method = {
+	        RequestMethod.GET, RequestMethod.POST
+	})
+	public String Loanaccountprofile(
+	        @RequestParam(required = false) String formmode,
+	        Model md,
+	        HttpServletRequest rq) {
+
+	    md.addAttribute("formmode",
+	            formmode != null ? formmode : "list");
+
+	    List<BLRS_LoanAccountProfile_Entity> loanDetails =
+	            blrsLoanAccountProfileService.getAllLoanDetails();
+
+	    md.addAttribute("loanDetails", loanDetails);
+
+	    return "BLRS_LoanAccountProfile";
 	}
+
 	
 	// ---------------------------------------------------------------------------------------------------------------
 		// reminder genration
@@ -736,5 +752,24 @@ public class NavigationController {
 		md.addAttribute("formmode", formmode != null ? formmode : "list");
 		return "BLRS_Guarantorreports";
 	}
+	
+	
+	
+
+	@Autowired
+	private BLRS_LoanAccountProfileService blrsLoanAccountProfileService;
+
+	@GetMapping("/LoanAccountProfile")
+	public String loanAccountProfile(Model model) {
+
+	    List<BLRS_LoanAccountProfile_Entity> loanDetails =
+	            blrsLoanAccountProfileService.getAllLoanDetails();
+
+	    model.addAttribute("loanDetails", loanDetails);
+	    model.addAttribute("formmode", "list");
+
+	    return "LoanAccountProfile";
+	}
+
 
 }
