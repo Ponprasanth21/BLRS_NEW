@@ -266,6 +266,33 @@
         }
 
         /* =========================================================
+           DELETE  (maker requests, checker verifies)
+           ========================================================= */
+        function delete_btn_submit(a) {
+            var jobid = a.getAttribute("data-job_id");
+            location.href = '/BLRS/Batchjobscheduler?formmode=delete&job_id=' + jobid;
+        }
+
+        function deleteSubmit(a) {
+            $("#datadelete").modal("show");
+        }
+
+        function submitformdelete(a) {
+            $("#datadelete").modal("hide");
+            $.ajax({
+                type: "POST",
+                url: '/BLRS/deleteBatchJob',
+                data: { job_id: $("#job_id").val() },
+                success: function (response) {
+                    showAlert(response);
+                },
+                error: function () {
+                    showAlert("Error deleting batch job.");
+                }
+            });
+        }
+
+        /* =========================================================
            ALERTS
            ========================================================= */
         function showAlert(msg) {
@@ -317,6 +344,35 @@
             } else {
                 $('#iconemail').hide();
             }
+        }
+
+        function buildDay(init) {
+            var p = $('#period').val();
+            var cur = init ? $('#day').attr('data-init') : $('#day').val();
+            var html = '';
+            if (p === 'WEEKLY') {
+                var names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                for (var i = 0; i < 7; i++) {
+                    html += '<option value="' + (i + 1) + '">' + names[i] + '</option>';
+                }
+                $('#dayrow').show();
+            } else if (p === 'MONTHLY') {
+                for (var d = 1; d <= 31; d++) {
+                    html += '<option value="' + d + '">' + d + '</option>';
+                }
+                $('#dayrow').show();
+            } else {
+                html = '<option value="1">-</option>';
+                $('#dayrow').hide();
+            }
+            $('#day').html(html);
+            if (cur) {
+                $('#day').val(cur);
+            }
+        }
+
+        function applyPeriod() {
+            $('#periodicity').val($('#period').val());
         }
 
         function toDate(s) {
@@ -423,15 +479,15 @@
 
             var normalHeaderHtml =
                 '<tr id="normalHeaderRow">' +
-                '<th style="width: 8%">Job Id</th>' +
-                '<th style="width: 16%">Job Name</th>' +
+                '<th style="width: 7%">Job Id</th>' +
+                '<th style="width: 15%">Job Name</th>' +
                 '<th style="width: 11%">Job Type</th>' +
-                '<th style="width: 25%">Scheme Code</th>' +
-                '<th style="width: 10%">Department</th>' +
-                '<th style="width: 10%">Periodicity</th>' +
+                '<th style="width: 20%">Scheme Code</th>' +
+                '<th style="width: 9%">Department</th>' +
+                '<th style="width: 9%">Periodicity</th>' +
                 '<th style="width: 10%">Last Run Date</th>' +
                 '<th style="width: 10%">Next Run Date</th>' +
-                '<th style="width: 8%">Status</th>' +
+                '<th style="width: 9%">Status</th>' +
                 '</tr>';
 
             var columnTitles = [
@@ -470,15 +526,15 @@
                         "lengthChange": false,
                         "dom": 'r<"table-scroll-container"t>ip',
                         "columnDefs": [
-                            { width: "8%",  targets: 0 },
-                            { width: "16%", targets: 1 },
+                            { width: "7%",  targets: 0 },
+                            { width: "15%", targets: 1 },
                             { width: "11%", targets: 2 },
-                            { width: "25%", targets: 3 },
-                            { width: "10%", targets: 4 },
-                            { width: "10%", targets: 5 },
+                            { width: "20%", targets: 3 },
+                            { width: "9%",  targets: 4 },
+                            { width: "9%",  targets: 5 },
                             { width: "10%", targets: 6 },
                             { width: "10%", targets: 7 },
-                            { width: "8%",  targets: 8 }
+                            { width: "9%",  targets: 8 }
                         ]
                     });
                 }
@@ -553,6 +609,11 @@
                 });
 
                 $('#job_type').on('change', toggleJobType);
+
+                buildDay(true);
+                $('#period').on('change', function () {
+                    buildDay(false);
+                });
             }
         });
 
@@ -602,15 +663,15 @@
                        style="width: 100%; margin-bottom: 0 !important;">
                     <thead class="thead-light">
                         <tr id="normalHeaderRow">
-                            <th style="width: 8%">Job Id</th>
-                            <th style="width: 16%">Job Name</th>
+                            <th style="width: 7%">Job Id</th>
+                            <th style="width: 15%">Job Name</th>
                             <th style="width: 11%">Job Type</th>
-                            <th style="width: 25%">Scheme Code</th>
-                            <th style="width: 10%">Department</th>
-                            <th style="width: 10%">Periodicity</th>
+                            <th style="width: 20%">Scheme Code</th>
+                            <th style="width: 9%">Department</th>
+                            <th style="width: 9%">Periodicity</th>
                             <th style="width: 10%">Last Run Date</th>
                             <th style="width: 10%">Next Run Date</th>
-                            <th style="width: 8%">Status</th>
+                            <th style="width: 9%">Status</th>
                         </tr>
                     </thead>
 
@@ -630,8 +691,8 @@
                             <td th:text="${#dates.format(job.last_run_date,'dd-MM-yyyy')}"></td>
                             <td th:text="${#dates.format(job.next_run_date,'dd-MM-yyyy')}"></td>
                             <th:block th:switch="${job.entity_flg}">
-                                <td th:case="'N'" style="color: red; font-weight: bold;">Unverified</td>
-                                <td th:case="*" style="color: green; font-weight: bold;">Verified</td>
+                                <td th:case="'N'" style="color: red; font-weight: bold;">Unverified<span th:if="${#strings.equalsIgnoreCase(job.status,'DELETE')}"> (Delete)</span><span th:if="${#strings.equalsIgnoreCase(job.status,'SUSPEND')}"> (Suspend)</span></td>
+                                <td th:case="*" style="color: green; font-weight: bold;">Verified<span th:if="${#strings.equalsIgnoreCase(job.status,'SUSPEND')}"> (Suspend)</span></td>
                             </th:block>
                         </tr>
                     </tbody>
@@ -651,7 +712,8 @@
         <div th:if="${formmode}=='edit'
                     OR ${formmode}=='add'
                     OR ${formmode}=='view'
-                    OR ${formmode}=='verify'">
+                    OR ${formmode}=='verify'
+                    OR ${formmode}=='delete'">
             <div class="card">
 
                 <!-- Reports Theme Header -->
@@ -662,6 +724,7 @@
                         <h6 th:if="${formmode}=='edit'">Batch Job Scheduler - Modify</h6>
                         <h6 th:if="${formmode}=='verify'">Batch Job Scheduler - Verify</h6>
                         <h6 th:if="${formmode}=='view'">Batch Job Scheduler - Details</h6>
+                        <h6 th:if="${formmode}=='delete'">Batch Job Scheduler - Delete</h6>
                     </div>
                     <div>
                         <button type="button" class="btn btn-sm btn-primary" onclick="list();">List</button>
@@ -674,7 +737,7 @@
                 <div class="card-body">
                     <form action="#"
                           th:object="${BatchJob}"
-                          th:with="ro=${formmode=='view' or formmode=='verify'}, lk=${formmode!='add'}"
+                          th:with="ro=${formmode=='view' or formmode=='verify' or formmode=='delete'}, lk=${formmode!='add'}"
                           method="post"
                           autocomplete="off"
                           id="IPSBatchJob">
@@ -706,7 +769,7 @@
                                 <input type="text" id="description" th:field="*{description}"
                                        class="form-control form-control-sm"
                                        maxlength="200"
-                                       th:readonly="${lk}" />
+                                       th:readonly="${lk}" th:required="${!lk}" />
                             </div>
 
                             <div class="col-sm-1"></div>
@@ -754,14 +817,15 @@
                         <div class="row formline">
                             <label class="col-sm-2">Periodicity</label>
                             <div class="col-sm-3">
-                                <select id="periodicity" th:field="*{periodicity}"
-                                        class="form-control form-control-sm"
-                                        th:disabled="${ro}" required>
-                                    <option th:each="p : ${Periodicities}" th:value="${p}" th:text="${p}"></option>
-                                </select>
+                                <input type="text" id="periodicity" th:field="*{periodicity}"
+                                       class="form-control form-control-sm" readonly required />
                             </div>
-
-                            <div class="col-sm-1"></div>
+                            <div class="col-sm-1">
+                                <a href="#" th:if="${!ro}">
+                                    <i class="fas fa-info-circle searchico"
+                                       data-toggle="modal" data-target="#periodModal" id="iconperiod"></i>
+                                </a>
+                            </div>
 
                             <label class="col-sm-2">Department</label>
                             <div class="col-sm-3">
@@ -802,7 +866,7 @@
                             <div class="col-sm-3">
                                 <input type="text" id="last_run_date"
                                        class="form-control form-control-sm"
-                                       th:value="${#dates.format(BatchJob?.last_run_date,'dd-MM-yyyy')}"
+                                       th:value="${#dates.format(BatchJob?.last_run_date,'dd-MM-yyyy HH:mm')}"
                                        readonly />
                             </div>
 
@@ -812,7 +876,7 @@
                             <div class="col-sm-3">
                                 <input type="text" id="next_run_date"
                                        class="form-control form-control-sm"
-                                       th:value="${#dates.format(BatchJob?.next_run_date,'dd-MM-yyyy')}"
+                                       th:value="${#dates.format(BatchJob?.next_run_date,'dd-MM-yyyy HH:mm')}"
                                        readonly />
                             </div>
                             <div class="col-sm-1"></div>
@@ -825,9 +889,9 @@
                                 <select id="status" th:field="*{status}"
                                         class="form-control form-control-sm"
                                         th:disabled="${ro}" required>
-                                    <option value="Active">Active</option>
-                                    <option value="Suspend">Suspend</option>
-                                    <option th:if="${formmode}!='add'" value="Delete">Delete</option>
+                                    <option value="ACTIVE">Active</option>
+                                    <option value="SUSPEND">Suspend</option>
+                                    <option th:if="${formmode}!='add'" value="DELETE">Delete</option>
                                 </select>
                             </div>
 
@@ -861,6 +925,61 @@
                                     <option value="N">No</option>
                                     <option value="Y">Yes</option>
                                 </select>
+                            </div>
+                        </div>
+
+                        <!-- =================================================
+                             PERIODICITY MODAL  (PERIOD / DAY / HOUR / HOUR1)
+                             ================================================= -->
+                        <div class="modal fade" id="periodModal">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content" style="border: 2px solid black;">
+                                    <div class="modal-header" style="background-color: #386276;">
+                                        <h5 class="modal-title text-white">Periodicity</h5>
+                                        <button type="button" class="close text-white" data-dismiss="modal">×</button>
+                                    </div>
+                                    <div class="modal-body" style="background-color: #e6eaed;">
+                                        <div class="row formline">
+                                            <label class="col-sm-4">Period</label>
+                                            <div class="col-sm-8">
+                                                <select id="period" th:field="*{period}" class="form-control form-control-sm">
+                                                    <option th:each="p : ${Periodicities}" th:value="${p}" th:text="${p}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row formline" id="dayrow">
+                                            <label class="col-sm-4">Day</label>
+                                            <div class="col-sm-8">
+                                                <select id="day" name="day" class="form-control form-control-sm"
+                                                        th:attr="data-init=${BatchJob?.day}"></select>
+                                            </div>
+                                        </div>
+                                        <div class="row formline">
+                                            <label class="col-sm-4">Hour</label>
+                                            <div class="col-sm-8">
+                                                <select id="hour" th:field="*{hour}" class="form-control form-control-sm">
+                                                    <option th:each="h : ${#numbers.sequence(0,23)}" th:value="${h}"
+                                                            th:text="${#numbers.formatInteger(h,2)}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row formline">
+                                            <label class="col-sm-4">Minute</label>
+                                            <div class="col-sm-8">
+                                                <select id="hour1" th:field="*{hour1}" class="form-control form-control-sm">
+                                                    <option th:each="m : ${#numbers.sequence(0,59)}" th:value="${m}"
+                                                            th:text="${#numbers.formatInteger(m,2)}"></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div style="float: right;">
+                                            <button type="button" class="btn btn-sm btn-primary"
+                                                    data-dismiss="modal" onclick="applyPeriod();">
+                                                SUBMIT
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -1014,6 +1133,24 @@
                         Verify
                     </button>
 
+                    <button th:if="${formmode}=='view'"
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            th:attr="data-job_id=${BatchJob?.job_id}"
+                            onclick="delete_btn_submit(this);"
+                            id="btnDeleteView">
+                        Delete
+                    </button>
+
+                    <button th:if="${formmode}=='delete'"
+                            type="button"
+                            class="btn btn-sm btn-primary"
+                            form="IPSBatchJob"
+                            id="btnDelete"
+                            onclick="deleteSubmit(this);">
+                        Submit
+                    </button>
+
                     <button type="button" class="btn btn-sm btn-primary" id="btnBack" onclick="back();">
                         Back
                     </button>
@@ -1115,6 +1252,34 @@
 
                 <div class="modal-footer" style="background-color: #c6ccd2; justify-content: center;">
                     <button type="button" class="btn btn-sm btn-primary px-4" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =============================================================
+         DELETE CONFIRMATION
+         ============================================================= -->
+    <div class="modal fade" id="datadelete" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #2B506F; color: white;">
+                    <h5 class="modal-title" style="font-size: 14px;">BLRS - Confirm Delete</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">×</button>
+                </div>
+
+                <div class="modal-body text-center"
+                     style="color: #f15362; background-color: #c6ccd2; font-weight: bold; padding: 20px;">
+                    Are you sure you want to delete this batch job?
+                </div>
+
+                <div class="modal-footer" style="background-color: #c6ccd2;">
+                    <button type="button" class="btn btn-primary btn-sm px-3" onclick="submitformdelete(this);">
+                        Submit
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-dismiss="modal">
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>

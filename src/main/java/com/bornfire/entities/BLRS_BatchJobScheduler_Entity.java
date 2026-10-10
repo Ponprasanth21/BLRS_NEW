@@ -6,11 +6,28 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+/**
+ * ONE entity for the ONE table BLRS_BATCH_JOB_SCHEDULER_TAB (list, add, modify,
+ * verify, delete, execution).
+ *
+ * BLRSBatchScheduler.jsp field -> entity field / DB column PROCESS_ID -> job_id
+ * DESC -> description JOB_TYPE -> job_type SCHM_CODE -> schm_code PERIODICITY
+ * -> periodicity START_DATE -> start_date END_DATE -> end_date JOB_NAME ->
+ * job_name LAST_RUN_DATE / NEXT_RUN_DATE -> last_run_date / next_run_date
+ * DEPARTMENT -> department REM_TYPE -> rem_type STATUS -> status (ACTIVE /
+ * SUSPEND / DELETE) EMAIL_ID -> email_id PASSWORD -> email_pwd HEADER ->
+ * email_header FOOTER -> email_footer EMAIL_FLG -> email_flg SMS_FLG -> sms_flg
+ * USER_CRE -> entry_user (column USER_CRE) PERIOD, DAY, HOUR, HOUR1
+ * -> @Transient (period, day, hour, hour1) : NOT columns, only used to build
+ * NEXT_RUN_DATE ENTITY_FLG (Y = verified), DEL_FLG (Y = deleted), ENTRY_TIME,
+ * MODIFY_USER/TIME, AUTH_USER/TIME : maker-checker audit
+ */
 @Entity
 @Table(name = "BLRS_BATCH_JOB_SCHEDULER_TAB")
 public class BLRS_BatchJobScheduler_Entity {
@@ -31,7 +48,7 @@ public class BLRS_BatchJobScheduler_Entity {
 	@Column(name = "SCHM_CODE")
 	private String schm_code;
 
-	@Column(name = "REMINDER_TYPE")
+	@Column(name = "REM_TYPE")
 	private String reminder_type;
 
 	@Column(name = "DEPARTMENT")
@@ -51,13 +68,13 @@ public class BLRS_BatchJobScheduler_Entity {
 	private Date end_date;
 
 	@Column(name = "LAST_RUN_DATE")
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
 	private Date last_run_date;
 
 	@Column(name = "NEXT_RUN_DATE")
-	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
 	private Date next_run_date;
 
 	@Column(name = "STATUS")
@@ -87,7 +104,7 @@ public class BLRS_BatchJobScheduler_Entity {
 	@Column(name = "DEL_FLG")
 	private String del_flg;
 
-	@Column(name = "ENTRY_USER")
+	@Column(name = "USER_CRE")
 	private String entry_user;
 
 	@Column(name = "ENTRY_TIME")
@@ -107,6 +124,22 @@ public class BLRS_BatchJobScheduler_Entity {
 	@Column(name = "AUTH_TIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date auth_time;
+
+	// ---- Periodicity pop-up (BLRSBatchScheduler.jsp : PERIOD, DAY, HOUR, HOUR1)
+	// ----
+	// Not DB columns. They only decide NEXT_RUN_DATE (date + time) and PERIODICITY
+	// text.
+	@Transient
+	private String period; // DAILY / WEEKLY / MONTHLY
+
+	@Transient
+	private Integer day; // WEEKLY : 1=Mon..7=Sun , MONTHLY : 1..31
+
+	@Transient
+	private Integer hour; // run hour 00-23
+
+	@Transient
+	private Integer hour1; // run minute 00-59
 
 	public BLRS_BatchJobScheduler_Entity() {
 		super();
@@ -326,5 +359,37 @@ public class BLRS_BatchJobScheduler_Entity {
 
 	public void setAuth_time(Date auth_time) {
 		this.auth_time = auth_time;
+	}
+
+	public String getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(String period) {
+		this.period = period;
+	}
+
+	public Integer getDay() {
+		return day;
+	}
+
+	public void setDay(Integer day) {
+		this.day = day;
+	}
+
+	public Integer getHour() {
+		return hour;
+	}
+
+	public void setHour(Integer hour) {
+		this.hour = hour;
+	}
+
+	public Integer getHour1() {
+		return hour1;
+	}
+
+	public void setHour1(Integer hour1) {
+		this.hour1 = hour1;
 	}
 }

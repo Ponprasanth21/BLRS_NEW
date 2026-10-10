@@ -38,7 +38,13 @@ public class BLRS_BatchJobSchedulerService {
 		if (jobId == null || jobId.trim().isEmpty()) {
 			return null;
 		}
-		return batchJobRepo.getJob(jobId.trim());
+		BLRS_BatchJobScheduler_Entity j = batchJobRepo.getJob(jobId.trim());
+		// verified-deleted jobs behave as "not found"
+		if (j == null || "Y".equals(j.getDel_flg())) {
+			return null;
+		}
+		fillSchedule(j);
+		return j;
 	}
 
 	public BLRS_BatchJobScheduler_Entity getNewJob() {
@@ -47,13 +53,14 @@ public class BLRS_BatchJobSchedulerService {
 		j.setJob_type("BUSINESS JOBS");
 		j.setPeriodicity("DAILY");
 		j.setDepartment("ALL");
-		j.setStatus("Active");
+		j.setStatus("ACTIVE");
 		j.setEmail_flg("N");
 		j.setSms_flg("N");
 		Calendar c = Calendar.getInstance();
 		j.setStart_date(c.getTime());
 		c.set(2099, Calendar.DECEMBER, 31);
 		j.setEnd_date(c.getTime());
+		fillSchedule(j);
 		return j;
 	}
 
@@ -104,6 +111,9 @@ public class BLRS_BatchJobSchedulerService {
 		if (isBlank(in.getJob_name())) {
 			return "Job Name is required";
 		}
+		if (isBlank(in.getDescription())) {
+			return "Description is required";
+		}
 		if (isBlank(in.getJob_type())) {
 			in.setJob_type("BUSINESS JOBS");
 		}
@@ -122,7 +132,7 @@ public class BLRS_BatchJobSchedulerService {
 			return "Job Name already exists";
 		}
 		if (isBlank(in.getStatus())) {
-			in.setStatus("Active");
+			in.setStatus("ACTIVE");
 		}
 		if ("Delete".equalsIgnoreCase(in.getStatus())) {
 			return "Delete status is not allowed while adding a job";
@@ -144,7 +154,7 @@ public class BLRS_BatchJobSchedulerService {
 		j.setStart_date(in.getStart_date());
 		j.setEnd_date(in.getEnd_date());
 		j.setLast_run_date(null);
-		j.setNext_run_date(computeNext(null, in.getStart_date(), in.getPeriodicity()));
+		j.setNext_run_date(computeNextFor(null, in));
 		j.setStatus(normalizeStatus(in.getStatus()));
 		applyNotify(j, in, null);
 		j.setEntity_flg("N");
@@ -168,6 +178,9 @@ public class BLRS_BatchJobSchedulerService {
 		if (err != null) {
 			return err;
 		}
+		if ("Y".equals(in.getEmail_flg()) && isBlank(in.getEmail_pwd()) && isBlank(ex.getEmail_pwd())) {
+			return "Please enter Email Password";
+		}
 
 		// Manual : only these fields are modifiable
 		ex.setPeriodicity(in.getPeriodicity());
@@ -175,7 +188,7 @@ public class BLRS_BatchJobSchedulerService {
 		ex.setStart_date(in.getStart_date());
 		ex.setEnd_date(in.getEnd_date());
 		ex.setStatus(normalizeStatus(in.getStatus()));
-		ex.setNext_run_date(computeNext(ex.getLast_run_date(), in.getStart_date(), in.getPeriodicity()));
+		ex.setNext_run_date(computeNextFor(ex.getLast_run_date(), in));
 		applyNotify(ex, in, ex);
 		ex.setEntity_flg("N");
 		ex.setModify_user(loginUser);
@@ -187,6 +200,24 @@ public class BLRS_BatchJobSchedulerService {
 	// ------------------------------------------------------------------
 	// Verify (checker)
 	// ------------------------------------------------------------------
+	/** Delete request by maker : status = Delete, record goes back to Unverified. Checker verify => DEL_FLG = Y */
+	@Transactional
+	public String deleteJob(String jobId, String loginUser) {
+		BLRS_BatchJobScheduler_Entity ex = getJob(jobId);
+		if (ex == null) {
+			return "Job Id not found";
+		}
+		if ("Delete".equalsIgnoreCase(ex.getStatus()) && "N".equals(ex.getEntity_flg())) {
+			return "Job Id: " + ex.getJob_id() + " is already waiting for delete verification.";
+		}
+		ex.setStatus("DELETE");
+		ex.setEntity_flg("N");
+		ex.setModify_user(loginUser);
+		ex.setModify_time(new Date());
+		batchJobRepo.save(ex);
+		return "Job Id: " + ex.getJob_id() + " Delete request submitted Successfully. Verifier has to verify.";
+	}
+
 	@Transactional
 	public String verifyJob(String jobId, String loginUser) {
 		BLRS_BatchJobScheduler_Entity ex = getJob(jobId);
@@ -196,18 +227,20 @@ public class BLRS_BatchJobSchedulerService {
 		if ("Y".equals(ex.getEntity_flg())) {
 			return "Job Name: " + ex.getJob_name() + " is already verified.";
 		}
+		// Maker-Checker : the user who made the last change (modify / delete request, else entry) cannot verify
 		String lastMaker = !isBlank(ex.getModify_user()) ? ex.getModify_user() : ex.getEntry_user();
-		if (lastMaker != null && lastMaker.equalsIgnoreCase(loginUser)) {
+		if (lastMaker != null && loginUser != null && lastMaker.trim().equalsIgnoreCase(loginUser.trim())) {
 			return "Same user cannot verify";
 		}
 		ex.setEntity_flg("Y");
 		ex.setAuth_user(loginUser);
 		ex.setAuth_time(new Date());
-		if ("Delete".equalsIgnoreCase(ex.getStatus())) {
+		boolean deleted = "Delete".equalsIgnoreCase(ex.getStatus());
+		if (deleted) {
 			ex.setDel_flg("Y");
 		}
 		batchJobRepo.save(ex);
-		return "Job Name: " + ex.getJob_name() + " Verified Successfully.";
+		return "Job Name: " + ex.getJob_name() + (deleted ? " Deleted Successfully." : " Verified Successfully.");
 	}
 
 	// ------------------------------------------------------------------
@@ -261,34 +294,89 @@ public class BLRS_BatchJobSchedulerService {
 		}
 	}
 
-	private Date computeNext(Date last, Date start, String periodicity) {
-		if (last == null) {
-			return start;
-		}
-		Calendar c = Calendar.getInstance();
-		c.setTime(last);
-		if ("WEEKLY".equalsIgnoreCase(periodicity)) {
-			c.add(Calendar.DAY_OF_MONTH, 7);
-		} else if ("MONTHLY".equalsIgnoreCase(periodicity)) {
-			c.add(Calendar.MONTH, 1);
-		} else {
-			c.add(Calendar.DAY_OF_MONTH, 1);
-		}
-		Date n = c.getTime();
-		if (start != null && n.before(start)) {
-			n = start;
-		}
-		return n;
+	private Date computeNextFor(Date last, BLRS_BatchJobScheduler_Entity in) {
+		return computeNext(last, in.getStart_date(), in.getPeriodicity(), intOr(in.getDay(), 1),
+				intOr(in.getHour(), 0), intOr(in.getHour1(), 0));
 	}
 
+	/**
+	 * Next run = first slot (period / day / hh:mm) after the last run.
+	 * First run of a new job = first slot on or after Start Date.
+	 */
+	private Date computeNext(Date last, Date start, String periodicity, int day, int hour, int minute) {
+		boolean inclusive = (last == null);
+		Date ref = inclusive ? start : last;
+		if (ref == null) {
+			ref = new Date();
+		}
+		Calendar c = Calendar.getInstance();
+		c.setTime(ref);
+		c.set(Calendar.HOUR_OF_DAY, hour);
+		c.set(Calendar.MINUTE, minute);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+
+		if ("WEEKLY".equalsIgnoreCase(periodicity)) {
+			c.set(Calendar.DAY_OF_WEEK, (day % 7) + 1); // 1=Mon .. 7=Sun
+			while (!slotOk(c, ref, inclusive)) {
+				c.add(Calendar.DAY_OF_MONTH, 7);
+			}
+		} else if ("MONTHLY".equalsIgnoreCase(periodicity)) {
+			c.set(Calendar.DAY_OF_MONTH, Math.min(day, c.getActualMaximum(Calendar.DAY_OF_MONTH)));
+			while (!slotOk(c, ref, inclusive)) {
+				c.set(Calendar.DAY_OF_MONTH, 1);
+				c.add(Calendar.MONTH, 1);
+				c.set(Calendar.DAY_OF_MONTH, Math.min(day, c.getActualMaximum(Calendar.DAY_OF_MONTH)));
+			}
+		} else {
+			while (!slotOk(c, ref, inclusive)) {
+				c.add(Calendar.DAY_OF_MONTH, 1);
+			}
+		}
+		return c.getTime();
+	}
+
+	private boolean slotOk(Calendar c, Date ref, boolean inclusive) {
+		return inclusive ? !c.getTime().before(ref) : c.getTime().after(ref);
+	}
+
+	/** Rebuilds the pop-up values (period / day / hour / minute) from PERIODICITY + NEXT_RUN_DATE. */
+	private void fillSchedule(BLRS_BatchJobScheduler_Entity j) {
+		String p = isBlank(j.getPeriodicity()) ? "DAILY" : j.getPeriodicity().trim().toUpperCase();
+		j.setPeriod(p);
+		int day = 1;
+		int hour = 0;
+		int minute = 0;
+		Date n = j.getNext_run_date();
+		if (n != null) {
+			Calendar c = Calendar.getInstance();
+			c.setTime(n);
+			hour = c.get(Calendar.HOUR_OF_DAY);
+			minute = c.get(Calendar.MINUTE);
+			if ("WEEKLY".equals(p)) {
+				day = ((c.get(Calendar.DAY_OF_WEEK) + 5) % 7) + 1; // Mon=1 .. Sun=7
+			} else if ("MONTHLY".equals(p)) {
+				day = c.get(Calendar.DAY_OF_MONTH);
+			}
+		}
+		j.setDay(day);
+		j.setHour(hour);
+		j.setHour1(minute);
+	}
+
+	private int intOr(Integer v, int def) {
+		return v == null ? def : v.intValue();
+	}
+
+	/** DB (old data) keeps STATUS in upper case : ACTIVE / SUSPEND / DELETE */
 	private String normalizeStatus(String s) {
 		if ("Suspend".equalsIgnoreCase(s)) {
-			return "Suspend";
+			return "SUSPEND";
 		}
 		if ("Delete".equalsIgnoreCase(s)) {
-			return "Delete";
+			return "DELETE";
 		}
-		return "Active";
+		return "ACTIVE";
 	}
 
 	private boolean isBlank(String s) {
