@@ -7,6 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+// imports
+import java.util.Date;
+import java.util.List;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 @Repository
 public interface BLRS_BatchJobScheduler_Repo extends JpaRepository<BLRS_BatchJobScheduler_Entity, String> {
 
@@ -33,4 +39,15 @@ public interface BLRS_BatchJobScheduler_Repo extends JpaRepository<BLRS_BatchJob
 
 	@Query("SELECT DISTINCT j.schm_code FROM BLRS_BatchJobScheduler_Entity j WHERE j.schm_code IS NOT NULL")
 	List<String> getSchemeValues();
+	
+	
+
+	 
+		// Batch Job Alert : verified + active + not deleted + due today (or overdue)
+		@Query("select j from BLRS_BatchJobScheduler_Entity j "
+				+ "where j.status = 'ACTIVE' and j.entity_flg = 'Y' "
+				+ "and (j.del_flg is null or j.del_flg <> 'Y') "
+				+ "and j.next_run_date <= :endOfDay order by j.next_run_date")
+		List<BLRS_BatchJobScheduler_Entity> getAlertList(@Param("endOfDay") Date endOfDay);
+	 
 }

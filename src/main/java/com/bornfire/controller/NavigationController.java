@@ -51,6 +51,14 @@ import com.bornfire.entities.BLRS_LoanAccountProfile_Entity;
 import com.bornfire.services.BLRS_BatchJobSchedulerService;
 import com.bornfire.services.BLRS_LoanAccountProfileService;
 
+//---------- STEP 1 : IMPORTS (add with the other imports) ----------
+		import java.util.Map;
+		import com.bornfire.entities.BLRS_EmailSmsParam_Entity;
+		import com.bornfire.services.BLRS_ParameterService;
+		// (java.io.IOException and MultipartFile are already imported in your file)
+
+	
+
 @Controller
 public class NavigationController {
 
@@ -76,6 +84,11 @@ public class NavigationController {
 	
 	@Autowired
 	private BLRS_ReminderGeneratorService reminderGenService;
+	
+	// ---------- STEP 2 : AUTOWIRED (below batchJobService) ----------
+	@Autowired
+	private BLRS_ParameterService parameterService;
+
 	
 
 
@@ -635,29 +648,103 @@ public class NavigationController {
 		return batchJobService.verifyJob(jobId, loginUser);
 	}
 
-	@RequestMapping(value = "Batchjobalert", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Batchjobalert(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_BatchJobAlert";
-	}
+	// =====================================================================
+	// NavigationController.java  -  Batch Job Alert
+	// You ALREADY have these two methods. Nothing new to add, shown here for reference.
+	// (batchJobService + accessRoleService are already @Autowired)
+	// =====================================================================
 
-	@RequestMapping(value = "Parameters", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Parameters(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_Parameters";
-	}
+		@RequestMapping(value = "Batchjobalert", method = { RequestMethod.GET, RequestMethod.POST })
+		public String Batchjobalert(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
 
-	@RequestMapping(value = "EmailandSMS", method = { RequestMethod.GET, RequestMethod.POST })
-	public String EmailandSMS(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_Parameters";
-	}
+			String roleId = (String) rq.getSession().getAttribute("ROLEID");
+			md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
 
-	@RequestMapping(value = "Reminder", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Reminder(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_ReminderParameter";
-	}
+			md.addAttribute("formmode", "list");
+			md.addAttribute("AlertList", batchJobService.getAlertList());
+
+			return "BLRS_BatchJobAlert";
+		}
+
+		@RequestMapping(value = "runBatchJob", method = RequestMethod.POST)
+		@ResponseBody
+		public String runBatchJob(@RequestParam("job_id") String jobId, HttpServletRequest rq) {
+			String loginUser = (String) rq.getSession().getAttribute("USERID");
+			if (loginUser == null)
+				loginUser = "SYSTEM";
+			return batchJobService.runJob(jobId, loginUser);
+		}
+
+		// =====================================================================
+		// NavigationController.java  -  PARAMETERS (Email and SMS + Reminder)
+		// 4 small steps. Everything else in your controller stays as it is.
+		// =====================================================================
+
+		
+		// ---------- STEP 3 : DELETE your old "Parameters", "EmailandSMS" and "Reminder" methods,
+//		                     then paste ALL of the methods below in the same place ----------
+
+		// Parent menu click -> go to the first sub menu (the old version returned BLRS_Parameters
+		// with no data, which breaks the page because the page needs ${EmailSms})
+		@RequestMapping(value = "Parameters", method = { RequestMethod.GET, RequestMethod.POST })
+		public String Parameters(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+			return "redirect:/EmailandSMS";
+		}
+
+		// ----- Email and SMS -----
+		@RequestMapping(value = "EmailandSMS", method = { RequestMethod.GET, RequestMethod.POST })
+		public String EmailandSMS(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+
+			String roleId = (String) rq.getSession().getAttribute("ROLEID");
+			md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
+
+			md.addAttribute("formmode", "list");
+			md.addAttribute("EmailSms", parameterService.getEmailSms());
+			return "BLRS_Parameters";
+		}
+
+		@RequestMapping(value = "saveEmailSms", method = RequestMethod.POST)
+		@ResponseBody
+		public String saveEmailSms(@ModelAttribute BLRS_EmailSmsParam_Entity emailSms,
+				@RequestParam(value = "file", required = false) MultipartFile file, HttpServletRequest rq)
+				throws IOException {
+
+			String loginUser = (String) rq.getSession().getAttribute("USERID");
+			if (loginUser == null)
+				loginUser = "SYSTEM";
+
+			byte[] bytes = null;
+			String fileName = null;
+			if (file != null && !file.isEmpty()) {
+				bytes = file.getBytes();
+				fileName = file.getOriginalFilename();
+			}
+			return parameterService.saveEmailSms(emailSms, bytes, fileName, loginUser);
+		}
+
+		// ----- Reminder -----
+		@RequestMapping(value = "Reminder", method = { RequestMethod.GET, RequestMethod.POST })
+		public String Reminder(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+
+			String roleId = (String) rq.getSession().getAttribute("ROLEID");
+			md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
+
+			md.addAttribute("formmode", "list");
+			md.addAttribute("ReminderList", parameterService.getReminders());
+			return "BLRS_ReminderParameter";
+		}
+
+		@RequestMapping(value = "saveReminderParam", method = RequestMethod.POST)
+		@ResponseBody
+		public String saveReminderParam(@RequestParam Map<String, String> allParams, HttpServletRequest rq) {
+			String loginUser = (String) rq.getSession().getAttribute("USERID");
+			if (loginUser == null)
+				loginUser = "SYSTEM";
+			return parameterService.saveReminders(allParams, loginUser);
+		}
+
+		// ---------- STEP 4 : optional clean up ----------
+		// "import java.text.SimpleDateFormat;" is in your file twice. Delete one (harmless, just a warning).
 
 	@RequestMapping(value = "Loanaccountprofile", method = {
 	        RequestMethod.GET, RequestMethod.POST

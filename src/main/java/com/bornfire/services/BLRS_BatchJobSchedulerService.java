@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -381,5 +385,77 @@ public class BLRS_BatchJobSchedulerService {
 
 	private boolean isBlank(String s) {
 		return s == null || s.trim().isEmpty();
+	}
+	
+
+	// ---------- Alert grid : jobs due today ----------
+	public List<BLRS_BatchJobScheduler_Entity> getAlertList() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.HOUR_OF_DAY, 23);
+		c.set(Calendar.MINUTE, 59);
+		c.set(Calendar.SECOND, 59);
+		c.set(Calendar.MILLISECOND, 999);
+		return batchJobRepo.getAlertList(c.getTime());
+	}
+ 
+	// ---------- Run button ----------
+	public String runJob(String jobId, String loginUser) {
+ 
+		BLRS_BatchJobScheduler_Entity job = batchJobRepo.findById(jobId).orElse(null);
+		if (job == null) {
+			return "Error : Job " + jobId + " not found.";
+		}
+		if (!"ACTIVE".equalsIgnoreCase(job.getStatus()) || !"Y".equals(job.getEntity_flg())) {
+			return "Error : Job " + job.getJob_name() + " is not active or not verified.";
+		}
+ 
+		try {
+			job.setJob_status("STARTED");
+			batchJobRepo.save(job);
+ 
+			executeJob(job); // <<< your existing execution (same as Operation > Batch Job Execution)
+ 
+			job.setJob_status("COMPLETED");
+			job.setLast_run_date(new Date());
+			job.setNext_run_date(calcNextRun(job.getNext_run_date(), job.getPeriodicity()));
+			job.setModify_user(loginUser);
+			job.setModify_time(new Date());
+			batchJobRepo.save(job);
+ 
+			return "Job " + job.getJob_name() + " completed successfully.";
+ 
+		} catch (Exception e) {
+			e.printStackTrace();
+			job.setJob_status("FAILED");
+			batchJobRepo.save(job);
+			return "Error : Job " + job.getJob_name() + " failed.";
+		}
+	}
+ 
+	// ---------- put your real job logic here ----------
+	private void executeJob(BLRS_BatchJobScheduler_Entity job) throws Exception {
+		// e.g. if DATA JOBS -> extraction ; if BUSINESS JOBS -> reminder generation for job.getSchm_code()
+		// If you already have a method for Batch Job Execution, just call it here.
+	}
+ 
+	// ---------- next run : daily +1 day, weekly +7 days, monthly +1 month (keeps the time) ----------
+	// Replace with the same logic you used in saveJob() if you want exact day/hour rules.
+	private Date calcNextRun(Date current, String periodicity) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(current != null ? current : new Date());
+		String p = periodicity == null ? "" : periodicity.toUpperCase();
+ 
+		Date now = new Date();
+		do {
+			if (p.contains("WEEK")) {
+				c.add(Calendar.DAY_OF_MONTH, 7);
+			} else if (p.contains("MONTH")) {
+				c.add(Calendar.MONTH, 1);
+			} else {
+				c.add(Calendar.DAY_OF_MONTH, 1);
+			}
+		} while (!c.getTime().after(now)); // never leave next run in the past, or it shows in the alert again
+ 
+		return c.getTime();
 	}
 }

@@ -35,10 +35,7 @@
 			background-color: #f8fafc !important;
 			font-family: 'Outfit', sans-serif !important;
 			color: #1e293b;
-			overscroll-behavior: !important;
-			
 		}
-		
 		.container-manager {
 			width: 100%;
 			max-width: 100%;
@@ -47,85 +44,6 @@
 			margin-right: auto;
 			margin-left: auto;
 			margin-top: 10px;
-			
-
-		}
-		/* KPI Card Styles */
-		.kpi-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			position: relative;
-			overflow: hidden;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
-		.kpi-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-		}
-		.kpi-icon-container {
-			width: 42px;
-			height: 42px;
-			border-radius: 8px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-bottom: 12px;
-		}
-		.kpi-title {
-			font-size: 0.78rem;
-			font-weight: 600;
-			color: #64748b;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-		}
-		.kpi-value {
-			font-size: 1.3rem;
-			font-weight: 700;
-			color: #0f172a;
-			margin-top: 4px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-		.border-left-teal { border-left: 4px solid #0d9488; }
-		.border-left-rose { border-left: 4px solid #e11d48; }
-		.border-left-indigo { border-left: 4px solid #4f46e5; }
-		.border-left-emerald { border-left: 4px solid #10b981; }
-		.border-left-orange { border-left: 4px solid #f97316; }
-		.border-left-violet { border-left: 4px solid #8b5cf6; }
-		.bg-teal-light { background-color: #f0fdfa; }
-		.text-teal { color: #0d9488; }
-		.bg-rose-light { background-color: #fff1f2; }
-		.text-rose { color: #e11d48; }
-		.bg-indigo-light { background-color: #e0e7ff; }
-		.text-indigo { color: #4f46e5; }
-		.bg-emerald-light { background-color: #ecfdf5; }
-		.text-emerald { color: #10b981; }
-		.bg-orange-light { background-color: #fff7ed; }
-		.text-orange { color: #f97316; }
-		.bg-violet-light { background-color: #f5f3ff; }
-		.text-violet { color: #8b5cf6; }
-		.chart-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-		.chart-title {
-			font-size: 0.95rem;
-			font-weight: 600;
-			color: #334155;
-			margin-bottom: 16px;
-			padding-bottom: 12px;
-			border-bottom: 1px solid #f1f5f9;
 		}
 		.table-card {
 			background: #ffffff;
@@ -176,11 +94,6 @@
 		.table-responsive::-webkit-scrollbar { width: 6px; height: 6px; }
 		.table-responsive::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
 		.table-responsive::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-		.table-responsive::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-		@media (max-width: 1199.98px) {
-			.container-manager { max-width: 100%; }
-		}
 		@media (max-width: 767.98px) {
 			.container-manager {
 				width: 100%;
@@ -200,9 +113,7 @@
 				padding-left: 15px !important;
 				padding-right: 15px !important;
 			}
-			.container-manager form {
-				max-width: 100% !important;
-			}
+			.container-manager form { max-width: 100% !important; }
 			.container-manager fieldset {
 				max-width: 100% !important;
 				padding-left: 12px !important;
@@ -210,25 +121,15 @@
 			}
 		}
 		@media (max-width: 575.98px) {
-			.container-manager {
-				padding-right: 5px;
-				padding-left: 5px;
-			}
-			.container-manager .card-footer {
-				padding-left: 5px;
-				padding-right: 5px;
-			}
+			.container-manager { padding-right: 5px; padding-left: 5px; }
+			.container-manager .card-footer { padding-left: 5px; padding-right: 5px; }
 		}
-		
-
 		html, body {
 		    width: 100% !important;
 		    margin: 0 !important;
 		    overflow-x: hidden !important;
 		    overflow-y: visible !important;
 		}
-
-		
 	</style>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
@@ -238,12 +139,10 @@
 		function Back() {
 			window.history.back();
 		}
-		function submitForm() {
-			alert("Parameters saved successfully!");
-		}
 		/*]]>*/
 	</script>
 </head>
+
 <body>
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 	<div class="container-manager">
@@ -252,101 +151,99 @@
 				<div th:if="${formmode}=='list'">
 					<div class="panel panel-primary filterable">
 						<div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1;">
-							<!-- Card Header -->
 							<div class="card-header" style="background-color: #e9ecef;">
 								<div class="float-left">
 									<h6 style="font-weight: bold; margin: 0;">EMAIL and SMS Parameter</h6>
 								</div>
 							</div>
-							<!-- Card Body -->
-							<div class="card-body d-flex flex-column align-items-center" style="padding: 12px 25px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; ">
-								<form id="parameterForm" style="width: 100%; max-width: 500px;" onsubmit="event.preventDefault(); submitForm();">
-									<!-- Fieldset 1: Email -->
+							<div class="card-body d-flex flex-column align-items-center" style="padding: 12px 25px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
+								<form id="parameterForm" style="width: 100%; max-width: 500px;" enctype="multipart/form-data" onsubmit="return false;">
+									<input type="hidden" name="param_id" value="EMAILSMS">
+
 									<fieldset style="border: 1px solid #cbd5e1; padding: 10px 20px 8px 20px; border-radius: 4px; margin-bottom: 10px; max-width: 500px;">
 										<legend style="width: auto; padding: 0 8px; font-size: 0.88rem; font-weight: bold; color: #2563eb; margin-bottom: 4px;">Email</legend>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Host</label>
-											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="emailHost" id="emailHost"></div>
+											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="email_host" id="emailHost" th:value="${EmailSms.email_host}"></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Port</label>
-											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="emailPort" id="emailPort"></div>
+											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="email_port" id="emailPort" th:value="${EmailSms.email_port}"></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Sender Email</label>
-											<div class="col-sm-8"><input type="email" class="form-control form-control-sm" name="senderEmail" id="senderEmail"></div>
+											<div class="col-sm-8"><input type="email" class="form-control form-control-sm" name="sender_email" id="senderEmail" th:value="${EmailSms.sender_email}"></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Password</label>
-											<div class="col-sm-8"><input type="password" class="form-control form-control-sm" name="emailPassword" id="emailPassword"></div>
+											<div class="col-sm-8"><input type="password" class="form-control form-control-sm" name="email_pwd" id="emailPassword" autocomplete="new-password" placeholder="Leave blank to keep current"></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Email</label>
 											<div class="col-sm-8">
-												<select class="form-control form-control-sm custom-select custom-select-sm" name="emailEnable" id="emailEnable">
-													<option value="No">No</option>
-													<option value="Yes">Yes</option>
+												<select class="form-control form-control-sm custom-select custom-select-sm" name="email_flg" id="emailEnable">
+													<option value="N" th:selected="${EmailSms.email_flg != 'Y'}">No</option>
+													<option value="Y" th:selected="${EmailSms.email_flg == 'Y'}">Yes</option>
 												</select>
 											</div>
 										</div>
 									</fieldset>
-									<!-- Fieldset 2: Signature -->
+
 									<fieldset style="border: 1px solid #cbd5e1; padding: 10px 20px 8px 20px; border-radius: 4px; margin-bottom: 10px; max-width: 500px;">
 										<legend style="width: auto; padding: 0 8px; font-size: 0.88rem; font-weight: bold; color: #2563eb; margin-bottom: 4px;">Signature</legend>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Auth Id</label>
-											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="authId" id="authId"></div>
+											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="auth_id" id="authId" th:value="${EmailSms.auth_id}"></div>
 										</div>
 										<div class="form-group row align-items-start mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Footer</label>
-											<div class="col-sm-8"><textarea class="form-control form-control-sm" name="footerText" id="footerText" rows="2"></textarea></div>
+											<div class="col-sm-8"><textarea class="form-control form-control-sm" name="footer_text" id="footerText" rows="2" th:text="${EmailSms.footer_text}"></textarea></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Signature</label>
 											<div class="col-sm-8">
 												<div class="input-group input-group-sm">
-													<input type="text" class="form-control form-control-sm" id="signatureFileText" readonly>
+													<input type="text" class="form-control form-control-sm" id="signatureFileText" th:value="${EmailSms.signature_name}" readonly>
 													<div class="input-group-append">
 														<label class="btn btn-sm btn-outline-secondary mb-0" style="background-color: #e2e8f0; color: #334155; font-weight: bold; cursor: pointer;">
 															Browse...
-															<input type="file" id="signatureFile" hidden onchange="$('#signatureFileText').val(this.files[0] ? this.files[0].name : '')">
+															<input type="file" name="file" id="signatureFile" accept="image/*" hidden onchange="$('#signatureFileText').val(this.files[0] ? this.files[0].name : '')">
 														</label>
 													</div>
 												</div>
 											</div>
 										</div>
 									</fieldset>
-									<!-- Fieldset 3: SMS -->
+
 									<fieldset style="border: 1px solid #cbd5e1; padding: 10px 20px 8px 20px; border-radius: 4px; margin-bottom: 5px; max-width: 500px;">
 										<legend style="width: auto; padding: 0 8px; font-size: 0.88rem; font-weight: bold; color: #2563eb; margin-bottom: 4px;">SMS</legend>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Host</label>
-											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="smsHost" id="smsHost"></div>
+											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="sms_host" id="smsHost" th:value="${EmailSms.sms_host}"></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">User</label>
-											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="smsUser" id="smsUser"></div>
+											<div class="col-sm-8"><input type="text" class="form-control form-control-sm" name="sms_user" id="smsUser" th:value="${EmailSms.sms_user}"></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Password</label>
-											<div class="col-sm-8"><input type="password" class="form-control form-control-sm" name="smsPassword" id="smsPassword"></div>
+											<div class="col-sm-8"><input type="password" class="form-control form-control-sm" name="sms_pwd" id="smsPassword" autocomplete="new-password" placeholder="Leave blank to keep current"></div>
 										</div>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">SMS</label>
 											<div class="col-sm-8">
-												<select class="form-control form-control-sm custom-select custom-select-sm" name="smsEnable" id="smsEnable">
-													<option value="No">No</option>
-													<option value="Yes">Yes</option>
+												<select class="form-control form-control-sm custom-select custom-select-sm" name="sms_flg" id="smsEnable">
+													<option value="N" th:selected="${EmailSms.sms_flg != 'Y'}">No</option>
+													<option value="Y" th:selected="${EmailSms.sms_flg == 'Y'}">Yes</option>
 												</select>
 											</div>
 										</div>
 									</fieldset>
 								</form>
 							</div>
-							<!-- Card Footer -->
 							<div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
 								<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
-								<button type="button" class="btn-primary big-btn" id="btnSubmit" onclick="submitForm();">Submit</button>
+								<button type="button" class="btn-primary big-btn" id="btnSubmit">Submit</button>
 								<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
 							</div>
 						</div>
@@ -355,5 +252,24 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		$(function () {
+			$("#btnSubmit").on("click", function () {
+				if ($("#emailEnable").val() === "Y" && ($("#emailHost").val() === "" || $("#senderEmail").val() === "")) {
+					alert("Enter the email host and sender email to enable Email.");
+					return;
+				}
+				$.ajax({
+					url: "saveEmailSms",
+					type: "POST",
+					data: new FormData(document.getElementById("parameterForm")),
+					processData: false,
+					contentType: false,
+					success: function (res) { alert(res); location.reload(); },
+					error: function () { alert("Parameters could not be saved."); }
+				});
+			});
+		});
+	</script>
 </body>
 </html>

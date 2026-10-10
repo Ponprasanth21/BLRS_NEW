@@ -124,6 +124,11 @@ public class BLRS_BatchJobScheduler_Entity {
 	@Column(name = "AUTH_TIME")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date auth_time;
+	
+	@Column(name = "JOB_STATUS")
+	private String job_status; // STARTED / COMPLETED / FAILED
+ 
+	
 
 	// ---- Periodicity pop-up (BLRSBatchScheduler.jsp : PERIOD, DAY, HOUR, HOUR1)
 	// ----
@@ -392,4 +397,13 @@ public class BLRS_BatchJobScheduler_Entity {
 	public void setHour1(Integer hour1) {
 		this.hour1 = hour1;
 	}
+	
+	public String getJob_status() {
+		return job_status;
+	}
+ 
+	public void setJob_status(String job_status) {
+		this.job_status = job_status;
+	}
+ 
 }
