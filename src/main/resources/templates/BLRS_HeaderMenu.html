@@ -102,11 +102,9 @@
 
 			align-items: center;
 
-			justify-content: space-around;
-
+			justify-content: flex-start;
+			gap: 10px;
 			flex-flow: row nowrap;
-
-			gap: 2px;
 
 			margin: 0;
 
@@ -134,8 +132,8 @@
 
 			white-space: nowrap;
 
-			padding: 14px 12px !important;
-
+			padding: 14px 15px !important;
+			
 			border: 0;
 
 			border-radius: 4px;
@@ -595,7 +593,7 @@
 		}
 
 		body {
-			padding-top: 100px !important;
+			padding-top: 90px !important;
 			background: #f5f7fa;
 		}
 
@@ -604,8 +602,11 @@
 			max-width: 1500px !important;
 			min-height: calc(100vh - 100px) !important;
 			margin-left: auto !important;
-			margin-right: auto !important;
+			margin-right: auto !important;			
 			padding: 0px 0px 0px !important;
+
+			padding-left: 100px;
+			padding-right: 0px;
 			box-sizing: border-box !important;
 			position: relative !important;
 			left: auto !important;
@@ -655,6 +656,8 @@
 		#blrsPageContent .row {
 			width: 100% !important;
 			max-width: 1450px !important;
+			padding-left: 0%;
+			padding-right: 0%;
 			margin-left: auto !important;
 			margin-right: auto !important;
 			justify-content: center !important;

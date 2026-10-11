@@ -95,10 +95,7 @@
 
 			/* Main page content is centered below the fixed top menu. */
 			width: 100%;
-			max-width: 1450px;
-
-			padding-right: 15px;
-			padding-left: 15px;
+			max-width: 100%;
 
 			margin-right: auto;
 			margin-left: auto;
@@ -145,7 +142,7 @@
 
 			
 			min-height: 100px !important;
-			max-height: 80vh;
+			max-height: 52vh;
 
 			overflow-y: auto;
 
@@ -266,6 +263,7 @@
 
 		}
 
+		
 		/*.card-header {
 
 			background-color: #b8c2cc;
@@ -306,7 +304,7 @@
 
 		.card-header {
 
-		    background-color: #b8c2cc !important;
+			background-color: #e9ecef !important;
 
 		    border-bottom: 1px solid #9faab4 !important;
 
@@ -374,7 +372,7 @@
 
 		#usertable thead th {
 
-		    background-color: #f1f5f9 !important;
+		    background-color: #f1f5f9  !important;
 
 		    color: #1e293b !important;
 
@@ -388,7 +386,7 @@
 
 		    background-color: #ffffff !important;
 
-		    color: #333333 !important;
+		    color: #333333;
 
 		    border-right: 1px solid #d4d7da !important;
 
@@ -408,8 +406,8 @@
 
 		.card-footer {
 
-		    background-color: #e9ecef !important;
-
+			background-color: #e9ecef;
+			
 		    border-top: 1px solid #d5d9dc !important;
 
 		}
@@ -418,7 +416,7 @@
 
 		.btn-primary {
 
-		    background-color: #007bff !important;
+		    background-color: #007bff  !important;
 
 		    border-color: #007bff !important;
 
@@ -508,7 +506,7 @@
 
 		.formline {
 
-			margin-bottom: 8px;
+			margin-bottom: 3px;
 
 		}
 
@@ -521,6 +519,15 @@
 			color: #1e293b;
 
 		}
+		
+
+		.form-scroll-container {
+		    max-height: 65vh;
+		    overflow-y: auto;
+		    overflow-x: hidden;
+		}
+
+
 
 	</style>
 
@@ -1280,14 +1287,15 @@
 
 			<div class="row">
 
-				<div class="col-sm-12" style="padding-right:10.5%;padding-left:9.2%">
+				<div class="col-sm-12" style="padding-right:3%;padding-left:3%; max-width: 100%">
 
 					<div class="card">
 
 						<div class="card-header d-flex justify-content-between align-items-center"
 
-							style="background-color: #d5d9dc; min-height: 50px;">
 
+						style="background-color: #2B506F; min-height: 50px; padding: 10px 15px;">
+						
 							<div>
 
 								<h6 style="color: rgb(0, 0, 0); margin: 0; font-size: 1.2rem">User Profile - LIST</h6>
@@ -1378,8 +1386,8 @@
 
 						</div>
 
-						<div class="card-footer text-center">
-
+						<div class="card-footer text-center" style="padding: 6px 10px;">
+							
 							<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
 
 							<button type="button" class="btn btn-sm btn-primary" id="btnBack" onclick="back()">Back</button>
@@ -1404,7 +1412,7 @@
 
 			<div class="row">
 
-				<div class="col-sm-12" style="padding-right:10%;padding-left:10%">
+				<div class="col-sm-12" style="padding-right:3%;padding-left:3%; max-width: 100%">
 
 					<div class="card">
 
@@ -1413,8 +1421,7 @@
 							enctype="multipart/form-data">
 
 							<div class="card-header d-flex justify-content-between align-items-center"
-
-								style="background-color: #2B506F; min-height: 50px; padding: 10px 15px;">
+							     style="background-color: #213A5C; min-height: 45px; padding: 5px 12px;">
 
 								<div>
 
@@ -1440,17 +1447,17 @@
 
 							</div>
 
-							<div class="card-body">
-
+							<div class="card-body form-scroll-container">
+								
 								<div class="lines">
 
 									<div class="form-group" style="margin-bottom: 0px">
 
 										<!-- Row 1: User ID and User Name -->
 
-										<div class=""style="padding:0px !important; display:flex; margin-bottom:10px;">
-
-											<div class="col-sm-2">
+										<div class="row formline" id="userFirstRow"
+										     style="margin-bottom: 3px !important; margin-left:-50px !important; " >
+											 <div class="col-sm-2">
 
 												<label for="userId">User Id</label>
 
@@ -1474,7 +1481,9 @@
 
 														th:value="${userProfile?.userid}"
 
-														class="form-control form-control-sm" autocomplete="off" required
+														class="form-control form-control-sm"
+
+														 autocomplete="off" required
 
 														readonly />
 
@@ -1501,9 +1510,8 @@
 												</div>
 
 											</div>
-
-											<div class="col-sm-1"></div>
-
+											<div class="col-sm-1 d-flex align-items-center"></div>
+																																																												
 											<div class="col-sm-2">
 
 												<label for="userName">User Name</label>
@@ -1540,6 +1548,8 @@
 
 											</div>
 
+										</div>
+										
 										</div>
 
 										<!-- Row 2: Bank Code and Bank Name -->
@@ -2000,9 +2010,9 @@
 
 										<div class="row"
 
-											style="background-color: #2B506F; color: white; height: 44px; border-radius: .20rem; margin-bottom: 0px !important; padding: 11px 10px;">
+											style="background-color: #e9ecef !important; color: white; height: 44px; border-radius: .20rem; margin-bottom: 0px !important; padding: 11px 10px;">
 
-											<h4 style="color: white; font-size: 1.15rem; margin: 0;">Role and Rights</h4>
+											<h4 style="color: #333333; font-size: 1.15rem; margin: 0;">Role and Rights</h4>
 
 										</div>
 

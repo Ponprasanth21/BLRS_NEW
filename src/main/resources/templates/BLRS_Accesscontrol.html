@@ -167,8 +167,8 @@
         .container-manager .content0 {
             width: 100%;
 			max-width: 100%;
-			padding-left: 10%;
-			padding-right: 10%;
+			padding-left: 1.8%;
+			padding-right: 1.8%;
             margin-left: auto;
             margin-right: auto;
             box-sizing: border-box;
@@ -246,10 +246,8 @@
             table-layout: fixed !important;
 
             width: 100% !important;
-
-            border-collapse: separate !important;
-
-            border-spacing: 0 !important;
+			border-collapse: collapse !important;
+			    border-spacing: 0 !important;
 
             border: 1px solid #d4d7da !important;
 
@@ -271,15 +269,10 @@
 
             font-weight: 600;
 
-            border: none !important;
-
-            box-shadow:
-
-                inset -1px 0 0 #d4d7da,
-
-                inset 0 -2px 0 #d4d7da !important;
-
-            padding: 4px 8px !important;
+			border: 1px solid #d4d7da !important;
+			  box-shadow: none !important;
+ 
+            padding: 4px 10px !important;
 
             height: 30px !important;
 
@@ -291,13 +284,15 @@
 
             height: 15px !important;
 
-            padding: 4px 6px !important;
+            padding: 4px 10px !important;
 
             line-height: 15px;
 
             vertical-align: middle;
 
             margin: 0 !important;
+			
+			border: 1px solid #d4d7da !important;
 
             border-right: 1px solid #3B5168 !important;
 
@@ -340,7 +335,9 @@
 
         .card-footer {
 
-            background-color: #e9ecef !important;
+            background-color: #b8c2cc !important;
+			
+			
 
             padding: 6px;
 
@@ -441,7 +438,7 @@
 
 		.card-header {
 
-		    background-color: #b8c2cc !important;
+		    background-color: #e9ecef !important;
 
 		    color: #333333 !important;
 
@@ -467,7 +464,7 @@
 
 		.card-footer {
 
-		    background-color: #e9ecef !important;
+		    background-color:#e9ecef !important;
 
 		    color: #333333 !important;
 
@@ -559,6 +556,7 @@
 
 		    color: #333333 !important;
 
+			
 		    border-right: 1px solid #d4d7da !important;
 
 		    border-bottom: 1px solid #d4d7da !important;
@@ -1440,22 +1438,15 @@
             var filterActive = false;
 
 
-            var normalHeaderHtml =
 
-                '<tr id="normalHeaderRow">' +
-
-                '<th style="width: 15%">Role Id</th>' +
-
-                '<th style="width: 20%">Role Description</th>' +
-
-                '<th style="width: 15%">Work Class</th>' +
-
-                '<th style="width: 35%">Menu List</th>' +
-
-                '<th style="width: 15%">Status</th>' +
-
-                '</tr>';
-
+			var normalHeaderHtml =
+			    '<tr id="normalHeaderRow">' +
+			    '<th style="width: 10%">Role Id</th>' +
+			    '<th style="width: 12%">Role Description</th>' +
+			    '<th style="width: 8%">Work Class</th>' +
+			    '<th style="width: 50%">Menu List</th>' +
+			    '<th style="width: 15%">Status</th>' +
+			    '</tr>';
 
             var columnTitles = [
 
@@ -1543,7 +1534,7 @@
 
                                 {
 
-                                    width: "15%",
+                                    width: "10%",
 
                                     targets: 0
 
@@ -1551,7 +1542,7 @@
 
                                 {
 
-                                    width: "20%",
+                                    width: "12%",
 
                                     targets: 1
 
@@ -1559,7 +1550,7 @@
 
                                 {
 
-                                    width: "15%",
+                                    width: "8%",
 
                                     targets: 2
 
@@ -1567,7 +1558,7 @@
 
                                 {
 
-                                    width: "35%",
+                                    width: "50%",
 
                                     targets: 3
 
@@ -1848,44 +1839,15 @@
                            margin-bottom: 0 !important;
 
                        ">
-
-                    <thead class="thead-light">
-
-                        <tr id="normalHeaderRow">
-
-                            <th style="width: 15%">
-
-                                Role Id
-
-                            </th>
-
-                            <th style="width: 20%">
-
-                                Role Description
-
-                            </th>
-
-                            <th style="width: 15%">
-
-                                Work Class
-
-                            </th>
-
-                            <th style="width: 35%">
-
-                                Menu List
-
-                            </th>
-
-                            <th style="width: 15%">
-
-                                Status
-
-                            </th>
-
-                        </tr>
-
-                    </thead>
+					   <thead class="thead-light">
+					       <tr id="normalHeaderRow">
+					           <th style="width: 10%">Role Id</th>
+					           <th style="width: 12%">Role Description</th>
+					           <th style="width: 8%">Work Class</th>
+					           <th style="width: 50%">Menu List</th>
+					           <th style="width: 15%">Status</th>
+					       </tr>
+					   </thead>
 
 
                     <tbody>

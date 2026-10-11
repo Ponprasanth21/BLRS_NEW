@@ -52,7 +52,7 @@
            MAIN CONTAINER
            ========================================================= */
         .container-manager {
-            width: 83.5%;
+            width: 100%;
             max-width: 100%;
             padding-right: 2.7%;
             padding-left: 2.7%;
@@ -60,7 +60,13 @@
             margin-left: auto !important;
             margin-top: 15px;
             box-sizing: border-box;
-        }
+			padding-top: 2px !important;
+		    padding-bottom: 2px !important;
+			font: sans-serif;
+			height: auto;
+			min-height: 0;
+			}
+        
         .container-manager > .row {
             width: 100%;
             margin-left: 0 !important;
@@ -102,7 +108,7 @@
         #my_table {
             table-layout: fixed !important;
             width: 100% !important;
-            border-collapse: separate !important;
+			border-collapse: collapse !important;
             border-spacing: 0 !important;
             border: 1px solid #d4d7da !important;
         }
@@ -114,8 +120,8 @@
             color: #1e293b !important;
             font-size: 13px !important;
             font-weight: 600;
-            border: none !important;
-            box-shadow: inset -1px 0 0 #d4d7da, inset 0 -2px 0 #d4d7da !important;
+			border: 1px solid #d4d7da !important;
+			box-shadow: none !important;
             padding: 4px 8px !important;
             height: 30px !important;
             vertical-align: middle !important;
@@ -151,7 +157,7 @@
         /* =========================================================
            FORM
            ========================================================= */
-        .formline { margin-bottom: 8px; }
+        .formline { margin-bottom: 3px; }
         .formline label { font-size: 12px; font-weight: 600; color: #1e293b; }
 
         /* =========================================================
@@ -164,10 +170,26 @@
            ========================================================= */
         body { background-color: #f4f4f4; }
         .card { background-color: #ffffff; border-color: #d5d9dc; }
-        .card-header { background-color: #b8c2cc !important; color: #333333 !important; border-bottom: 1px solid #d5d9dc !important; }
+        .card-header { background-color: #e9ecef !important; color: #333333 !important; border-bottom: 1px solid #d5d9dc !important; }
         .card-header h6 { color: #333333 !important; }
-        .card-body { background-color: #f4f4f4; }
-        .card-footer { background-color: #e9ecef !important; color: #333333 !important; border-top: 1px solid #d5d9dc !important; }
+        .card-body { background-color: #f4f4f4; 		padding-top: 8px !important;
+		  padding-bottom: 8px !important;}
+        .card-footer { background-color: #e9ecef !important;
+			height: 45px;color: #333333 !important; border-top: 1px solid #d5d9dc !important;
+			display: flex;
+			 justify-content: center;
+			 align-items: center;
+			 gap: 6px;
+ }
+
+ /* REDUCE BUTTON SIZE ONLY */
+ .card-footer .btn {
+     padding: 6px 9px !important;
+     font-size: .875rem;
+     line-height: 1.4 !important;
+	 
+ }
+
         .formline label { color: #333333 !important; }
         .form-control { background-color: #ffffff !important; color: #333333 !important; border: 1px solid #999999 !important; }
         .form-control[readonly] { background-color: #ffffff !important; color: #333333 !important; }
@@ -479,15 +501,15 @@
 
             var normalHeaderHtml =
                 '<tr id="normalHeaderRow">' +
-                '<th style="width: 7%">Job Id</th>' +
-                '<th style="width: 15%">Job Name</th>' +
-                '<th style="width: 11%">Job Type</th>' +
-                '<th style="width: 20%">Scheme Code</th>' +
-                '<th style="width: 9%">Department</th>' +
-                '<th style="width: 9%">Periodicity</th>' +
-                '<th style="width: 10%">Last Run Date</th>' +
-                '<th style="width: 10%">Next Run Date</th>' +
-                '<th style="width: 9%">Status</th>' +
+                '<th style="width: 5%">Job Id</th>' +
+                '<th style="width: 11%">Job Name</th>' +
+                '<th style="width: 9%">Job Type</th>' +
+                '<th style="width: 28%">Scheme Code</th>' +
+                '<th style="width: 7%">Department</th>' +
+                '<th style="width: 7%">Periodicity</th>' +
+                '<th style="width: 8%">Last Run Date</th>' +
+                '<th style="width: 8%">Next Run Date</th>' +
+                '<th style="width: 7%">Status</th>' +
                 '</tr>';
 
             var columnTitles = [
@@ -526,15 +548,15 @@
                         "lengthChange": false,
                         "dom": 'r<"table-scroll-container"t>ip',
                         "columnDefs": [
-                            { width: "7%",  targets: 0 },
-                            { width: "15%", targets: 1 },
-                            { width: "11%", targets: 2 },
-                            { width: "20%", targets: 3 },
-                            { width: "9%",  targets: 4 },
-                            { width: "9%",  targets: 5 },
-                            { width: "10%", targets: 6 },
-                            { width: "10%", targets: 7 },
-                            { width: "9%",  targets: 8 }
+                            { width: "5%",  targets: 0 },
+                            { width: "11%", targets: 1 },
+                            { width: "9%", targets: 2 },
+                            { width: "28%", targets: 3 },
+                            { width: "7%",  targets: 4 },
+                            { width: "7%",  targets: 5 },
+                            { width: "8%", targets: 6 },
+                            { width: "8%", targets: 7 },
+                            { width: "7%",  targets: 8 }
                         ]
                     });
                 }
@@ -637,7 +659,7 @@
             <!-- Reports Theme Header -->
             <div class="card-header" style="height: 48px;">
                 <div class="float-left">
-                    <h6 style="font-size: 1.2rem; color: #1e293b; margin: 0;">
+                    <h6 style="font-size: 1.2rem; color: #1e293b; margin: 0; font: sans-serif ">
                         Batch Job Schedule - List
                     </h6>
                 </div>
@@ -663,15 +685,15 @@
                        style="width: 100%; margin-bottom: 0 !important;">
                     <thead class="thead-light">
                         <tr id="normalHeaderRow">
-                            <th style="width: 7%">Job Id</th>
-                            <th style="width: 15%">Job Name</th>
-                            <th style="width: 11%">Job Type</th>
-                            <th style="width: 20%">Scheme Code</th>
-                            <th style="width: 9%">Department</th>
-                            <th style="width: 9%">Periodicity</th>
-                            <th style="width: 10%">Last Run Date</th>
-                            <th style="width: 10%">Next Run Date</th>
-                            <th style="width: 9%">Status</th>
+                            <th style="width: 5%">Job Id</th>
+                            <th style="width: 11%">Job Name</th>
+                            <th style="width: 8%">Job Type</th>
+                            <th style="width: 28%">Scheme Code</th>
+                            <th style="width: 7%">Department</th>
+                            <th style="width: 7%">Periodicity</th>
+                            <th style="width: 8%">Last Run Date</th>
+                            <th style="width: 8%">Next Run Date</th>
+                            <th style="width: 7%">Status</th>
                         </tr>
                     </thead>
 
@@ -718,7 +740,7 @@
 
                 <!-- Reports Theme Header -->
                 <div class="card-header d-flex justify-content-between align-items-center"
-                     style="min-height: 50px; padding: 10px 15px;">
+                     style="min-height: 45px; padding: 10px 15px;">
                     <div>
                         <h6 th:if="${formmode}=='add'">Batch Job Scheduler - Add</h6>
                         <h6 th:if="${formmode}=='edit'">Batch Job Scheduler - Modify</h6>
@@ -915,18 +937,19 @@
                             </div>
                         </div>
 
-                        <!-- SMS -->
-                        <div class="row formline">
-                            <label class="col-sm-2">SMS</label>
-                            <div class="col-sm-3">
-                                <select id="sms_flg" th:field="*{sms_flg}"
-                                        class="form-control form-control-sm"
-                                        th:disabled="${ro}">
-                                    <option value="N">No</option>
-                                    <option value="Y">Yes</option>
-                                </select>
-                            </div>
-                        </div>
+						<!-- SMS -->
+						<div class="row formline" style="margin-left: 0 !important; justify-content: flex-start !important;">
+						    <label class="col-sm-2 text-left">SMS</label>
+						    <div class="col-sm-3">
+						        <select id="sms_flg"
+						                th:field="*{sms_flg}"
+						                class="form-control form-control-sm"
+						                th:disabled="${ro}">
+						            <option value="N">No</option>
+						            <option value="Y">Yes</option>
+						        </select>
+						    </div>
+						</div>
 
                         <!-- =================================================
                              PERIODICITY MODAL  (PERIOD / DAY / HOUR / HOUR1)

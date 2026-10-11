@@ -102,7 +102,7 @@
 
 			scrollbar-width: thin;
 
-			scrollbar-color: #386276 transparent;
+			scrollbar-color: transparent;
 
 		}
 
@@ -156,9 +156,9 @@
 
 			z-index: 10 !important;
 
-			background-color: #2e455deb !important;
+			background-color: #e9ecef !important;
 
-			color: white;
+			color: #333333;
 
 			font-size: 13px !important;
 
@@ -396,8 +396,8 @@
 		.container-manager {
 			width: 100%;
 			max-width: 100%;
-			padding-right: 10.7%;
-			padding-left: 10.7%;
+			padding-right: 2.8%;
+			padding-left: 2.8%;
 			margin-right: auto;
 			margin-left: auto;
 			margin-top: 15px !important;
@@ -556,6 +556,16 @@
 			#modheadtitle b {
 				font-size: 1rem !important;
 			}
+		}
+		
+		#btnHome,
+		#btnBack {
+		    padding: 4px 10px !important;
+		    font-size: 14px !important;
+		    line-height: 1.5 !important;
+		    height: auto !important;
+		    min-height: 0 !important;
+		    margin: 0 2px !important;
 		}
 
 	</style>
@@ -886,18 +896,22 @@
 
 		<div class="card">
 
+			<div class="card-header"
+			     style="background-color: #e9ecef !important;
+			            height: 50px !important;
+			            display: flex;
+			            align-items: center;
+			            justify-content: space-between;">
 
-			<div class="card-header" id="modheadtitle"
+			    <div class="float-left">
+			        <h6 style="font-size: 1.2rem; color: #333333; margin: 0;">
+			            User Activity Audits
+			        </h6>
+			    </div>
 
-				style="height: 47px; display:flex; justify-content: space-between; padding:0px 10px;align-items: center; position: relative; top: -2px;">
-
-				<b style="font-size: 1.2rem">User Activity Audits</b>
-
-				<button type="button" class="btn btn-sm btn-primary" id="btnToggleFilter">
-
-					<i class="fas fa-filter"></i> Filter
-
-				</button>
+			    <button type="button" class="btn btn-sm btn-primary" id="btnToggleFilter">
+			        <i class="fas fa-filter"></i> Filter
+			    </button>
 
 			</div>
 
@@ -1030,7 +1044,7 @@
 
 			</table>
 
-			<div class="text-center" style="background-color: #386276; padding: 5px; width: 100%;">
+			<div class="text-center" style="background-color: #e9ecef; padding: 5px; width: 100%;">
 
 				<div class="btn-group nav-buttons " style="align: center;">
 

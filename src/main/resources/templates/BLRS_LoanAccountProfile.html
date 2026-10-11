@@ -49,8 +49,8 @@
         .container-manager {
             width: 100% !important;
             max-width: 100%;
-            padding-left: 9.8%;
-            padding-right: 9.8%;
+            padding-left: 1.9%;
+            padding-right: 1.9%;
             margin-left: auto !important;
             margin-right: auto !important;
             margin-top: 10px;
@@ -168,6 +168,52 @@
                 padding-right: 0 !important;
             }
         }
+		
+
+		/* Make field names narrow and values wider */
+		.custom-table {
+		    width: 100%;
+		    table-layout: fixed;
+		}
+
+		.custom-table th {
+		    width: 25%;
+		    padding: 8px 10px;
+		    white-space: normal;
+		}
+
+		.custom-table td {
+		    width: 75%;
+		    padding: 8px 10px;
+		    overflow-wrap: anywhere;
+		}
+
+		/* Loan Master tab only */
+		.loan-master-table {
+		    width: 100%;
+		    table-layout: fixed;
+		    border-collapse: collapse;
+		}
+
+		.loan-master-table th,
+		.loan-master-table td {
+		    width: 25% !important;
+		    padding: 8px 10px;
+		    box-sizing: border-box;
+		    vertical-align: middle;
+		    border: 1px solid #dee2e6;
+		}
+
+		.loan-master-table th {
+		    white-space: nowrap;
+		    font-size: 0.68rem;
+		    font-weight: 500;
+		}
+
+		.loan-master-table td {
+		    font-size: 0.68rem;
+		    overflow-wrap: anywhere;
+		}
     </style>
 
     <script th:inline="javascript">
@@ -282,7 +328,7 @@
                             <!-- Card Header -->
                             <div class="card-header" style="background-color: #e9ecef;">
                                 <div class="float-left">
-                                    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">LIST OF OVERDUE ACCOUNTS</h6>
+                                    <h6 style="margin: 0; text-transform: uppercase;">LIST OF OVERDUE ACCOUNTS</h6>
                                 </div>
                             </div>
 
@@ -450,21 +496,68 @@
 	                        </div>
 	                        <div class="tab-pane fade" id="guarantor" role="tabpanel"><p>Content not available</p></div>
 	                        <div class="tab-pane fade" id="loanmaster" role="tabpanel">
-	                            <table class="custom-table">
-	                                <tr><th>Customer Id</th><td id="detailCustomerIdLM"></td></tr>
-									<tr><th>Customer Name</th><td id="detailCustomerName">N/A</td></tr>
-	                                <tr><th>Scheme</th><td id="detailScheme">N/A</td></tr>
-	                                <tr><th>Loan number</th><td id="detailLoanNumber"></td></tr>
-	                                <tr><th>Loan disbursement date</th><td id="detailDisbursementDate">N/A</td></tr>
-	                                <tr><th>Loan amount applied (Rs)</th><td id="detailLoanAmount">N/A</td></tr>
-	                                <tr><th>Outstanding balance (Rs)</th><td id="detailOutstandingBalance">N/A</td></tr>
-	                                <tr><th>Amount of capital in arrears (Rs)</th><td id="detailCapitalArrears">N/A</td></tr>
-	                                <tr><th>Amount of interest in arrears (Rs)</th><td id="detailInterestArrears">N/A</td></tr>
-	                                <tr><th>Number of guarantors</th><td id="detailGuarantors">N/A</td></tr>
-	                                <tr><th>Actual interest rate (%)</th><td id="detailInterestRate">N/A</td></tr>
-	                                <tr><th>Number of months in arrears</th><td id="detailMonthsArrears">N/A</td></tr>
-	                                <tr><th>Payments received</th><td id="detailPaymentsReceived">N/A</td></tr>
-	                            </table>
+							<table class="custom-table loan-master-table">
+									    <tr>
+								        <th>Customer Id</th>
+								        <td id="detailCustomerIdLM"></td>
+								        <th>Loan number</th>
+								        <td id="detailLoanNumber"></td>
+								    </tr>
+								    <tr>
+								        <th>Customer Name</th>
+								        <td id="detailCustomerName">N/A</td>
+								        <th>Loan disbursement date</th>
+								        <td id="detailDisbursementDate">N/A</td>
+								    </tr>
+								    <tr>
+								        <th>Scheme</th>
+								        <td id="detailScheme">N/A</td>
+								        <th>Loan amount applied (Rs)</th>
+								        <td id="detailLoanAmount">N/A</td>
+								    </tr>
+								    <tr>
+								        <th></th>
+								        <td></td>
+								        <th>Outstanding balance (Rs)</th>
+								        <td id="detailOutstandingBalance">N/A</td>
+								    </tr>
+								    <tr>
+								        <th></th>
+								        <td></td>
+								        <th>Amount of capital in arrears (Rs)</th>
+								        <td id="detailCapitalArrears">N/A</td>
+								    </tr>
+								    <tr>
+								        <th></th>
+								        <td></td>
+								        <th>Amount of interest in arrears (Rs)</th>
+								        <td id="detailInterestArrears">N/A</td>
+								    </tr>
+								    <tr>
+								        <th></th>
+								        <td></td>
+								        <th>Number of guarantors in the loan</th>
+								        <td id="detailGuarantors">N/A</td>
+								    </tr>
+								    <tr>
+								        <th></th>
+								        <td></td>
+								        <th>Actual interest rate on the loan (%)</th>
+								        <td id="detailInterestRate">N/A</td>
+								    </tr>
+								    <tr>
+								        <th></th>
+								        <td></td>
+								        <th>Number of months in arrears (months)</th>
+								        <td id="detailMonthsArrears">N/A</td>
+								    </tr>
+								    <tr>
+								        <th></th>
+								        <td></td>
+								        <th>Payments received (Capital + Interests)</th>
+								        <td id="detailPaymentsReceived">N/A</td>
+								    </tr>
+								</table>
 	                        </div>
 	                        <div class="tab-pane fade" id="overdues" role="tabpanel">
 	                            <table class="custom-table">

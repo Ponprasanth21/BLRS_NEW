@@ -819,8 +819,17 @@ public class NavigationController {
 	public String Loanaccountprofileinquiry(@RequestParam(required = false) String formmode, Model md,
 			HttpServletRequest rq) {
 		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_LoanAccountProfileInquiries";
+		   List<BLRS_LoanAccountProfile_Entity> loanDetails =
+		            blrsLoanAccountProfileService.getAllLoanDetails();
+
+		    md.addAttribute("loanDetails", loanDetails);
+
+		    return "BLRS_LoanAccountProfile";	
+		    
 	}
+	
+
+	
 
 	@RequestMapping(value = "Overduereports", method = { RequestMethod.GET, RequestMethod.POST })
 	public String Overduereports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {

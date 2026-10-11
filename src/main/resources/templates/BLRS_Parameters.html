@@ -39,8 +39,8 @@
 		.container-manager {
 			width: 100%;
 			max-width: 100%;
-			padding-right: 6%;
-			padding-left: 6%;
+			padding-right: 1.9%;
+			padding-left: 1.9%;
 			margin-right: auto;
 			margin-left: auto;
 			margin-top: 10px;
@@ -130,6 +130,20 @@
 		    overflow-x: hidden !important;
 		    overflow-y: visible !important;
 		}
+		body {
+		    padding-bottom: 65px;
+		}
+		
+		.card-footer .big-btn {
+		    margin: 0 2px !important;
+		    padding: 3px 8px !important;
+		}
+		
+		.card-footer {
+		    display: flex;
+		    justify-content: center;
+		    align-items: center;
+		}
 	</style>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
@@ -147,7 +161,7 @@
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 	<div class="container-manager">
 		<div class="row d-flex justify-content-center">
-			<div class="col-sm-11 mt-2">
+			<div class="col-sm-12 mt-2">
 				<div th:if="${formmode}=='list'">
 					<div class="panel panel-primary filterable">
 						<div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1;">
@@ -156,11 +170,16 @@
 									<h6 style="font-weight: bold; margin: 0;">EMAIL and SMS Parameter</h6>
 								</div>
 							</div>
-							<div class="card-body d-flex flex-column align-items-center" style="padding: 12px 25px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
-								<form id="parameterForm" style="width: 100%; max-width: 500px;" enctype="multipart/form-data" onsubmit="return false;">
+							<div class="card-body d-flex flex-column align-items-center"
+							     style="padding: 2px 25px;
+							            border-top: 1px solid #cbd5e1;
+							            border-bottom: 1px solid #cbd5e1;
+										height: calc(100vh - 220px);
+							            overflow-y: auto;">
+							<form id="parameterForm" style="width: 100%; max-width: 500px;" enctype="multipart/form-data" onsubmit="return false;">
 									<input type="hidden" name="param_id" value="EMAILSMS">
 
-									<fieldset style="border: 1px solid #cbd5e1; padding: 10px 20px 8px 20px; border-radius: 4px; margin-bottom: 10px; max-width: 500px;">
+									<fieldset style="border: 1px solid #cbd5e1; padding: 5px 15px 3px 15px; border-radius: 4px; margin-bottom: 5px; max-width: 500px;">
 										<legend style="width: auto; padding: 0 8px; font-size: 0.88rem; font-weight: bold; color: #2563eb; margin-bottom: 4px;">Email</legend>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Host</label>
@@ -189,7 +208,7 @@
 										</div>
 									</fieldset>
 
-									<fieldset style="border: 1px solid #cbd5e1; padding: 10px 20px 8px 20px; border-radius: 4px; margin-bottom: 10px; max-width: 500px;">
+									<fieldset style="border: 1px solid #cbd5e1; padding: 5px 15px 3px 15px; border-radius: 4px; margin-bottom: 5px; max-width: 500px;">
 										<legend style="width: auto; padding: 0 8px; font-size: 0.88rem; font-weight: bold; color: #2563eb; margin-bottom: 4px;">Signature</legend>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Auth Id</label>
@@ -215,7 +234,7 @@
 										</div>
 									</fieldset>
 
-									<fieldset style="border: 1px solid #cbd5e1; padding: 10px 20px 8px 20px; border-radius: 4px; margin-bottom: 5px; max-width: 500px;">
+									<fieldset style="border: 1px solid #cbd5e1; padding: 5px 15px 3px 15px; border-radius: 4px; margin-bottom: 5px; max-width: 500px;">
 										<legend style="width: auto; padding: 0 8px; font-size: 0.88rem; font-weight: bold; color: #2563eb; margin-bottom: 4px;">SMS</legend>
 										<div class="form-group row align-items-center mb-1">
 											<label class="col-sm-3 col-form-label font-weight-bold p-0 pl-2" style="font-size: 0.8rem;">Host</label>
@@ -241,8 +260,12 @@
 									</fieldset>
 								</form>
 							</div>
-							<div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
-								<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
+							<div class="card-footer text-center border-top-0"
+							     style="background-color: #e9ecef;
+							            padding: 4px 10px;
+							            min-height: 43px;
+							            line-height: 1.2;">
+							<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
 								<button type="button" class="btn-primary big-btn" id="btnSubmit">Submit</button>
 								<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
 							</div>
