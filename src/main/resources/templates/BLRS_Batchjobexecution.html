@@ -1,37 +1,22 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<!-- BAJ VERSION 1.0.1  -->
+	<!-- BAJ VERSION 1.0.1 -->
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>BLRS</title>
 
-	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
-		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
-		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
-		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
-		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
+	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css" th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
+	<link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css" th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css" th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
 
 	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
-	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
-		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
-	<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
-		th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
-	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
-		th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
-	<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
-		th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
-	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
-		th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
-
-	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
-		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
-	<script src="/webjars/chartjs/2.8.0/Chart.min.js"
-		th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
+	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js" th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
+	<script src="/webjars/popper.js/1.14.7/umd/popper.min.js" th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
+	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js" th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+	<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js" th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
+	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js" th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
 
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
@@ -39,454 +24,126 @@
 	<style>
 		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
-		body {
-			background-color: #f8fafc !important;
-			font-family: 'Outfit', sans-serif !important;
-			color: #1e293b;
-			overscroll-behavior: none !important;
-			margin: 0;
-			padding-top: 70px;
-			overflow-x: hidden;
-		}
+		/* ===== Common layout (same on Reminder Generation and Batch Job Execution) ===== */
+		html, body { height: 100%; }
+		body { background-color: #f8fafc !important; font-family: 'Outfit', sans-serif !important; color: #1e293b;
+			overscroll-behavior: none !important; margin: 0; padding-top: 70px; overflow-x: hidden; }
 
-		/* Centered main page container */
-		.container-manager {
-			width: 100% !important;
-			max-width: 100%;
-			padding-right: 1.9%;
-			padding-left: 1.9%;
-			margin-right: auto !important;
-			margin-left: auto !important;
-			margin-top: 10px !important;
-			margin-bottom: 40px !important;
-			box-sizing: border-box !important;
-		}
+		.container-manager { width: 100%; max-width: 100%; padding: 0 1.9%; margin: 10px auto 15px; box-sizing: border-box; }
 
-		.container-manager > .row {
-			width: 100% !important;
-			margin-left: 0 !important;
-			margin-right: 0 !important;
-			justify-content: center !important;
-			box-sizing: border-box !important;
-		}
+		/* one card: fixed header, scrolling body, fixed footer */
+		.page-card { display: flex; flex-direction: column; width: 100%; background: #fff;
+			border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+			height: calc(100vh - 110px); min-height: 320px; overflow: hidden; }
+		.page-card-header { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center;
+			background: #e9ecef; padding: 10px 16px; border-bottom: 1px solid #cbd5e1; }
+		.page-card-header h6 { margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+		.page-card-body { flex: 1 1 auto; overflow: auto; padding: 0; }
+		.page-card-footer { flex: 0 0 auto; background: #e9ecef; text-align: center; padding: 8px;
+			border-top: 1px solid #cbd5e1; }
 
-		.container-manager > .row > .col-sm-11 {
-			margin-left: auto !important;
-			margin-right: auto !important;
-			box-sizing: border-box !important;
-		}
+		/* table */
+		.data-table { width: 100% !important; margin: 0 !important; font-size: 0.83rem; border-collapse: separate; border-spacing: 0; }
+		.data-table thead th { position: sticky; top: 0; z-index: 2; background: #f1f5f9; color: #334155;
+			font-weight: 700; border-bottom: 2px solid #cbd5e1 !important; white-space: nowrap; vertical-align: middle; }
+		.data-table td { vertical-align: middle; white-space: nowrap; }
+		.data-table td.wrap { white-space: normal; }
 
-		/* KPI Card Styles */
-		.kpi-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			position: relative;
-			overflow: hidden;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-			display: flex;
-			flex-direction: column;
-			height: 100%;
-		}
+		/* DataTables controls */
+		.dataTables_wrapper { padding: 8px 12px 0; font-size: 0.83rem; }
+		.dataTables_wrapper .dataTables_filter input, .dataTables_wrapper .dataTables_length select {
+			border: 1px solid #cbd5e1; border-radius: 4px; padding: 2px 6px; }
 
-		.kpi-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-		}
+		/* buttons */
+		.btn-primary { background-color: #007bff !important; border-color: #007bff !important; color: #fff !important; }
+		.btn-primary:hover { background-color: #0069d9 !important; border-color: #0062cc !important; }
+		.big-btn { padding: 4px 14px; font-size: 0.85rem; border-radius: 4px; border: 1px solid #007bff; cursor: pointer; }
 
-		.kpi-icon-container {
-			width: 42px;
-			height: 42px;
-			border-radius: 8px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-bottom: 12px;
-		}
-
-		.kpi-title {
-			font-size: 0.78rem;
-			font-weight: 600;
-			color: #64748b;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-		}
-
-		.kpi-value {
-			font-size: 1.3rem;
-			font-weight: 700;
-			color: #0f172a;
-			margin-top: 4px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		/* Specific Borders for KPI Cards */
-		.border-left-teal { border-left: 4px solid #0d9488; }
-		.border-left-rose { border-left: 4px solid #e11d48; }
-		.border-left-indigo { border-left: 4px solid #4f46e5; }
-		.border-left-emerald { border-left: 4px solid #10b981; }
-		.border-left-orange { border-left: 4px solid #f97316; }
-		.border-left-violet { border-left: 4px solid #8b5cf6; }
-
-		/* Icon Container Color Combinations */
-		.bg-teal-light { background-color: #f0fdfa; }
-		.text-teal { color: #0d9488; }
-		.bg-rose-light { background-color: #fff1f2; }
-		.text-rose { color: #e11d48; }
-		.bg-indigo-light { background-color: #e0e7ff; }
-		.text-indigo { color: #4f46e5; }
-		.bg-emerald-light { background-color: #ecfdf5; }
-		.text-emerald { color: #10b981; }
-		.bg-orange-light { background-color: #fff7ed; }
-		.text-orange { color: #f97316; }
-		.bg-violet-light { background-color: #f5f3ff; }
-		.text-violet { color: #8b5cf6; }
-
-		/* Chart Card Styles */
-		.chart-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-
-		.chart-title {
-			font-size: 0.95rem;
-			font-weight: 600;
-			color: #334155;
-			margin-bottom: 16px;
-			padding-bottom: 12px;
-			border-bottom: 1px solid #f1f5f9;
-		}
-
-		/* Table Card Styles */
-		.table-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-
-		.custom-table {
-			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0;
-			margin-bottom: 0;
-		}
-
-		.custom-table th {
-			background: #f8fafc;
-			color: #64748b;
-			font-size: 0.72rem;
-			font-weight: 600;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-			padding: 10px 14px;
-			border-bottom: 1px solid #e2e8f0;
-			border-top: none;
-		}
-
-		.custom-table td {
-			padding: 10px 14px;
-			border-bottom: 1px solid #f1f5f9;
-			color: #475569;
-			font-size: 0.82rem;
-			vertical-align: middle;
-		}
-
-		.custom-table tr:hover td { background-color: #f8fafc; }
-		.custom-table tr:last-child td { border-bottom: none; }
-
-		/* Status Badges */
-		.status-badge {
-			display: inline-flex;
-			align-items: center;
-			padding: 2px 8px;
-			border-radius: 9999px;
-			font-size: 0.72rem;
-			font-weight: 600;
-		}
-
-		.status-success { background-color: #d1fae5; color: #065f46; }
-		.status-warning { background-color: #fef3c7; color: #92400e; }
-		.status-danger { background-color: #fee2e2; color: #991b1b; }
-		.status-info { background-color: #e0f2fe; color: #075985; }
-
-		/* Scrollbar Styling */
-		.table-responsive::-webkit-scrollbar {
-			width: 6px;
-			height: 6px;
-		}
-
-		.table-responsive::-webkit-scrollbar-track {
-			background: #f1f5f9;
-			border-radius: 4px;
-		}
-
-		.table-responsive::-webkit-scrollbar-thumb {
-			background: #cbd5e1;
-			border-radius: 4px;
-		}
-
-		.table-responsive::-webkit-scrollbar-thumb:hover {
-			background: #94a3b8;
-		}
-
-		/* Mobile */
 		@media (max-width: 767.98px) {
-			.container-manager {
-				max-width: 100% !important;
-				padding-left: 10px !important;
-				padding-right: 10px !important;
-				margin-top: 10px !important;
-			}
-
-			.container-manager > .row > .col-sm-11 {
-				padding-left: 0 !important;
-				padding-right: 0 !important;
-				max-width: 100% !important;
-				flex: 0 0 100% !important;
-			}
+			.container-manager { padding: 0 10px; }
+			.page-card { height: calc(100vh - 100px); }
 		}
 	</style>
-
-	<script th:inline="javascript">
-		/*<![CDATA[*/
-		function home() {
-			location.href = './Dashboard';
-		}
-
-		function Back() {
-			window.history.back();
-		}
+	<script>
+		$(function () {
+			if ($('#batchExecutionTable tbody tr[data-row]').length > 0) {
+				$('#batchExecutionTable').DataTable({
+					pageLength: 25,
+					lengthMenu: [10, 25, 50, 100],
+					order: [],
+					columnDefs: [{ orderable: false, targets: 5 }]
+				});
+			}
+		});
 
 		function runJob(jobId) {
-			alert("Executing job: " + jobId);
+			if (!confirm('Run job ' + jobId + ' now?')) return;
+			alert('Please do not reload the page until the job status is displayed.');
+			$('button.run-btn').prop('disabled', true);
+
+			$.post('runBatchJob', { job_id: jobId })
+				.done(function (msg) {
+					alert(msg);
+					location.reload();
+				})
+				.fail(function () {
+					alert('Job could not be started. Please try again.');
+					$('button.run-btn').prop('disabled', false);
+				});
 		}
-		/*]]>*/
 	</script>
 </head>
 
 <body>
-
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
 	<div class="container-manager">
-		<div class="row d-flex justify-content-center">
-			<div class="col-sm-12 mt-2">
+		<div th:if="${formmode}=='list'">
+			<div class="page-card">
 
-				<div th:if="${formmode}=='list'">
-					<div class="panel panel-primary filterable">
-
-						<div class="card"
-							style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; max-height: 80vh; display: flex; flex-direction: column;">
-
-							<!-- Card Header -->
-							<div class="card-header" style="background-color: #e9ecef;">
-								<div class="float-left">
-									<h6 style="margin: 0;">Batch Job Execution</h6>
-								</div>
-							</div>
-
-							<!-- Card Body -->
-							<div class="card-body p-0"
-								style="max-height: 70vh; overflow-y: auto; overflow-x: auto; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1;">
-
-								<!-- Table -->
-								<table class="table table-bordered table-hover mb-0"
-									id="batchExecutionTable"
-									style="width: 100%; font-size: 0.83rem;">
-
-									<thead style="background-color: #f1f5f9; color: #334155;">
-										<tr>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Job Id</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Job Name</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Last Run Date</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Next Run Date</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Status</th>
-											<th style="font-weight: bold; border-bottom: 2px solid #cbd5e1; width: 100px;" class="text-center">Action</th>
-										</tr>
-									</thead>
-
-									<tbody>
-										<th:block th:if="${batchExecutions != null and !#lists.isEmpty(batchExecutions)}">
-											<tr th:each="job : ${batchExecutions}">
-												<td th:text="${job.jobId}">FIN001</td>
-												<td th:text="${job.jobName}">Finacle Extraction</td>
-												<td th:text="${#dates.format(job.lastRunDate, 'dd-MM-yyyy')}">05-01-2019</td>
-												<td th:text="${#dates.format(job.nextRunDate, 'dd-MM-yyyy')}">06-01-2019</td>
-												<td th:text="${job.status}">COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button"
-														class="btn btn-primary btn-sm px-3"
-														th:onclick="'runJob(\'' + ${job.jobId} + '\')'">
-														Run
-													</button>
-												</td>
-											</tr>
-										</th:block>
-
-										<th:block th:if="${batchExecutions == null or #lists.isEmpty(batchExecutions)}">
-
-											<tr>
-												<td>FIN001</td>
-												<td>Finacle Extraction</td>
-												<td>05-01-2019</td>
-												<td>06-01-2019</td>
-												<td>COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('FIN001');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ009</td>
-												<td>MQL_JOB</td>
-												<td>11-01-2019</td>
-												<td>12-01-2019</td>
-												<td>COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ009');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ002</td>
-												<td>SCHEME_FOR_PLBPA</td>
-												<td>06-01-2019</td>
-												<td>07-01-2019</td>
-												<td>COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ002');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ006</td>
-												<td>CLN4</td>
-												<td>11-01-2019</td>
-												<td>12-01-2019</td>
-												<td>COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ006');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ007</td>
-												<td>TEST_JOB</td>
-												<td>10-01-2019</td>
-												<td>10-01-2019</td>
-												<td>COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ007');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ004</td>
-												<td>TEST_JOB_DAILY</td>
-												<td>09-01-2019</td>
-												<td>09-01-2019</td>
-												<td></td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ004');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ001</td>
-												<td>WEEKLY_REM</td>
-												<td>08-01-2019</td>
-												<td>08-01-2019</td>
-												<td>COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ001');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ005</td>
-												<td>CLN2</td>
-												<td>11-01-2019</td>
-												<td>11-01-2019</td>
-												<td>COMPLETED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ005');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ008</td>
-												<td>PLN1_JOB</td>
-												<td>10-01-2019</td>
-												<td>10-01-2019</td>
-												<td>STARTED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ008');">Run</button>
-												</td>
-											</tr>
-
-											<tr>
-												<td>BJ003</td>
-												<td>ALL</td>
-												<td>06-01-2019</td>
-												<td>14-01-2019</td>
-												<td>STARTED</td>
-												<td class="text-center align-middle">
-													<button type="button" class="btn btn-primary btn-sm px-3"
-														onclick="runJob('BJ003');">Run</button>
-												</td>
-											</tr>
-
-										</th:block>
-									</tbody>
-								</table>
-							</div>
-
-							<!-- Card Footer -->
-							<div class="card-footer text-center border-top-0"
-								style="background-color: #e9ecef;">
-
-								<button type="button"
-									class="btn-primary big-btn"
-									id="btnHome"
-									onclick="home();">
-									Home
-								</button>
-
-								<button type="button"
-									class="btn-primary big-btn"
-									id="btnBack"
-									onclick="Back();">
-									Back
-								</button>
-							</div>
-
-						</div>
-					</div>
+				<div class="page-card-header">
+					<h6>Batch Job Execution</h6>
 				</div>
+
+				<div class="page-card-body">
+					<table class="table table-bordered table-striped table-hover data-table" id="batchExecutionTable"
+						th:if="${batchExecutions != null and !#lists.isEmpty(batchExecutions)}">
+						<thead>
+							<tr>
+								<th>Job Id</th>
+								<th>Job Name</th>
+								<th>Last Run Date</th>
+								<th>Next Run Date</th>
+								<th>Status</th>
+								<th class="text-center" style="width: 100px;">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Getter names must match BLRS_BatchJobScheduler_Entity
+							     (getJob_id() -> job.job_id ; getJobId() -> job.jobId) -->
+							<tr th:each="job : ${batchExecutions}" data-row="1">
+								<td th:text="${job.job_id}"></td>
+								<td class="wrap" th:text="${job.job_name}"></td>
+								<td th:text="${job.last_run_date}"></td>
+								<td th:text="${job.next_run_date}"></td>
+								<td th:text="${job.status}"></td>
+								<td class="text-center">
+									<button type="button" class="btn btn-primary btn-sm px-3 run-btn"
+										th:attr="data-job=${job.job_id}" onclick="runJob(this.dataset.job);">Run</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="text-center text-muted py-4" th:if="${batchExecutions == null or #lists.isEmpty(batchExecutions)}">No batch jobs found</div>
+				</div>
+
+					<div class="page-card-footer">
+						<button type="button" class="btn-primary big-btn" id="btnHome" onclick="location.href='./Dashboard';">Home</button>
+						<button type="button" class="btn-primary big-btn" id="btnBack" onclick="window.history.back();">Back</button>
+					</div>
 
 			</div>
 		</div>
 	</div>
-
 </body>
 </html>
