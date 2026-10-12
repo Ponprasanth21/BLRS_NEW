@@ -151,10 +151,12 @@
         .container-manager {
             /* Center the page; do not use a fixed left offset. */
             width: 100%;
-            max-width: 1450px;
-            padding: 0 15px;
-            margin: 15px auto 30px auto;
+            max-width: 100%;
+            margin: 20px auto 30px auto;
             box-sizing: border-box;
+			padding-left: 2.9%;
+			padding-right: 2.9%;
+			
         }
 
         .container-manager > .row {
@@ -167,13 +169,11 @@
         .container-manager .content0 {
             width: 100%;
 			max-width: 100%;
-			padding-left: 1.8%;
-			padding-right: 1.8%;
-            margin-left: auto;
-            margin-right: auto;
+			margin: 0 auto 30px auto;  /* Top margin changed from 25px to 0 */
             box-sizing: border-box;
         }
-
+		
+	
         @media (max-width: 767px) {
             .container-manager {
                 width: 100%;
@@ -184,6 +184,29 @@
         }
 
 
+		/* Keep the card within the browser window */
+		.container-manager .card {
+			height: calc(100vh - 140px);
+		    display: flex;
+		    flex-direction: column;
+		    margin-bottom: 0;
+		}
+
+		/* Allow all details to scroll */
+		.container-manager .card-body {
+		    flex: 1;
+		    min-height: 0;
+		    overflow-y: auto;
+		}
+
+		/* Keep footer visible at the bottom of the card */
+		.container-manager .card-footer {
+		    flex-shrink: 0;
+		    position: sticky;
+		    bottom: 0;
+		    z-index: 10;
+		    background-color: #e9ecef !important;
+		}
         /* =========================================================
 
            TABLE SCROLL
@@ -431,6 +454,7 @@
 		    background-color: #ffffff;
 
 		    border-color: #d5d9dc;
+			
 
 		}
 
@@ -770,6 +794,8 @@
 		    color: red !important;
 
 		}
+		
+
 
     </style>
 
@@ -1749,6 +1775,7 @@
 
             <!-- Reports Theme Header -->
 
+			
             <div class="card-header"
 
                  style="height: 48px;">
@@ -2251,7 +2278,7 @@
 
                         <!-- Permissions / Remarks -->
 
-                        <div class="row formline">
+						<div class=""style="padding:0px !important; display:flex; margin-bottom:10px;">
 
                             <label class="col-sm-2">
 
