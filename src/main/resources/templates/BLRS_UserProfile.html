@@ -92,18 +92,12 @@
 		}
 
 		.container-manager {
-
-			/* Main page content is centered below the fixed top menu. */
-			width: 100%;
-			max-width: 100%;
-
-			margin-right: auto;
-			margin-left: auto;
-
-			margin-top: 15px;
-
-			box-sizing: border-box;
-
+		    width: 100%;
+		    max-width: 100%;
+		    margin: 15px auto;
+			padding-bottom: 15px;
+			padding-top: 5px;
+		    box-sizing: border-box;
 		}
 
 		/* Prevent Bootstrap row negative margins from shifting the page. */
@@ -309,6 +303,9 @@
 		    border-bottom: 1px solid #9faab4 !important;
 
 		    color: #333333;
+			
+			
+			padding-top: 10px;
 
 		}
 
@@ -409,7 +406,23 @@
 			background-color: #e9ecef;
 			
 		    border-top: 1px solid #d5d9dc !important;
+			
+			padding-top: 10px;
+			
+			padding: .30rem 1.25rem;
+			
+			margin-top: -15px;
+			
+		
+			    margin-top: 0;
+			    position: relative;
+			    z-index: 2;
+			
 
+		}
+		
+		.card-body {
+		    padding-bottom: 0;
 		}
 
 		/* BUTTONS */
@@ -445,14 +458,15 @@
 		/* ENTRY/AUDIT BOX */
 
 		.entry-box {
-
-		    background-color: #ffffff !important;
-
+		    width: 100%;
+		    box-sizing: border-box;
+		    background-color: #f4f4f4 !important;
 		    border: 1px solid #d5d9dc !important;
-
-		    border-top: 2px solid #b8c2cc !important;
-
+		    border-radius: 0 !important;
+		    padding: 6px;
+		    margin: 0 !important;
 		}
+
 
 		/* LINKS / INFO ICON */
 
@@ -522,11 +536,34 @@
 		
 
 		.form-scroll-container {
-		    max-height: 65vh;
+		    height: calc(100vh - 300px);
+		    min-height: 250px;
 		    overflow-y: auto;
 		    overflow-x: hidden;
+		    padding-bottom: 20px;
+		    box-sizing: border-box;
 		}
 
+		/* Keep the form footer fixed at the bottom */
+		#userProfile > .card-footer {
+		    position: fixed;
+		    bottom: 27px;  /* Footer moves upward */
+		    left: 0;
+		    width: 100%;
+		    z-index: 1000;
+		    background-color: #e9ecef !important;
+		    border-top: 1px solid #d5d9dc !important;
+		    padding: 5px;
+		    text-align: center;
+		    box-sizing: border-box;
+		}
+
+		/* Reserve space so the form content is not hidden by the footer */
+		#userProfile {
+		    padding-bottom: 1px;
+		}
+
+		
 
 
 	</style>
@@ -2207,11 +2244,11 @@
 					</div>
 
 					<!-- ENTRY USER / TIME AUDIT SECTION -->
+					
+					<div class="col-sm-12"
+					     style="padding-right:3%; padding-left:3%; max-width:100%">
 
-					<div class="entry-box" th:if="${formmode}!='add'"
-
-						style="border: 1px solid #36404a; padding: 15px; margin-top: 15px; margin-bottom: 15px; background-color: #ffffff; border-radius: 4px; border-top: 2px solid #2B506F;">
-
+					<div class="entry-box" th:if="${formmode}!='add'">
 						<div class="row formline">
 
 							<label class="col-sm-2">Entry User</label>
@@ -2278,6 +2315,7 @@
 
 	</div>
 
+	</div>
 	<!-- ========================================================================= -->
 
 	<!-- MODALS -->

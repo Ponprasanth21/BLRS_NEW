@@ -1020,6 +1020,19 @@ public class NavigationController {
 		return "BLRS_Batchjobexecution";
 	}
 	
+	@RequestMapping(value = "Loanaccountprofileinquiry", method = { RequestMethod.GET, RequestMethod.POST })
+	public String Loanaccountprofileinquiry(@RequestParam(required = false) String formmode, Model md,
+
+			HttpServletRequest rq) {
+		md.addAttribute("formmode", formmode != null ? formmode : "list");
+		   List<BLRS_LoanAccountProfile_Entity> loanDetails =
+		            blrsLoanAccountProfileService.getAllLoanDetails();
+
+		    md.addAttribute("loanDetails", loanDetails);
+
+		    return "BLRS_LoanAccountProfile";	
+		    
+	}
 
 	// ---------- STEP 3 : DELETE your 3 old methods  Overduereports / Reminderreports / Guarantorreports
 //  and paste ALL of this in the same place ----------
