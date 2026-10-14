@@ -44,7 +44,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import com.bornfire.services.BLRS_ReminderGeneratorService;
-
+import com.bornfire.services.BLRS_ReportService;
 // ---------- 1. IMPORTS (top, with other imports) ----------
 import com.bornfire.entities.BLRS_BatchJobScheduler_Entity;
 import com.bornfire.entities.BLRS_LoanAccountProfile_Entity;
@@ -97,7 +97,9 @@ public class NavigationController {
 	private BLRS_ParameterService parameterService;
 
 	
-
+	// ---------- STEP 2 : AUTOWIRED (below dispatchService) ----------
+	@Autowired
+	private BLRS_ReportService reportService;
 
 
 		// ---------- 2. AUTOWIRED (with other @Autowired fields) ----------
@@ -1019,27 +1021,113 @@ public class NavigationController {
 	}
 	
 
-	
+	// ---------- STEP 3 : DELETE your 3 old methods  Overduereports / Reminderreports / Guarantorreports
+//  and paste ALL of this in the same place ----------
 
-	@RequestMapping(value = "Overduereports", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Overduereports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_Overduereports";
-	}
+//common data for the 3 report screens (scheme + department drop-downs)
+private void reportPage(Model md, HttpServletRequest rq, boolean withReminderType) {
+String roleId = (String) rq.getSession().getAttribute("ROLEID");
+md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
 
-	@RequestMapping(value = "Reminderreports", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Reminderreports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_Reminderreports";
-	}
+md.addAttribute("formmode", "list");
+md.addAttribute("schemeList", reportService.getSchemeCodes());
+md.addAttribute("departmentList", reportService.getDepartments());
+if (withReminderType) {
+md.addAttribute("ReminderParams", reminderOptions()); // Reminder-1 / 2 / 3 from Admin > Parameters
+}
+}
 
-	@RequestMapping(value = "Guarantorreports", method = { RequestMethod.GET, RequestMethod.POST })
-	public String Guarantorreports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
-		md.addAttribute("formmode", formmode != null ? formmode : "list");
-		return "BLRS_Guarantorreports";
-	}
-	
-	
+@RequestMapping(value = "Overduereports", method = { RequestMethod.GET, RequestMethod.POST })
+public String Overduereports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+reportPage(md, rq, false);
+return "BLRS_Overduereports";
+}
+
+@RequestMapping(value = "Reminderreports", method = { RequestMethod.GET, RequestMethod.POST })
+public String Reminderreports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+reportPage(md, rq, true);
+return "BLRS_Reminderreports";
+}
+
+@RequestMapping(value = "Guarantorreports", method = { RequestMethod.GET, RequestMethod.POST })
+public String Guarantorreports(@RequestParam(required = false) String formmode, Model md, HttpServletRequest rq) {
+reportPage(md, rq, true);
+return "BLRS_Guarantorreports";
+}
+
+//---------- PDF downloads (called by the Generate button) ----------
+@RequestMapping(value = "downloadOverdueReport", method = { RequestMethod.GET, RequestMethod.POST })
+public ResponseEntity<byte[]> downloadOverdueReport(@RequestParam("month") int month, @RequestParam("year") int year,
+@RequestParam(value = "schemeCode", required = false) String schemeCode,
+@RequestParam(value = "department", required = false) String department, HttpServletRequest rq) {
+
+if (month < 1 || month > 12 || year < 2000 || year > 2100) {
+return reportError(400, "Invalid month / year.");
+}
+try {
+logger.info("Overdue report {}/{} scheme={} dept={} by {}", month, year, schemeCode, department,
+rq.getSession().getAttribute("USERID"));
+return pdfResponse("ListOfOverdue.pdf", reportService.overduePdf(month, year, schemeCode, department));
+} catch (Exception e) {
+logger.error("Overdue report failed", e);
+return reportError(500, "Report could not be generated.");
+}
+}
+
+@RequestMapping(value = "downloadReminderReport", method = { RequestMethod.GET, RequestMethod.POST })
+public ResponseEntity<byte[]> downloadReminderReport(@RequestParam("month") int month, @RequestParam("year") int year,
+@RequestParam(value = "reminderType", required = false) String reminderType,
+@RequestParam(value = "schemeCode", required = false) String schemeCode,
+@RequestParam(value = "department", required = false) String department, HttpServletRequest rq) {
+
+if (month < 1 || month > 12 || year < 2000 || year > 2100) {
+return reportError(400, "Invalid month / year.");
+}
+try {
+logger.info("Reminder report {}/{} type={} scheme={} dept={} by {}", month, year, reminderType, schemeCode,
+department, rq.getSession().getAttribute("USERID"));
+return pdfResponse("ListOfReminders.pdf",
+reportService.reminderPdf(month, year, reminderType, schemeCode, department));
+} catch (Exception e) {
+logger.error("Reminder report failed", e);
+return reportError(500, "Report could not be generated.");
+}
+}
+
+@RequestMapping(value = "downloadGuarantorReport", method = { RequestMethod.GET, RequestMethod.POST })
+public ResponseEntity<byte[]> downloadGuarantorReport(@RequestParam("month") int month,
+@RequestParam("year") int year, @RequestParam(value = "reminderType", required = false) String reminderType,
+@RequestParam(value = "schemeCode", required = false) String schemeCode,
+@RequestParam(value = "department", required = false) String department, HttpServletRequest rq) {
+
+if (month < 1 || month > 12 || year < 2000 || year > 2100) {
+return reportError(400, "Invalid month / year.");
+}
+try {
+logger.info("Guarantor report {}/{} type={} scheme={} dept={} by {}", month, year, reminderType, schemeCode,
+department, rq.getSession().getAttribute("USERID"));
+return pdfResponse("ListOfGuarantors.pdf",
+reportService.guarantorPdf(month, year, reminderType, schemeCode, department));
+} catch (Exception e) {
+logger.error("Guarantor report failed", e);
+return reportError(500, "Report could not be generated.");
+}
+}
+
+private ResponseEntity<byte[]> pdfResponse(String fileName, byte[] data) {
+return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+.contentType(MediaType.APPLICATION_PDF).body(data);
+}
+
+private ResponseEntity<byte[]> reportError(int status, String message) {
+return ResponseEntity.status(status).contentType(MediaType.TEXT_PLAIN)
+.body(message.getBytes(StandardCharsets.UTF_8));
+}
+
+
+//---------- OPTIONAL : application.properties (company name / BRN on the PDF header) ----------
+//report.company.name=The Mauritius Civil Service Mutual Aid Association Ltd
+//report.company.brn=C10000071
 	
 
 	@Autowired

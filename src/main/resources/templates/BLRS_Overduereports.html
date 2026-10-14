@@ -1,6 +1,6 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
 
@@ -13,45 +13,35 @@
 	<title>BLRS</title>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
-
 		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
 
 	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
-
 		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
 
 	<link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
-
 		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
 
 	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
-
 		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
 
 	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
 
 	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
-
 		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
 
 	<script src="/webjars/popper.js/1.14.7/umd/popper.min.js"
-
 		th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
 
 	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
-
 		th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
 
 	<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
-
 		th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
 
 	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
-
 		th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
-
 		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
 
 	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
@@ -61,17 +51,16 @@
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 
 	<style>
-
 		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 		body {
-
 			background-color: #f8fafc !important;
-
 			font-family: 'Outfit', sans-serif !important;
-
 			color: #1e293b;
-
+			margin: 0;
+			padding-top: 70px;
+			overflow-x: hidden;
+			overscroll-behavior: none;
 		}
 
 		.container-manager {
@@ -79,172 +68,131 @@
 			max-width: 100%;
 			padding-right: 1.9%;
 			padding-left: 1.9%;
-			margin: 10px auto 0;
+			margin: 10px auto 40px;
+			box-sizing: border-box;
+		}
+
+		/* single border when a card is nested inside a card */
+		.card>.card {
+			border: 0;
+			box-shadow: none;
 		}
 
 		/* =========================================================
-
-		   OVERDUE REPORT BODY
-
+		   OVERDUE REPORT
 		   ========================================================= */
-
 		.overdue-card {
-
-		    border: 1px solid #9faab4;
-
-		    border-radius: 0;
-
-		    box-shadow: none;
-
-		    background-color: #ffffff;
-
+			border: 1px solid #9faab4;
+			border-radius: 0;
+			box-shadow: none;
+			background-color: #ffffff;
 		}
-
-		/* Report title */
 
 		.overdue-header {
-
-		    background-color: #b8c2cc;
-
-		    border-bottom: 1px solid #9faab4;
-
-		    padding: 10px 12px;
-
+			background-color: #b8c2cc;
+			border-bottom: 1px solid #9faab4;
+			padding: 10px 12px;
 		}
 
-		.overdue-header h6 {
-
-		    color: #333333;
-
-		    font-size: 14px;
-
-		    font-weight: 500;
-
-		    margin: 0;
-
+		.overdue-header h6,
+		.card-header h6 {
+			color: #333333;
+			font-size: 14px;
+			font-weight: 500;
+			margin: 0;
 		}
-
-		*{
-
-			overscroll-behavior:none ;
-
-		}
-
-		/* Main body */
 
 		.overdue-body {
-
-		    min-height: 300px;
-
-		    background-color: #f4f4f4;
-
-		    border: 1px solid #dddddd;
-
-		    padding: 45px 20px;
-
+			min-height: 300px;
+			background-color: #f4f4f4;
+			border: 1px solid #ddd;
+			padding: 45px 20px;
 		}
 
-		/* Form container */
-
 		.overdue-form {
-
-		    width: 420px;
+			width: 420px;
 			max-width: 100%;
 			margin: 0 auto;
 		}
 
-		/* Individual row */
-
 		.form-row-custom {
-
-		    display: flex;
-
-		    align-items: center;
-
-		    margin-bottom: 14px;
-
+			display: flex;
+			align-items: center;
+			margin-bottom: 14px;
 		}
-
-		/* Label */
 
 		.form-row-custom label {
-
-		    width: 120px;
-
-		    margin-bottom: 0;
-
-		    color: #333333;
-
-		    font-size: 13px;
-
-		    font-weight: 500;
-
+			width: 120px;
+			margin-bottom: 0;
+			color: #333;
+			font-size: 13px;
+			font-weight: 500;
 		}
-
-		/* Dropdown */
 
 		.report-select {
-
-		    width: 115px;
-
-		    height: 27px;
-
-		    padding: 2px 8px;
-
-		    font-size: 12px;
-
-		    color: #333333;
-
-		    border: 1px solid #999999;
-
-		    border-radius: 3px;
-
-		    background-color: #ffffff;
-
+			width: 180px;
+			height: 28px;
+			padding: 2px 8px;
+			font-size: 12px;
+			color: #333;
+			border: 1px solid #999;
+			border-radius: 3px;
+			background-color: #fff;
 		}
 
-		/* Footer */
+		.report-select:focus {
+			border-color: #777;
+			box-shadow: none;
+		}
 
 		.overdue-footer {
-
-		    background-color: #e9ecef;
-
-		    border-top: 0;
-
-		    text-align: center;
-
-		    padding: 12px;
-
+			background-color: #e9ecef;
+			border-top: 0;
+			text-align: center;
+			padding: 12px;
 		}
-
-		/* Buttons */
 
 		.overdue-footer .big-btn {
-
-		    min-width: 48px;
-
-		    margin: 0 3px;
-
-		    padding: 4px 10px;
-
-		    font-size: 12px;
-
+			min-width: 70px;
+			margin: 0 3px;
+			padding: 5px 14px;
+			font-size: 12px;
+			font-weight: 500;
+			line-height: 1.5;
+			color: #ffffff;
+			background-color: #007bff;
+			border: 1px solid #007bff;
+			border-radius: 4px;
+			cursor: pointer;
 		}
 
-		@media (max-width: 768px) {
+		.overdue-footer .big-btn:hover {
+			background-color: #0069d9;
+			border-color: #0062cc;
+		}
+
+		.overdue-footer .big-btn:disabled {
+			opacity: .65;
+			cursor: not-allowed;
+		}
+
+		@media (max-width: 767.98px) {
 			.container-manager {
 				width: 100%;
+				max-width: 100%;
+				margin-top: 10px;
 				padding-right: 10px;
 				padding-left: 10px;
-				margin-top: 80px;
 			}
 
-			.overdue-body {
-				padding: 30px 15px;
+			.overdue-form {
+				width: 100%;
+				max-width: 450px;
 			}
 
 			.form-row-custom {
 				flex-wrap: wrap;
+				align-items: flex-start;
 			}
 
 			.form-row-custom label {
@@ -254,20 +202,75 @@
 
 			.report-select {
 				width: 100%;
-				max-width: 115px;
+				max-width: 180px;
 			}
 		}
 
+		@media (max-width: 575.98px) {
+			.overdue-body {
+				padding: 30px 15px;
+			}
+
+			.overdue-form {
+				width: 100%;
+			}
+
+			.report-select {
+				max-width: 100%;
+			}
+
+			.overdue-footer .big-btn {
+				margin: 3px;
+			}
+		}
 	</style>
 
 	<script>
+		function enc(id) {
+			return encodeURIComponent(document.getElementById(id).value);
+		}
 
-	function generateReport() {
+		// Month = current month when the page opens
+		document.addEventListener('DOMContentLoaded', function () {
+			var m = ('0' + (new Date().getMonth() + 1)).slice(-2);
+			var el = document.getElementById('month');
+			if (el) {el.value = m;}
+		});
 
-	    alert("Report generated successfully!");
+		// Generate : server builds the PDF, browser saves it (manual : "Click on Save or open")
+		function generateReport(btn) {
+			var url = '/BLRS/downloadOverdueReport?month=' + enc('month')
+				+ '&year=' + enc('year')
+				+ '&schemeCode=' + enc('schemeCode')
+				+ '&department=' + enc('department');
 
-	}
+			var label = btn ? btn.innerHTML : '';
+			if (btn) {btn.disabled = true; btn.innerHTML = 'Please wait...';}
 
+			fetch(url, {credentials: 'same-origin'})
+				.then(function (res) {
+					if (!res.ok) {
+						return res.text().then(function (t) {
+							throw new Error(t || 'Report could not be generated.');
+						});
+					}
+					return res.blob();
+				})
+				.then(function (blob) {
+					var a = document.createElement('a');
+					a.href = window.URL.createObjectURL(blob);
+					a.download = 'ListOfOverdue.pdf';
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+				})
+				.catch(function (e) {
+					alert(e.message || 'Report could not be generated.');
+				})
+				.then(function () {
+					if (btn) {btn.disabled = false; btn.innerHTML = label;}
+				});
+		}
 	</script>
 
 </head>
@@ -278,217 +281,171 @@
 
 	<div class="container-manager">
 
-	    <div class="row d-flex justify-content-center">
+		<div class="row d-flex justify-content-center">
 
-	        <div class="col-sm-12 mt-2">
+			<div class="col-sm-12 mt-2">
 
-	            <div th:if="${formmode}=='list'">
+				<div th:if="${formmode}=='list'">
 
-	                <div class="panel panel-primary filterable">
+					<div class="panel panel-primary filterable">
 
-	                    <div class="card overdue-card">
+						<div class="card overdue-card">
 
 							<div class="card-header" style="background-color: #e9ecef">
 
-													        <div class="float-left">
+								<div class="float-left">
 
-													            <h6>List of Overdue Report</h6>
+									<h6>List of Overdue Report</h6>
 
-													        </div>
-
-													    </div>
-
-	                        <!-- Report Selection Area -->
-
-	                        <div class="card-body overdue-body">
-
-	                            <div class="overdue-form">
-
-	                                <!-- Month -->
-
-	                                <div class="form-row-custom">
-
-	                                    <label for="month">
-
-	                                        Month
-
-	                                    </label>
-
-	                                    <select id="month"
-
-	                                            name="month"
-
-	                                            class="form-control report-select">
-
-	                                        <option value="01">January</option>
-
-	                                        <option value="02">February</option>
-
-	                                        <option value="03">March</option>
-
-	                                        <option value="04">April</option>
-
-	                                        <option value="05">May</option>
-
-	                                        <option value="06">June</option>
-
-	                                        <option value="07">July</option>
-
-	                                        <option value="08">August</option>
-
-	                                        <option value="09">September</option>
-
-	                                        <option value="10">October</option>
-
-	                                        <option value="11">November</option>
-
-	                                        <option value="12">December</option>
-
-	                                    </select>
-
-	                                </div>
-
-	                                <!-- Year -->
-
-	                                <div class="form-row-custom">
-
-	                                    <label for="year">
-
-	                                        Year
-
-	                                    </label>
-
-										<select id="year"
-
-										        name="year"
-
-										        class="form-control report-select">
-
-										    <option th:each="year : ${#numbers.sequence(2000, T(java.time.Year).now().getValue())}"
-
-										            th:value="${year}"
-
-										            th:text="${year}">
-
-										    </option>
-
-										</select>
-
-	                                </div>
-
-	                                <!-- Scheme Code -->
-
-	                                <div class="form-row-custom">
-
-	                                    <label for="schemeCode">
-
-	                                        Scheme Code
-
-	                                    </label>
-
-	                                    <select id="schemeCode"
-
-	                                            name="schemeCode"
-
-	                                            class="form-control report-select">
-
-	                                        <option value="">Select</option>
-
-	                                        <!-- Add your dynamic scheme codes here -->
-
-	                                        <option th:each="scheme : ${schemeList}"
-
-	                                                th:value="${scheme}"
-
-	                                                th:text="${scheme}">
-
-	                                        </option>
-
-	                                    </select>
-
-	                                </div>
-
-	                                <!-- Department -->
-
-	                                <div class="form-row-custom">
-
-	                                    <label for="department">
-
-	                                        Department
-
-	                                    </label>
-
-	                                    <select id="department"
-
-	                                            name="department"
-
-	                                            class="form-control report-select">
-
-	                                        <option value="">All</option>
-
-	                                        <!-- Add your dynamic departments here -->
-
-	                                        <option th:each="department : ${departmentList}"
-
-	                                                th:value="${department}"
-
-	                                                th:text="${department}">
-
-	                                        </option>
-
-	                                    </select>
-
-	                                </div>
-
-	                            </div>
-
-	                        </div>
-
-	                        <!-- Buttons -->
-
-							<div class="card-footer overdue-footer">
-
-							    <button type="button"
-
-							            class="btn-primary big-btn"
-
-							            onclick="window.location.href='/BLRS/Dashboard';">
-
-							        Home
-
-							    </button>
-
-							    <button type="button"
-
-							            class="btn-primary big-btn"
-
-							            onclick="generateReport();">
-
-							        Generate
-
-							    </button>
-
-							    <button type="button"
-
-							            class="btn-primary big-btn"
-
-							            onclick="window.history.back();">
-
-							        Back
-
-							    </button>
+								</div>
 
 							</div>
 
-	                    </div>
+							<!-- Report Selection Area -->
 
-	                </div>
+							<div class="card-body overdue-body">
 
-	            </div>
+								<div class="overdue-form">
 
-	        </div>
+									<div class="form-row-custom">
 
-	    </div>
+										<label for="month">
+
+											Month
+
+										</label>
+
+										<select id="month" name="month" class="form-control report-select">
+
+											<option value="01">January</option>
+
+											<option value="02">February</option>
+
+											<option value="03">March</option>
+
+											<option value="04">April</option>
+
+											<option value="05">May</option>
+
+											<option value="06">June</option>
+
+											<option value="07">July</option>
+
+											<option value="08">August</option>
+
+											<option value="09">September</option>
+
+											<option value="10">October</option>
+
+											<option value="11">November</option>
+
+											<option value="12">December</option>
+
+										</select>
+
+									</div>
+
+									<div class="form-row-custom">
+
+										<label for="year">
+
+											Year
+
+										</label>
+
+										<select id="year" name="year" class="form-control report-select">
+
+											<option
+												th:each="year : ${#numbers.sequence(2000, T(java.time.Year).now().getValue())}"
+												th:value="${year}" th:text="${year}"
+												th:selected="${year == T(java.time.Year).now().getValue()}">
+
+											</option>
+
+										</select>
+
+									</div>
+
+									<div class="form-row-custom">
+
+										<label for="schemeCode">
+
+											Scheme Code
+
+										</label>
+
+										<select id="schemeCode" name="schemeCode" class="form-control report-select">
+
+											<option value="">All</option>
+
+											<option th:each="scheme : ${schemeList}" th:value="${scheme}"
+												th:text="${scheme}">
+
+											</option>
+
+										</select>
+
+									</div>
+
+									<div class="form-row-custom">
+
+										<label for="department">
+
+											Department
+
+										</label>
+
+										<select id="department" name="department" class="form-control report-select">
+
+											<option value="">All</option>
+
+											<option th:each="department : ${departmentList}" th:value="${department}"
+												th:text="${department}">
+
+											</option>
+
+										</select>
+
+									</div>
+
+								</div>
+
+							</div>
+
+							<!-- Buttons -->
+
+							<div class="card-footer overdue-footer">
+
+								<button type="button" class="btn-primary big-btn"
+									onclick="window.location.href='/BLRS/Dashboard';">
+
+									Home
+
+								</button>
+
+								<button type="button" class="btn-primary big-btn" onclick="generateReport(this);">
+
+									Generate
+
+								</button>
+
+								<button type="button" class="btn-primary big-btn" onclick="window.history.back();">
+
+									Back
+
+								</button>
+
+							</div>
+
+						</div>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
 
 	</div>
 

@@ -314,7 +314,7 @@
 							<div class="col-8">
 								<select class="form-control form-control-sm" name="reminderType" id="reminderType" onchange="applyReminderRules()">
 									<option value="">Select</option>
-									<option th:each="p : ${ReminderParams}" th:value="${p.reminder_name}" th:text="${p.reminder_name}"
+									<option th:each="p : ${ReminderParams}" th:value="${p.reminder_no" th:text="${p.reminder_no}"
 										th:attr="data-download=${p.download_flg},data-email=${p.email_flg},data-sms=${p.sms_flg}"></option>
 								</select>
 							</div>

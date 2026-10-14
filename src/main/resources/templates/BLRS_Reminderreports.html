@@ -57,6 +57,10 @@
 			background-color: #f8fafc !important;
 			font-family: 'Outfit', sans-serif !important;
 			color: #1e293b;
+			margin: 0;
+			padding-top: 70px;
+			overflow-x: hidden;
+			overscroll-behavior: none;
 		}
 
 		.container-manager {
@@ -64,64 +68,119 @@
 			max-width: 100%;
 			padding-right: 1.9%;
 			padding-left: 1.9%;
-			margin-right: auto;
-			margin-left: auto;
-			margin-top: 10px;
+			margin: 10px auto 40px;
+			box-sizing: border-box;
+		}
+
+		/* single border when a card is nested inside a card */
+		.card>.card {
+			border: 0;
+			box-shadow: none;
 		}
 
 		/* =========================================================
 		   REMINDER REPORT
 		   ========================================================= */
+		.reminder-card {
+			border: 1px solid #9faab4;
+			border-radius: 0;
+			box-shadow: none;
+			background-color: #ffffff;
+		}
+
+		.reminder-header {
+			background-color: #b8c2cc;
+			border-bottom: 1px solid #9faab4;
+			padding: 10px 12px;
+		}
+
+		.reminder-header h6,
+		.card-header h6 {
+			color: #333333;
+			font-size: 14px;
+			font-weight: 500;
+			margin: 0;
+		}
+
 		.reminder-body {
-		    min-height: 300px;
-		    background-color: #f4f4f4;
-		    border: 1px solid #ddd;
-		    padding: 45px 20px;
+			min-height: 300px;
+			background-color: #f4f4f4;
+			border: 1px solid #ddd;
+			padding: 45px 20px;
 		}
+
 		.reminder-form {
-		    width: 450px;
-		    margin: 0 auto;
+			width: 450px;
+			max-width: 100%;
+			margin: 0 auto;
 		}
+
 		.form-row-custom {
-		    display: flex;
-		    align-items: center;
-		    margin-bottom: 14px;
+			display: flex;
+			align-items: center;
+			margin-bottom: 14px;
 		}
+
 		.form-row-custom label {
-		    width: 130px;
-		    margin-bottom: 0;
-		    color: #333;
-		    font-size: 13px;
-		    font-weight: 500;
+			width: 130px;
+			margin-bottom: 0;
+			color: #333;
+			font-size: 13px;
+			font-weight: 500;
 		}
+
 		.report-select {
-		    width: 180px;
-		    height: 27px;
-		    padding: 2px 8px;
-		    font-size: 12px;
-		    color: #333;
-		    border: 1px solid #999;
-		    border-radius: 3px;
-		    background-color: #fff;
+			width: 180px;
+			height: 28px;
+			padding: 2px 8px;
+			font-size: 12px;
+			color: #333;
+			border: 1px solid #999;
+			border-radius: 3px;
+			background-color: #fff;
 		}
+
+		.report-select:focus {
+			border-color: #777;
+			box-shadow: none;
+		}
+
 		.reminder-footer {
-		    background-color: #e9ecef;
-		    border-top: 0;
-		    text-align: center;
-		    padding: 12px;
+			background-color: #e9ecef;
+			border-top: 0;
+			text-align: center;
+			padding: 12px;
 		}
+
 		.reminder-footer .big-btn {
-		    min-width: 48px;
-		    margin: 0 3px;
-		    padding: 4px 10px;
-		    font-size: 12px;
+			min-width: 70px;
+			margin: 0 3px;
+			padding: 5px 14px;
+			font-size: 12px;
+			font-weight: 500;
+			line-height: 1.5;
+			color: #ffffff;
+			background-color: #007bff;
+			border: 1px solid #007bff;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		.reminder-footer .big-btn:hover {
+			background-color: #0069d9;
+			border-color: #0062cc;
+		}
+
+		.reminder-footer .big-btn:disabled {
+			opacity: .65;
+			cursor: not-allowed;
 		}
 
 		@media (max-width: 767.98px) {
 			.container-manager {
 				width: 100%;
 				max-width: 100%;
-				margin-top: 75px;
+				margin-top: 10px;
 				padding-right: 10px;
 				padding-left: 10px;
 			}
@@ -148,11 +207,6 @@
 		}
 
 		@media (max-width: 575.98px) {
-			.container-manager .col-sm-11 {
-				padding-right: 5px;
-				padding-left: 5px;
-			}
-
 			.reminder-body {
 				padding: 30px 15px;
 			}
@@ -172,10 +226,53 @@
 	</style>
 
 	<script>
-		function generateReminderReport() {
-		    alert("Report generated successfully!");
+		function enc(id) {
+			return encodeURIComponent(document.getElementById(id).value);
 		}
-		</script>
+
+		// Month = current month when the page opens
+		document.addEventListener('DOMContentLoaded', function () {
+			var m = ('0' + (new Date().getMonth() + 1)).slice(-2);
+			var el = document.getElementById('month');
+			if (el) {el.value = m;}
+		});
+
+		// Generate : server builds the PDF, browser saves it (manual : "Click on Save or open")
+		function generateReminderReport(btn) {
+			var url = '/BLRS/downloadReminderReport?month=' + enc('month')
+				+ '&year=' + enc('year')
+				+ '&reminderType=' + enc('reminderType')
+				+ '&schemeCode=' + enc('schemeCode')
+				+ '&department=' + enc('department');
+
+			var label = btn ? btn.innerHTML : '';
+			if (btn) {btn.disabled = true; btn.innerHTML = 'Please wait...';}
+
+			fetch(url, {credentials: 'same-origin'})
+				.then(function (res) {
+					if (!res.ok) {
+						return res.text().then(function (t) {
+							throw new Error(t || 'Report could not be generated.');
+						});
+					}
+					return res.blob();
+				})
+				.then(function (blob) {
+					var a = document.createElement('a');
+					a.href = window.URL.createObjectURL(blob);
+					a.download = 'ListOfReminders.pdf';
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+				})
+				.catch(function (e) {
+					alert(e.message || 'Report could not be generated.');
+				})
+				.then(function () {
+					if (btn) {btn.disabled = false; btn.innerHTML = label;}
+				});
+		}
+	</script>
 
 </head>
 
@@ -197,217 +294,184 @@
 
 							<div class="card">
 
-							    <!-- Header -->
+								<!-- Header -->
 
-							    <div class="card-header" style="background-color: #e9ecef">
+								<div class="card-header" style="background-color: #e9ecef">
 
-							        <div class="float-left">
+									<div class="float-left">
 
-							            <h6>List of Reminder Report</h6>
+										<h6>List of Reminders Report</h6>
 
-							        </div>
+									</div>
 
-							    </div>
+								</div>
 
-							    <!-- Body -->
+								<!-- Body -->
 
-							    <div class="card-body reminder-body">
+								<div class="card-body reminder-body">
 
-							        <div class="reminder-form">
+									<div class="reminder-form">
 
-							            <!-- Month -->
+										<div class="form-row-custom">
 
-							            <div class="form-row-custom">
+											<label for="month">
 
-							                <label for="month">
+												Month
 
-							                    Month
+											</label>
 
-							                </label>
+											<select id="month" name="month" class="form-control report-select">
 
-							                <select id="month"
-							                        name="month"
-							                        class="form-control report-select">
+												<option value="01">January</option>
 
-							                    <option value="01">January</option>
+												<option value="02">February</option>
 
-							                    <option value="02">February</option>
+												<option value="03">March</option>
 
-							                    <option value="03">March</option>
+												<option value="04">April</option>
 
-							                    <option value="04">April</option>
+												<option value="05">May</option>
 
-							                    <option value="05">May</option>
+												<option value="06">June</option>
 
-							                    <option value="06">June</option>
+												<option value="07">July</option>
 
-							                    <option value="07">July</option>
+												<option value="08">August</option>
 
-							                    <option value="08">August</option>
+												<option value="09">September</option>
 
-							                    <option value="09">September</option>
+												<option value="10">October</option>
 
-							                    <option value="10">October</option>
+												<option value="11">November</option>
 
-							                    <option value="11">November</option>
+												<option value="12">December</option>
 
-							                    <option value="12">December</option>
+											</select>
 
-							                </select>
+										</div>
 
-							            </div>
+										<div class="form-row-custom">
 
+											<label for="year">
 
+												Year
 
-							            <!-- Year -->
+											</label>
 
-							            <div class="form-row-custom">
+											<select id="year" name="year" class="form-control report-select">
 
-							                <label for="year">
+												<option
+													th:each="year : ${#numbers.sequence(2000, T(java.time.Year).now().getValue())}"
+													th:value="${year}" th:text="${year}"
+													th:selected="${year == T(java.time.Year).now().getValue()}">
 
-							                    Year
+												</option>
 
-							                </label>
+											</select>
 
-							                <select id="year"
-							                        name="year"
-							                        class="form-control report-select">
+										</div>
 
-							                    <option th:each="year : ${#numbers.sequence(2000, T(java.time.Year).now().getValue())}"
-							                            th:value="${year}"
-							                            th:text="${year}"
-							                            th:selected="${year == T(java.time.Year).now().getValue()}">
+										<div class="form-row-custom">
 
-							                    </option>
+											<label for="reminderType">
 
-							                </select>
+												Reminder Type
 
-							            </div>
+											</label>
 
+											<select id="reminderType" name="reminderType"
+												class="form-control report-select">
 
+												<option value="">All</option>
 
-							            <!-- Reminder Type -->
+												<!-- Reminder-1 / 2 / 3 from Admin > Parameters > Reminder -->
+												<option th:each="r : ${ReminderParams}" th:value="${r.name}"
+													th:text="${r.name}">
 
-							            <div class="form-row-custom">
+												</option>
 
-							                <label for="reminderType">
+											</select>
 
-							                    Reminder Type
+										</div>
 
-							                </label>
+										<div class="form-row-custom">
 
-							                <select id="reminderType"
-							                        name="reminderType"
-							                        class="form-control report-select">
+											<label for="schemeCode">
 
-							                    <option value="">Select</option>
+												Scheme Code
 
-							                    <option value="FIRST">First Reminder</option>
+											</label>
 
-							                    <option value="SECOND">Second Reminder</option>
+											<select id="schemeCode" name="schemeCode"
+												class="form-control report-select">
 
-							                    <option value="FINAL">Final Reminder</option>
+												<option value="">All</option>
 
-							                </select>
+												<option th:each="scheme : ${schemeList}" th:value="${scheme}"
+													th:text="${scheme}">
 
-							            </div>
+												</option>
 
+											</select>
 
+										</div>
 
-							            <!-- Scheme Code -->
+										<div class="form-row-custom">
 
-							            <div class="form-row-custom">
+											<label for="department">
 
-							                <label for="schemeCode">
+												Department
 
-							                    Scheme Code
+											</label>
 
-							                </label>
+											<select id="department" name="department"
+												class="form-control report-select">
 
-							                <select id="schemeCode"
-							                        name="schemeCode"
-							                        class="form-control report-select">
+												<option value="">All</option>
 
-							                    <option value="">Select</option>
+												<option th:each="department : ${departmentList}"
+													th:value="${department}" th:text="${department}">
 
-							                    <option th:each="scheme : ${schemeList}"
-							                            th:value="${scheme}"
-							                            th:text="${scheme}">
+												</option>
 
-							                    </option>
+											</select>
 
-							                </select>
+										</div>
 
-							            </div>
+									</div>
 
+								</div>
 
+								<!-- Footer -->
 
-							            <!-- Department -->
+								<div class="card-footer reminder-footer">
 
-							            <div class="form-row-custom">
+									<button type="button" class="btn-primary big-btn" id="btnHome"
+										onclick="window.location.href='/BLRS/Dashboard';">
 
-							                <label for="department">
+										Home
 
-							                    Department
+									</button>
 
-							                </label>
+									<button type="button" class="btn-primary big-btn" id="btnGenerate"
+										onclick="generateReminderReport(this);">
 
-							                <select id="department"
-							                        name="department"
-							                        class="form-control report-select">
+										Generate
 
-							                    <option value="">All</option>
+									</button>
 
-							                    <option th:each="department : ${departmentList}"
-							                            th:value="${department}"
-							                            th:text="${department}">
+									<button type="button" class="btn-primary big-btn" id="btnBack"
+										onclick="window.history.back();">
 
-							                    </option>
+										Back
 
-							                </select>
+									</button>
 
-							            </div>
-
-							        </div>
-
-							    </div>
-
-
-
-							    <!-- Footer -->
-
-							    <div class="card-footer reminder-footer">
-
-							        <button type="button"
-							                class="btn-primary big-btn"
-							                id="btnHome"
-							                onclick="window.location.href='/BLRS/Dashboard';">
-
-							            Home
-
-							        </button>
-
-							        <button type="button"
-							                class="btn-primary big-btn"
-							                id="btnGenerate"
-							                onclick="generateReminderReport();">
-
-							            Generate
-
-							        </button>
-
-							        <button type="button"
-							                class="btn-primary big-btn"
-							                id="btnBack"
-							                onclick="window.history.back();">
-
-							            Back
-
-							        </button>
-
-							    </div>
+								</div>
 
 							</div>
+
+						</div>
 
 					</div>
 
