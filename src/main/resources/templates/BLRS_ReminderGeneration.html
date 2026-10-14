@@ -53,7 +53,7 @@
 		.container-manager {
 			width: 100%;
 			max-width: 100%;
-			padding: 0 1.9%;
+			padding: 0.7% 2.4%;
 			margin: 10px auto 15px;
 			box-sizing: border-box;
 		}
@@ -67,7 +67,7 @@
 			border: 1px solid #cbd5e1;
 			border-radius: 6px;
 			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-			height: calc(100vh - 110px);
+			height: calc(100vh - 140px);
 			min-height: 320px;
 			overflow: hidden;
 		}
@@ -99,8 +99,10 @@
 			flex: 0 0 auto;
 			background: #e9ecef;
 			text-align: center;
+			margin-bottom: 3%;
 			padding: 8px;
 			border-top: 1px solid #cbd5e1;
+			margin: 0;
 		}
 
 		/* table */
@@ -183,6 +185,7 @@
 			if ($('#reminderGenTable tbody tr').length > 0) {
 				table = $('#reminderGenTable').DataTable({
 					pageLength: 25,
+					lengthChange: false, // Hide "Show 25 entries"
 					lengthMenu: [10, 25, 50, 100],
 					order: [],
 					columnDefs: [{orderable: false, targets: 0}]

@@ -34,20 +34,27 @@
 		/* one card: fixed header, scrolling body, fixed footer */
 		.page-card { display: flex; flex-direction: column; width: 100%; background: #fff;
 			border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-			height: calc(100vh - 110px); min-height: 320px; overflow: hidden; }
+			height: calc(100vh - 140px); min-height: 320px; overflow: hidden; }
 		.page-card-header { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center;
 			background: #e9ecef; padding: 10px 16px; border-bottom: 1px solid #cbd5e1; }
 		.page-card-header h6 { margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
 		.page-card-body { flex: 1 1 auto; overflow: auto; padding: 0; }
-		.page-card-footer { flex: 0 0 auto; background: #e9ecef; text-align: center; padding: 8px;
-			border-top: 1px solid #cbd5e1; }
+		.page-card-footer { flex: 0 0 auto; background: #e9ecef; text-align: center; padding: 8px; margin-bottom: 30px;
+			border-top: 1px solid #cbd5e1;	margin: 0; }
 
 		/* table */
 		.data-table { width: 100% !important; margin: 0 !important; font-size: 0.83rem; border-collapse: separate; border-spacing: 0; }
-		.data-table thead th { position: sticky; top: 0; z-index: 2; background: #f1f5f9; color: #334155;
+		.data-table thead th { position: sticky; top: 0; z-index: 2; background: #f1f5f9; color: #334155; padding: 7px 9px !important;
 			font-weight: 700; border-bottom: 2px solid #cbd5e1 !important; white-space: nowrap; vertical-align: middle; }
-		.data-table td { vertical-align: middle; white-space: nowrap; }
+		.data-table td { vertical-align: middle; white-space: nowrap;  }
 		.data-table td.wrap { white-space: normal; }
+
+		/* Reduce table row height */
+		.data-table tbody td {
+		    padding: 3px 4px !important;
+		    line-height: 1.2;
+		}
+
 
 		/* DataTables controls */
 		.dataTables_wrapper { padding: 8px 12px 0; font-size: 0.83rem; }
@@ -63,12 +70,26 @@
 			.container-manager { padding: 0 10px; }
 			.page-card { height: calc(100vh - 100px); }
 		}
+		
+		#batchExecutionTable tbody .btn {
+		    padding: 2px 6px !important;
+		    font-size: 11px !important;
+		}
+		
+
+		#batchExecutionTable thead th,
+		#batchExecutionTable tbody td {
+		    padding-left: 12px !important;
+		    padding-right: 12px !important;
+		}
+
 	</style>
 	<script>
 		$(function () {
 			if ($('#batchExecutionTable tbody tr[data-row]').length > 0) {
 				$('#batchExecutionTable').DataTable({
 					pageLength: 25,
+					lengthChange: false, // Hide "Show 25 entries"
 					lengthMenu: [10, 25, 50, 100],
 					order: [],
 					columnDefs: [{ orderable: false, targets: 5 }]
