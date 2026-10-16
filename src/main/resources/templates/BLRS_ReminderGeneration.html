@@ -53,7 +53,7 @@
 		.container-manager {
 			width: 100%;
 			max-width: 100%;
-			padding: 0.7% 2.4%;
+			padding: 0 1.9%;
 			margin: 10px auto 15px;
 			box-sizing: border-box;
 		}
@@ -67,7 +67,7 @@
 			border: 1px solid #cbd5e1;
 			border-radius: 6px;
 			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-			height: calc(100vh - 140px);
+			height: calc(100vh - 110px);
 			min-height: 320px;
 			overflow: hidden;
 		}
@@ -99,10 +99,8 @@
 			flex: 0 0 auto;
 			background: #e9ecef;
 			text-align: center;
-			margin-bottom: 3%;
 			padding: 8px;
 			border-top: 1px solid #cbd5e1;
-			margin: 0;
 		}
 
 		/* table */
@@ -185,7 +183,6 @@
 			if ($('#reminderGenTable tbody tr').length > 0) {
 				table = $('#reminderGenTable').DataTable({
 					pageLength: 25,
-					lengthChange: false, // Hide "Show 25 entries"
 					lengthMenu: [10, 25, 50, 100],
 					order: [],
 					columnDefs: [{orderable: false, targets: 0}]
@@ -220,20 +217,83 @@
 			$('#btnSubmitReminder').prop('disabled', !!o.val() && !allowDownload);
 			if (o.val() && !allowDownload) alert('File download is not allowed for this reminder type.');
 		}
-
 		function submitReminder() {
-			if (!$('#reminderType').val()) {
-				alert('Please select the reminder type.');
-				return;
-			}
-			$('#email, #sms').prop('disabled', false); // disabled fields are not posted
-			var form = document.getElementById('reminderForm');
-			$(form).find('input.hid-sel').remove();
-			checkedBoxes().each(function () {
-				$('<input type="hidden" class="hid-sel" name="selectedReminders">').val(this.value).appendTo(form);
-			});
-			form.submit();
-			setTimeout(function () {$('#reminderModal').modal('hide');}, 800);
+		    // 1) Read the reminder type
+		    var rtype = $('#reminderType').val();
+		    if (!rtype) {
+		        alert('Please select the reminder type.');
+		        return;
+		    }
+
+		    // 2) Read email + sms
+		    var emailVal = $('#email').val() || 'NO';
+		    var smsVal   = $('#sms').val()   || 'NO';
+
+		    // 3) Collect ticked account numbers — global search (works around DataTable paging)
+		    var accs = [];
+		    $('#reminderGenTable input[name="selectedReminders"]:checked').each(function () {
+		        accs.push(this.value);
+		    });
+
+		    if (accs.length === 0) {
+		        alert('Please select at least one account.');
+		        return;
+		    }
+
+		    // 4) Build URL-encoded body manually — avoids all form/modal issues
+		    var params = new URLSearchParams();
+		    params.append('reminderType', rtype);
+		    params.append('email', emailVal);
+		    params.append('sms', smsVal);
+		    accs.forEach(function (a) { params.append('selectedReminders', a); });
+
+		    // 5) Debug — open F12 Console to see this line
+		    console.log('[DEBUG] POST /generateReminderFile with body →', params.toString());
+
+		    // 6) Disable button while running
+		    var btn = $('#btnSubmitReminder');
+		    var oldText = btn.text();
+		    btn.prop('disabled', true).text('Please wait...');
+
+		    // 7) Fire the request via fetch and stream the ZIP download
+		    fetch('generateReminderFile', {
+		        method: 'POST',
+		        headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+		        body: params.toString(),
+		        credentials: 'same-origin'
+		    })
+		    .then(function (res) {
+		        if (!res.ok) {
+		            // server returned 4xx/5xx with a text error message
+		            return res.text().then(function (t) { throw new Error(t || 'Server error'); });
+		        }
+		        return res.blob();
+		    })
+		    .then(function (blob) {
+		        // Trigger browser download
+		        var url = URL.createObjectURL(blob);
+		        var a = document.createElement('a');
+		        a.href = url;
+		        a.download = 'reminders_' + Date.now() + '.zip';
+		        document.body.appendChild(a);
+		        a.click();
+		        document.body.removeChild(a);
+		        URL.revokeObjectURL(url);
+
+		        // Close the modal
+		        $('#reminderModal').modal('hide');
+
+		        // Optional success toast
+		        alert('Reminder file generated. Email/SMS will be sent in the background.');
+		    })
+		    .catch(function (err) {
+		        console.error('[ERROR] generateReminderFile:', err);
+		        alert(err.message || 'File generation failed.');
+		    })
+		    .then(function () {
+		        // restore button whatever happens
+		        btn.prop('disabled', false).text(oldText);
+		    });
 		}
 	</script>
 </head>
@@ -316,14 +376,13 @@
 								Type</label>
 							<div class="col-8">
 								<select class="form-control form-control-sm" name="reminderType" id="reminderType" onchange="applyReminderRules()">
-									<option value="">Select</option>
-									
-									<option th:each="p : ${ReminderParams}"
-									        th:value="${p.reminder_no}"
-									        th:text="${p.reminder_no}"
-									        th:attr="data-download=${p.download_flg},data-email=${p.email_flg},data-sms=${p.sms_flg}">
-									</option>
-									
+								    <option value="">Select</option>
+								    <option th:each="p : ${ReminderParams}"
+								            th:value="${p.reminder_no}"
+								            th:data-name="'Reminder-' + ${#strings.replace(p.reminder_no, 'REM', '')}"
+								            th:text="'Reminder-' + ${#strings.replace(p.reminder_no, 'REM', '')}"
+								            th:attr="data-download=${p.download_flg},data-email=${p.email_flg},data-sms=${p.sms_flg}">
+								    </option>
 								</select>
 							</div>
 						</div>
