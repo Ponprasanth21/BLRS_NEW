@@ -30,7 +30,7 @@
 
 		/* Horizontal top navigation — keeps the existing page content unchanged */
 
-		body { font-size: 0.8rem; padding-top: 70px; }
+		<!--body { font-size: 0.8rem; padding-top: 70px; }-->
 
 		.navbar.fixed-top {
 
@@ -341,19 +341,7 @@
 		       overflow-y: hidden !important;
 		   }
 		   
-        body {
 
-            margin: 0;
-
-            padding-top: 100px;
-
-            min-height: 100vh;
-
-            background: #f5f7fa;
-
-            overflow-x: hidden;
-
-        }
 
         /* One common centered work area for every page. */
 
@@ -593,10 +581,15 @@
 		}
 
 		body {
-			padding-top: 90px !important;
-			background: #f5f7fa;
+		    margin: 0;
+		    padding-top: 78px;
+		    min-height: 100vh;
+		    background: #f5f7fa;
+		    overflow-x: hidden;
+		    font-size: 0.8rem;
+		}	       	@media (max-width: 900px) {
+		    body { padding-top: 70px; }
 		}
-
 		#blrsPageContent {
 			width: 100% !important;
 			max-width: 1500px !important;

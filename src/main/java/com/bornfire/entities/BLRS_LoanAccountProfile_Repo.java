@@ -15,6 +15,9 @@ public interface BLRS_LoanAccountProfile_Repo
     // Find loan details using customer ID
     BLRS_LoanAccountProfile_Entity findByCustomerId(String customerId);
 
+    // Find loan details using account number fallback
+    BLRS_LoanAccountProfile_Entity findFirstByAccountNumber(String accountNumber);
+
     
     
     

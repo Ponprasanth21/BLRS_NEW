@@ -176,10 +176,17 @@
 														<td th:text="${job.last_run_date != null} ? ${#dates.format(job.last_run_date, 'dd-MM-yyyy')} : ''"></td>
 														<td th:text="${job.next_run_date != null} ? ${#dates.format(job.next_run_date, 'dd-MM-yyyy')} : ''"></td>
 														<td>
-															<span th:if="${job.job_status == 'COMPLETED'}" class="status-badge status-success">COMPLETED</span>
-															<span th:if="${job.job_status == 'FAILED'}" class="status-badge status-danger">FAILED</span>
-															<button type="button" class="btn btn-sm btn-primary btnRun"
-																th:if="${job.job_status != 'COMPLETED'}" th:attr="data-jobid=${job.job_id}">Run</button>
+														    <span th:if="${job.job_status == 'COMPLETED'}"
+														          class="status-badge status-success">COMPLETED</span>
+														    <span th:if="${job.job_status == 'FAILED'}"
+														          class="status-badge status-danger">FAILED</span>
+														    <span th:if="${job.job_status == 'STARTED'}"
+														          class="status-badge status-warning">RUNNING</span>
+
+														    <button type="button"
+														            class="btn btn-sm btn-primary btnRun"
+														            th:if="${job.job_status != 'COMPLETED' and job.job_status != 'STARTED'}"
+														            th:attr="data-jobid=${job.job_id}">Run</button>
 														</td>
 													</tr>
 												</tbody>

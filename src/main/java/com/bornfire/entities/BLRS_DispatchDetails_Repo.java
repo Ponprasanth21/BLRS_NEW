@@ -14,12 +14,16 @@ public interface BLRS_DispatchDetails_Repo
 		extends JpaRepository<BLRS_DispatchDetails_Entity, BLRS_DispatchDetails_Entity.PK> {
 
 	@Query("SELECT d FROM BLRS_DispatchDetails_Entity d "
-			+ "WHERE d.reminder_type = :type AND d.rem_date = :date ORDER BY d.acc_num")
-	List<BLRS_DispatchDetails_Entity> getDispatchList(@Param("type") String type, @Param("date") Date date);
+			+ "WHERE (d.reminder_type = :type OR d.reminder_type = :altType) AND d.rem_date = :date ORDER BY d.acc_num")
+	List<BLRS_DispatchDetails_Entity> getDispatchList(@Param("type") String type, @Param("altType") String altType, @Param("date") Date date);
+
+	@Query("SELECT d FROM BLRS_DispatchDetails_Entity d "
+			+ "WHERE d.acc_num = :acc AND (d.reminder_type = :type OR d.reminder_type = :altType) AND d.rem_date = :date")
+	BLRS_DispatchDetails_Entity findByAccountAndTypeAndDate(@Param("acc") String acc, @Param("type") String type, @Param("altType") String altType, @Param("date") Date date);
 
 	@Modifying
 	@Query("UPDATE BLRS_DispatchDetails_Entity d SET d.postal_ref = :ref, d.postal_ack = :ack "
-			+ "WHERE d.acc_num = :acc AND d.reminder_type = :type AND d.rem_date = :date")
-	int updateDispatch(@Param("type") String type, @Param("date") Date date, @Param("acc") String acc,
+			+ "WHERE d.acc_num = :acc AND (d.reminder_type = :type OR d.reminder_type = :altType) AND d.rem_date = :date")
+	int updateDispatch(@Param("type") String type, @Param("altType") String altType, @Param("date") Date date, @Param("acc") String acc,
 			@Param("ref") String ref, @Param("ack") String ack);
 }

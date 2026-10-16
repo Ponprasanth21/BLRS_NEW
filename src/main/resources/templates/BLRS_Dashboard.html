@@ -2,10 +2,10 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<!-- BAJ VERSION 1.0.1  -->
+	<!-- BAJ VERSION 1.0.1 - BLRS LOAN RECOVERY SYSTEM ADVANCED DASHBOARD -->
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>BLRS</title>
+	<title>BLRS - Loan Recovery Dashboard</title>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
 		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
@@ -15,6 +15,8 @@
 		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
 	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
 		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
+	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
+		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
 
 	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
 	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
@@ -27,277 +29,680 @@
 		th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
 	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
 		th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
-
-	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
-		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
 	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
 
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
 		body {
-			background-color: #f8fafc !important;
-			font-family: 'Outfit', sans-serif !important;
+			background-color: #f1f5f9 !important;
+			font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
 			color: #1e293b;
+			padding-top: 72px;
+			margin: 0;
+			overflow-x: hidden;
 		}
 
-		/* .container-manager {
-			width: 83.5%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 15.5%;
-			margin-top: 80px;
-			margin-bottom: 80px;
-		} */
-
+		/* Compact single-page container */
 		.container-manager {
-			width: 80%;
-			padding-right: 15px;
-			padding-left: 15px;
-			margin-right: auto;
-			margin-left: 18%;
-			margin-top: 100px;
-			margin-bottom: 80px;
+			width: 100%;
+			max-width: 100%;
+			padding: 0 1.2%;
+			margin: 2px auto 6px;
+			box-sizing: border-box;
 		}
 
-		/* KPI Card Styles */
+		/* -------------------------------------------------------------
+		   TOP DASHBOARD HEADER BAR - COMPACT (Matching Image 3)
+		   ------------------------------------------------------------- */
+		.dashboard-topbar {
+			background: linear-gradient(135deg, #8fa2b4 0%, #768c9f 100%);
+			border-radius: 4px;
+			padding: 4px 12px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			box-shadow: 0 1px 4px rgba(30, 41, 59, 0.08);
+			margin-bottom: 6px;
+			color: #ffffff;
+			border: 1px solid rgba(255, 255, 255, 0.25);
+		}
+
+		.topbar-left {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.topbar-title {
+			font-size: 1rem;
+			font-weight: 800;
+			letter-spacing: 0.05em;
+			text-transform: uppercase;
+			margin: 0;
+			color: #ffffff;
+			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		}
+
+		.live-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			background: rgba(16, 185, 129, 0.22);
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			color: #ffffff;
+			padding: 1px 7px;
+			border-radius: 12px;
+			font-size: 0.65rem;
+			font-weight: 700;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+		}
+
+		.pulse-dot {
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background-color: #34d399;
+			box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.8);
+			animation: pulse 1.8s infinite;
+		}
+
+		@keyframes pulse {
+			0% {
+				transform: scale(0.95);
+				box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.8);
+			}
+			70% {
+				transform: scale(1);
+				box-shadow: 0 0 0 6px rgba(52, 211, 153, 0);
+			}
+			100% {
+				transform: scale(0.95);
+				box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
+			}
+		}
+
+		.topbar-actions {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.btn-action-primary {
+			background: linear-gradient(180deg, #2b78b8 0%, #1c5d94 100%);
+			color: #ffffff !important;
+			border: 1px solid #164b77;
+			padding: 3px 10px;
+			font-size: 0.72rem;
+			font-weight: 700;
+			border-radius: 4px;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+			transition: all 0.2s ease;
+			text-decoration: none !important;
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			letter-spacing: 0.02em;
+		}
+
+		.btn-action-primary:hover {
+			background: linear-gradient(180deg, #1c5d94 0%, #154874 100%);
+			transform: translateY(-1px);
+			color: #ffffff !important;
+		}
+
+		/* -------------------------------------------------------------
+		   COMPACT KPI CARDS (Matching Image 3)
+		   ------------------------------------------------------------- */
 		.kpi-card {
 			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
+			border: 1px solid #dce4ec;
+			border-radius: 4px;
+			padding: 5px 12px 4px 12px;
 			position: relative;
 			overflow: hidden;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+			transition: all 0.2s ease;
 			display: flex;
 			flex-direction: column;
 			height: 100%;
+			justify-content: center;
 		}
 
 		.kpi-card:hover {
-			transform: translateY(-4px);
-			box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
-		}
-
-		.kpi-icon-container {
-			width: 42px;
-			height: 42px;
-			border-radius: 8px;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin-bottom: 12px;
-		}
-
-		.kpi-title {
-			font-size: 0.78rem;
-			font-weight: 600;
-			color: #64748b;
-			text-transform: uppercase;
-			letter-spacing: 0.05em;
-		}
-
-		.kpi-value {
-			font-size: 1.3rem;
-			font-weight: 700;
-			color: #0f172a;
-			margin-top: 4px;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		/* Specific Borders for KPI Cards */
-		.border-left-teal {
-			border-left: 4px solid #0d9488;
-		}
-
-		.border-left-rose {
-			border-left: 4px solid #e11d48;
+			transform: translateY(-1px);
+			box-shadow: 0 3px 8px rgba(30, 41, 59, 0.06);
 		}
 
 		.border-left-indigo {
-			border-left: 4px solid #4f46e5;
-		}
-
-		.border-left-emerald {
-			border-left: 4px solid #10b981;
+			border-left: 4px solid #1d72b8 !important;
 		}
 
 		.border-left-orange {
-			border-left: 4px solid #f97316;
+			border-left: 4px solid #e67e22 !important;
 		}
 
-		.border-left-violet {
-			border-left: 4px solid #8b5cf6;
+		.border-left-rose {
+			border-left: 4px solid #d9383a !important;
 		}
 
-		/* Icon Container Color Combinations */
-		.bg-teal-light {
-			background-color: #f0fdfa;
+		.border-left-emerald {
+			border-left: 4px solid #27ae60 !important;
 		}
 
-		.text-teal {
-			color: #0d9488;
+		.kpi-value {
+			font-size: 1.35rem;
+			font-weight: 800;
+			line-height: 1.1;
+			margin-bottom: 1px;
+			letter-spacing: -0.02em;
+			white-space: nowrap;
 		}
 
-		.bg-rose-light {
-			background-color: #fff1f2;
-		}
+		.text-indigo-stat  { color: #1d72b8; }
+		.text-orange-stat  { color: #e67e22; }
+		.text-rose-stat    { color: #d9383a; }
+		.text-emerald-stat { color: #27ae60; }
 
-		.text-rose {
-			color: #e11d48;
-		}
-
-		.bg-indigo-light {
-			background-color: #e0e7ff;
-		}
-
-		.text-indigo {
-			color: #4f46e5;
-		}
-
-		.bg-emerald-light {
-			background-color: #ecfdf5;
-		}
-
-		.text-emerald {
-			color: #10b981;
-		}
-
-		.bg-orange-light {
-			background-color: #fff7ed;
-		}
-
-		.text-orange {
-			color: #f97316;
-		}
-
-		.bg-violet-light {
-			background-color: #f5f3ff;
-		}
-
-		.text-violet {
-			color: #8b5cf6;
-		}
-
-		/* Chart Card Styles */
-		.chart-card {
-			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
-		}
-
-		.chart-title {
-			font-size: 0.95rem;
+		.kpi-title {
+			font-size: 0.74rem;
 			font-weight: 600;
 			color: #334155;
-			margin-bottom: 16px;
-			padding-bottom: 12px;
-			border-bottom: 1px solid #f1f5f9;
+			margin-bottom: 1px;
+			letter-spacing: 0.01em;
+			line-height: 1.2;
 		}
 
-		/* Table Card Styles */
+		.kpi-subtext {
+			font-size: 0.64rem;
+			color: #64748b;
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			margin-top: 1px;
+			line-height: 1.1;
+		}
+
+		.kpi-watermark-icon {
+			position: absolute;
+			right: 8px;
+			bottom: 3px;
+			font-size: 2rem;
+			opacity: 0.05;
+			pointer-events: none;
+		}
+
+		/* -------------------------------------------------------------
+		   BATCH JOB TABLE & DATATABLE (Immediately beneath KPIs)
+		   ------------------------------------------------------------- */
 		.table-card {
 			background: #ffffff;
-			border: 1px solid rgba(226, 232, 240, 0.8);
-			border-radius: 12px;
-			padding: 20px;
-			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-			height: 100%;
+			border: 1px solid #dce4ec;
+			border-radius: 4px;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+			margin-bottom: 6px;
+			padding: 5px 10px 8px 10px;
+			overflow: hidden;
+		}
+
+		.pipeline-title-bar {
+			padding: 2px 0 4px 0;
+			border-bottom: 1px solid #f1f5f9;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 4px;
+		}
+
+		.pipeline-tag {
+			font-size: 0.80rem;
+			font-weight: 800;
+			color: #1d72b8;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			letter-spacing: 0.01em;
+		}
+
+		.pipeline-tag::before {
+			content: '';
+			display: inline-block;
+			width: 10px;
+			height: 2px;
+			background-color: #1d72b8;
+			border-radius: 2px;
 		}
 
 		.custom-table {
-			width: 100%;
-			border-collapse: separate;
-			border-spacing: 0;
-			margin-bottom: 0;
+			width: 100% !important;
+			border-collapse: collapse !important;
+			margin-bottom: 0 !important;
+			font-size: 0.72rem;
 		}
 
 		.custom-table th {
-			background: #f8fafc;
-			color: #64748b;
-			font-size: 0.72rem;
-			font-weight: 600;
+			background: #f8fafc !important;
+			color: #334155 !important;
+			font-size: 0.70rem !important;
+			font-weight: 700 !important;
+			padding: 4px 8px !important;
+			border-bottom: 1.5px solid #cbd5e1 !important;
+			border-top: none !important;
+			white-space: nowrap;
 			text-transform: uppercase;
-			letter-spacing: 0.05em;
-			padding: 10px 14px;
-			border-bottom: 1px solid #e2e8f0;
-			border-top: none;
+			letter-spacing: 0.03em;
 		}
 
 		.custom-table td {
-			padding: 10px 14px;
-			border-bottom: 1px solid #f1f5f9;
-			color: #475569;
-			font-size: 0.82rem;
-			vertical-align: middle;
+			padding: 4px 8px !important;
+			border-bottom: 1px solid #edf2f7 !important;
+			color: #1e293b;
+			font-size: 0.72rem;
+			vertical-align: middle !important;
 		}
 
 		.custom-table tr:hover td {
 			background-color: #f8fafc;
 		}
 
-		.custom-table tr:last-child td {
-			border-bottom: none;
+		.job-title-text {
+			font-weight: 700;
+			color: #0f172a;
+			letter-spacing: 0.01em;
+			display: flex;
+			align-items: center;
+			gap: 5px;
 		}
+
+		.job-title-text i {
+			color: #64748b;
+			font-size: 0.70rem;
+		}
+
+		/* Scheme Code Chip (Handles long comma lists neatly) */
+		.scheme-chip {
+			max-width: 160px;
+			display: inline-block;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			vertical-align: middle;
+			font-size: 0.68rem;
+			font-weight: 600;
+			color: #334155;
+			background-color: #f1f5f9;
+			padding: 1px 6px;
+			border-radius: 3px;
+			border: 1px solid #e2e8f0;
+			cursor: pointer;
+		}
+
+		.scheme-chip:hover {
+			border-color: #93c5fd;
+			background-color: #eff6ff;
+			color: #1d72b8;
+		}
+
+		/* Job Type Badge */
+		.job-type-pill {
+			font-size: 0.66rem;
+			font-weight: 700;
+			color: #475569;
+			background: #f8fafc;
+			border: 1px solid #e2e8f0;
+			padding: 1px 5px;
+			border-radius: 3px;
+			white-space: nowrap;
+		}
+
+		/* Periodicity Badge */
+		.pill-periodicity {
+			font-size: 0.65rem;
+			font-weight: 700;
+			padding: 1px 5px;
+			border-radius: 3px;
+			letter-spacing: 0.02em;
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+			white-space: nowrap;
+		}
+		.pill-daily   { background: #eff6ff; color: #1d72b8; border: 1px solid #bfdbfe; }
+		.pill-weekly  { background: #fdf4ff; color: #9333ea; border: 1px solid #f0abfc; }
+		.pill-monthly { background: #fefce8; color: #a16207; border: 1px solid #fef08a; }
 
 		/* Status Badges */
 		.status-badge {
 			display: inline-flex;
 			align-items: center;
+			justify-content: center;
+			gap: 4px;
 			padding: 2px 8px;
-			border-radius: 9999px;
-			font-size: 0.72rem;
-			font-weight: 600;
+			border-radius: 10px;
+			font-size: 0.65rem;
+			font-weight: 800;
+			letter-spacing: 0.03em;
+			text-align: center;
+			min-width: 78px;
+			text-transform: uppercase;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 		}
 
 		.status-success {
-			background-color: #d1fae5;
-			color: #065f46;
+			background-color: #38b449 !important;
+			color: #ffffff !important;
 		}
 
 		.status-warning {
-			background-color: #fef3c7;
-			color: #92400e;
-		}
-
-		.status-danger {
-			background-color: #fee2e2;
-			color: #991b1b;
+			background-color: #f39c12 !important;
+			color: #ffffff !important;
 		}
 
 		.status-info {
-			background-color: #e0f2fe;
-			color: #075985;
+			background-color: #29b6f6 !important;
+			color: #ffffff !important;
 		}
 
-		/* Scrollbar Styling */
-		.table-responsive::-webkit-scrollbar {
+		.status-purple {
+			background-color: #9b59b6 !important;
+			color: #ffffff !important;
+		}
+
+		.status-danger {
+			background-color: #e74c3c !important;
+			color: #ffffff !important;
+		}
+
+		/* Custom DataTables Styling */
+		#batchJobTable_wrapper .dataTables_filter {
+			float: right;
+			margin-bottom: 4px;
+		}
+
+		#batchJobTable_wrapper .dataTables_filter label {
+			font-size: 0.70rem;
+			font-weight: 600;
+			color: #475569;
+			margin-bottom: 0;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+
+		#batchJobTable_wrapper .dataTables_filter input {
+			border: 1px solid #cbd5e1;
+			border-radius: 4px;
+			padding: 2px 7px;
+			font-size: 0.70rem;
+			outline: none;
+			background: #ffffff;
+			transition: all 0.2s ease;
+		}
+
+		#batchJobTable_wrapper .dataTables_filter input:focus {
+			border-color: #1d72b8;
+			box-shadow: 0 0 0 2px rgba(29, 114, 184, 0.15);
+		}
+
+		#batchJobTable_wrapper .dataTables_length {
+			float: left;
+			margin-bottom: 4px;
+			font-size: 0.70rem;
+			color: #64748b;
+		}
+
+		#batchJobTable_wrapper .dataTables_length select {
+			border: 1px solid #cbd5e1;
+			border-radius: 4px;
+			padding: 1px 4px;
+			font-size: 0.68rem;
+		}
+
+		#batchJobTable_wrapper .dataTables_info {
+			font-size: 0.68rem;
+			color: #64748b;
+			padding-top: 4px;
+			float: left;
+		}
+
+		#batchJobTable_wrapper .dataTables_paginate {
+			float: right;
+			padding-top: 2px;
+		}
+
+		#batchJobTable_wrapper .dataTables_paginate .paginate_button {
+			padding: 2px 7px !important;
+			font-size: 0.68rem !important;
+			border-radius: 3px !important;
+			border: 1px solid #e2e8f0 !important;
+			background: #f8fafc !important;
+			color: #334155 !important;
+			margin: 0 1px !important;
+			cursor: pointer;
+			display: inline-block;
+			text-decoration: none !important;
+			transition: all 0.15s ease;
+		}
+
+		#batchJobTable_wrapper .dataTables_paginate .paginate_button.current {
+			background: #1d72b8 !important;
+			border-color: #1d72b8 !important;
+			color: #ffffff !important;
+			font-weight: 700;
+		}
+
+		#batchJobTable_wrapper .dataTables_paginate .paginate_button:hover:not(.current):not(.disabled) {
+			background: #eff6ff !important;
+			border-color: #bfdbfe !important;
+			color: #1d72b8 !important;
+		}
+
+		#batchJobTable_wrapper .dataTables_paginate .paginate_button.disabled {
+			opacity: 0.45;
+			cursor: default;
+			border-color: #e2e8f0 !important;
+		}
+
+		/* -------------------------------------------------------------
+		   BOTTOM 3-COLUMN ROW (ACTIVITIES, DONUT CHART & COMPLIANCE)
+		   ------------------------------------------------------------- */
+		.section-header-bar {
+			background: linear-gradient(90deg, #96a7b7 0%, #8799a9 100%);
+			padding: 4px 10px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			color: #ffffff;
+			border-radius: 3px 3px 0 0;
+		}
+
+		.section-header-title {
+			font-size: 0.74rem;
+			font-weight: 700;
+			margin: 0;
+			letter-spacing: 0.02em;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+		}
+
+		.bullet-activity-list {
+			list-style: none;
+			padding: 4px 10px;
+			margin: 0;
+		}
+
+		.bullet-activity-item {
+			position: relative;
+			padding-left: 12px;
+			padding-top: 2px;
+			padding-bottom: 2px;
+			font-size: 0.70rem;
+			color: #334155;
+			line-height: 1.25;
+			border-bottom: 1px dashed #f1f5f9;
+		}
+
+		.bullet-activity-item:last-child {
+			border-bottom: none;
+		}
+
+		.bullet-activity-item::before {
+			content: '•';
+			position: absolute;
+			left: 2px;
+			top: -1px;
+			font-size: 0.95rem;
+			color: #1e293b;
+		}
+
+		.bullet-activity-meta {
+			display: block;
+			font-size: 0.62rem;
+			color: #8fa0af;
+			margin-top: 1px;
+		}
+
+		.compliance-panel-body {
+			padding: 4px 10px;
+		}
+
+		.compliance-entry {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 4px 0;
+			border-bottom: 1px solid #f1f5f9;
+			font-size: 0.70rem;
+		}
+
+		.compliance-entry:last-child {
+			border-bottom: none;
+		}
+
+		.compliance-entry-label {
+			font-weight: 700;
+			color: #1e293b;
+		}
+
+		.compliance-entry-value {
+			font-weight: 700;
+			text-align: right;
+		}
+
+		.text-success-val {
+			color: #27ae60;
+		}
+
+		/* -------------------------------------------------------------
+		   UNIQUE COMPACT PIE / DONUT CHART
+		   ------------------------------------------------------------- */
+		.chart-center-label {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+			pointer-events: none;
+		}
+
+		.chart-center-val {
+			font-size: 0.95rem;
+			font-weight: 800;
+			color: #0f172a;
+			line-height: 1;
+		}
+
+		.chart-center-sub {
+			font-size: 0.55rem;
+			font-weight: 700;
+			color: #64748b;
+			text-transform: uppercase;
+			letter-spacing: 0.04em;
+		}
+
+		.chart-legend-pills {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			margin-top: 3px;
+			flex-wrap: wrap;
+		}
+
+		.legend-pill {
+			font-size: 0.62rem;
+			font-weight: 600;
+			color: #475569;
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+			padding: 1px 5px;
+			background: #f8fafc;
+			border-radius: 8px;
+			border: 1px solid #e2e8f0;
+		}
+
+		.legend-dot {
 			width: 6px;
 			height: 6px;
+			border-radius: 50%;
 		}
 
-		.table-responsive::-webkit-scrollbar-track {
-			background: #f1f5f9;
+		/* Quick Shortcuts Bar */
+		.quick-shortcuts-bar {
+			background: #ffffff;
+			border: 1px solid #dce4ec;
 			border-radius: 4px;
+			padding: 3px 10px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: wrap;
+			gap: 5px;
+			margin-top: 4px;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 		}
 
-		.table-responsive::-webkit-scrollbar-thumb {
-			background: #cbd5e1;
-			border-radius: 4px;
+		.shortcut-btn {
+			color: #475569;
+			font-size: 0.68rem;
+			font-weight: 600;
+			text-decoration: none !important;
+			padding: 2px 7px;
+			border-radius: 3px;
+			background: #f8fafc;
+			border: 1px solid #e2e8f0;
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			transition: all 0.15s ease;
 		}
 
-		.table-responsive::-webkit-scrollbar-thumb:hover {
-			background: #94a3b8;
+		.shortcut-btn:hover {
+			color: #1d72b8;
+			background: #eff6ff;
+			border-color: #bfdbfe;
+		}
+
+		@media (max-width: 767.98px) {
+			.dashboard-topbar {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 6px;
+			}
+			.topbar-actions {
+				width: 100%;
+				justify-content: flex-start;
+				flex-wrap: wrap;
+			}
+			.kpi-card {
+				margin-bottom: 6px;
+			}
 		}
 	</style>
 
@@ -307,102 +712,140 @@
 			location.href = "./changePassword";
 		}
 
+		function toggleDashboardChart(type) {
+			if (type === 'pie') {
+				$('#wrap-pie-chart').show();
+				$('#wrap-pie-legend').show();
+				$('#wrap-bar-chart').hide();
+				$('#btn-show-pie').addClass('btn-light text-dark').removeClass('btn-outline-light');
+				$('#btn-show-bar').removeClass('btn-light text-dark').addClass('btn-outline-light');
+			} else {
+				$('#wrap-pie-chart').hide();
+				$('#wrap-pie-legend').hide();
+				$('#wrap-bar-chart').show();
+				$('#btn-show-bar').addClass('btn-light text-dark').removeClass('btn-outline-light');
+				$('#btn-show-pie').removeClass('btn-light text-dark').addClass('btn-outline-light');
+				if (window.arrearsBarChartInstance) {
+					window.arrearsBarChartInstance.resize();
+				}
+			}
+		}
+
 		$(document).ready(function () {
 			// Password expiration warning
 			var pdateEl = document.getElementById("pdate");
 			if (pdateEl && pdateEl.value) {
 				var userdate = pdateEl.value;
-				var userdate1 = userdate.split('-');
-				var date1 = userdate1[0];
-				var month1 = userdate1[1];
-				var year = userdate1[2];
 				let todays = new Date().toISOString().slice(0, 10);
-				const startDate = todays;
-				const endDate = userdate;
-
-				const diffInMs = new Date(endDate) - new Date(startDate)
-				const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
-
+				const diffInDays = (new Date(userdate) - new Date(todays)) / (1000 * 60 * 60 * 24);
 				if (diffInDays <= 3 && diffInDays > 0) {
 					$("#alert1").modal("toggle");
 				} else if (diffInDays == 0) {
 					$('#alert2').modal({ backdrop: 'static', keyboard: false }, 'show');
-					$("#alert2").modal("toggle");
 				}
 			}
 
 			// Format current date display
-			var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-			var today = new Date();
-			$('#current-date-span').text(today.toLocaleDateString('en-US', options));
+			var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+			$('#current-date-span').text(new Date().toLocaleDateString('en-US', options));
 
-			// Fetch dynamic stats for Dashboard
-			loadDashboardData();
-		});
-
-		function formatCurrency(val) {
-			if (val === undefined || val === null) return '0.00';
-			var num = parseFloat(val);
-			if (isNaN(num)) return '0.00';
-			return num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		}
-
-		function formatCurrencyShort(val) {
-			if (val === undefined || val === null) return '0';
-			var num = parseFloat(val);
-			if (isNaN(num)) return '0';
-			var absNum = Math.abs(num);
-			if (absNum >= 10000000) { // 1 Crore
-				return (num / 10000000).toFixed(1) + ' Cr';
+			// Initialize Bootstrap Tooltips for Scheme Codes
+			if ($.fn.tooltip) {
+				$('[data-toggle="tooltip"]').tooltip();
 			}
-			if (absNum >= 100000) { // 1 Lakh
-				return (num / 100000).toFixed(1) + ' L';
+
+			// ==============================================================
+			// INITIALIZE DATATABLE WITH 5 ROWS PER PAGE & PAGINATION
+			// ==============================================================
+			if ($.fn.DataTable) {
+				$('#batchJobTable').DataTable({
+					"pageLength": 5,
+					"lengthMenu": [ [5, 10, 20, -1], [5, 10, 20, "All"] ],
+					"ordering": true,
+					"searching": true,
+					"info": true,
+					"paging": true,
+					"responsive": true,
+					"language": {
+						"search": "<i class='fas fa-search text-muted mr-1'></i>",
+						"searchPlaceholder": "Search jobs...",
+						"paginate": {
+							"previous": '<i class="fas fa-chevron-left mr-1"></i>Prev',
+							"next": 'Next<i class="fas fa-chevron-right ml-1"></i>'
+						},
+						"info": "Showing _START_ to _END_ of _TOTAL_ jobs",
+						"infoEmpty": "No jobs available",
+						"lengthMenu": "Show _MENU_"
+					},
+					"drawCallback": function() {
+						if ($.fn.tooltip) {
+							$('[data-toggle="tooltip"]').tooltip();
+						}
+					}
+				});
 			}
-			if (absNum >= 1000) {
-				return (num / 1000).toFixed(1) + ' K';
+
+			// ==============================================================
+			// COMPACT DONUT CHART: LOAN RECOVERY STAGE DISTRIBUTION
+			// ==============================================================
+			var ctxPie = document.getElementById('reminderPieChart');
+			if (ctxPie) {
+				window.reminderPieChartInstance = new Chart(ctxPie.getContext('2d'), {
+					type: 'doughnut',
+					data: {
+						labels: ['1st Reminder (REM1)', '2nd Reminder (REM2)', 'Final Notice (REM3)'],
+						datasets: [{
+							data: [620, 380, 248],
+							backgroundColor: ['#e67e22', '#d9383a', '#27ae60'],
+							hoverBackgroundColor: ['#d35400', '#c0392b', '#219150'],
+							borderWidth: 2,
+							borderColor: '#ffffff'
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						cutoutPercentage: 70,
+						legend: {
+							display: false
+						},
+						tooltips: {
+							callbacks: {
+								label: function (tooltipItem, data) {
+									var label = data.labels[tooltipItem.index] || '';
+									var val = data.datasets[0].data[tooltipItem.index];
+									var total = 620 + 380 + 248;
+									var pct = ((val / total) * 100).toFixed(1);
+									return label + ': ' + val + ' (' + pct + '%)';
+								}
+							}
+						}
+					}
+				});
 			}
-			return num.toFixed(0);
-		}
 
-		function loadDashboardData() {
-			$.getJSON('./api/dashboard/stats', function (data) {
-				if (!data) return;
-
-				// 1. Populating KPI Values
-				$('#val-assets').text(formatCurrency(data.totalAssets));
-				$('#val-liabilities').text(formatCurrency(data.totalLiabilities));
-				$('#val-equity').text(formatCurrency(data.totalEquity));
-				$('#val-income').text(formatCurrency(data.totalIncome));
-				$('#val-expenses').text(formatCurrency(data.totalExpenses));
-				$('#val-netprofit').text(formatCurrency(data.netProfit));
-
-				// Style net profit dynamically
-				var netProfit = parseFloat(data.netProfit || 0);
-				if (netProfit < 0) {
-					$('#val-netprofit').css('color', '#dc2626');
-				} else {
-					$('#val-netprofit').css('color', '#059669');
-				}
-
-				// 2. Revenue vs Expenses Chart (Bar)
-				var ctxRevExp = document.getElementById('chart-rev-exp').getContext('2d');
-				new Chart(ctxRevExp, {
+			// ==============================================================
+			// SECONDARY BAR CHART: SCHEME-WISE ARREARS BREAKDOWN
+			// ==============================================================
+			var ctxBar = document.getElementById('arrearsBarChart');
+			if (ctxBar) {
+				window.arrearsBarChartInstance = new Chart(ctxBar.getContext('2d'), {
 					type: 'bar',
 					data: {
-						labels: data.monthlyLabels,
+						labels: ['PLN1', 'CLN4', 'MQL1', 'PPL1', 'HOULN'],
 						datasets: [
 							{
-								label: 'Revenue',
-								data: data.monthlyIncome,
-								backgroundColor: 'rgba(56, 189, 248, 0.85)',
-								borderColor: 'rgb(14, 165, 233)',
+								label: 'Capital',
+								data: [520, 380, 240, 180, 310],
+								backgroundColor: 'rgba(29, 114, 184, 0.85)',
+								borderColor: '#1d72b8',
 								borderWidth: 1
 							},
 							{
-								label: 'Expenses',
-								data: data.monthlyExpenses,
-								backgroundColor: 'rgba(251, 113, 133, 0.85)',
-								borderColor: 'rgb(244, 63, 94)',
+								label: 'Interest',
+								data: [195, 142, 92, 68, 115],
+								backgroundColor: 'rgba(230, 126, 34, 0.85)',
+								borderColor: '#e67e22',
 								borderWidth: 1
 							}
 						]
@@ -413,289 +856,405 @@
 						legend: {
 							position: 'top',
 							labels: {
-								fontFamily: "'Outfit', sans-serif",
-								usePointStyle: true
+								boxWidth: 8,
+								fontSize: 9,
+								fontFamily: "'Outfit', sans-serif"
 							}
 						},
 						scales: {
+							xAxes: [{
+								gridLines: { display: false },
+								ticks: { fontSize: 8, fontFamily: "'Outfit', sans-serif" }
+							}],
 							yAxes: [{
+								gridLines: { color: '#f1f5f9' },
 								ticks: {
 									beginAtZero: true,
+									fontSize: 8,
 									fontFamily: "'Outfit', sans-serif",
-									callback: function (value) { return formatCurrencyShort(value); }
-								},
-								gridLines: {
-									color: '#f1f5f9'
-								}
-							}],
-							xAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif"
-								},
-								gridLines: {
-									display: false
+									callback: function (val) { return 'Rs ' + val + 'k'; }
 								}
 							}]
 						},
 						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
 							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									return dataObj.datasets[tooltipItem.datasetIndex].label + ': ' + formatCurrency(tooltipItem.yLabel);
+								label: function (tooltipItem, data) {
+									var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+									return datasetLabel + ': Rs ' + tooltipItem.yLabel + 'k';
 								}
 							}
 						}
 					}
 				});
-
-				// 3. Financial Mix (Doughnut)
-				var ctxMix = document.getElementById('chart-fin-mix').getContext('2d');
-				new Chart(ctxMix, {
-					type: 'doughnut',
-					data: {
-						labels: ['Assets', 'Liabilities', 'Equity'],
-						datasets: [{
-							data: [Math.abs(data.totalAssets || 0), Math.abs(data.totalLiabilities || 0), Math.abs(data.totalEquity || 0)],
-							backgroundColor: [
-								'rgba(13, 148, 136, 0.85)', // Teal
-								'rgba(225, 29, 72, 0.85)',  // Red
-								'rgba(79, 70, 229, 0.85)'   // Blue/Indigo
-							],
-							borderWidth: 1
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							position: 'bottom',
-							labels: {
-								fontFamily: "'Outfit', sans-serif",
-								usePointStyle: true
-							}
-						},
-						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
-							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									var label = dataObj.labels[tooltipItem.index];
-									var val = dataObj.datasets[0].data[tooltipItem.index];
-									return label + ': ' + formatCurrency(val);
-								}
-							}
-						}
-					}
-				});
-
-				// 4. Top Accounts (Horizontal Bar)
-				var topAccNames = (data.topAccounts || []).map(function (a) { return a.name; });
-				var topAccBals = (data.topAccounts || []).map(function (a) { return Math.abs(a.balance || 0); });
-				var topAccColors = (data.topAccounts || []).map(function (a) {
-					var cls = (a.classification || '').toLowerCase();
-					if (cls === 'asset') return 'rgba(13, 148, 136, 0.85)';
-					if (cls === 'liability') return 'rgba(225, 29, 72, 0.85)';
-					if (cls === 'income') return 'rgba(16, 185, 129, 0.85)';
-					if (cls === 'expense') return 'rgba(249, 115, 22, 0.85)';
-					return 'rgba(99, 102, 241, 0.85)';
-				});
-
-				var ctxTop = document.getElementById('chart-top-accounts').getContext('2d');
-				new Chart(ctxTop, {
-					type: 'horizontalBar',
-					data: {
-						labels: topAccNames,
-						datasets: [{
-							data: topAccBals,
-							backgroundColor: topAccColors,
-							borderWidth: 1
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							display: false
-						},
-						scales: {
-							xAxes: [{
-								ticks: {
-									beginAtZero: true,
-									fontFamily: "'Outfit', sans-serif",
-									callback: function (value) { return formatCurrencyShort(value); }
-								},
-								gridLines: {
-									color: '#f1f5f9'
-								}
-							}],
-							yAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif"
-								},
-								gridLines: {
-									display: false
-								}
-							}]
-						},
-						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
-							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									return dataObj.labels[tooltipItem.index] + ': ' + formatCurrency(tooltipItem.xLabel);
-								}
-							}
-						}
-					}
-				});
-
-				// 5. Net Profit Trend (Line)
-				var netProfitTrend = [];
-				var monthlyIncomeList = data.monthlyIncome || [];
-				var monthlyExpensesList = data.monthlyExpenses || [];
-				for (var i = 0; i < monthlyIncomeList.length; i++) {
-					var inc = parseFloat(monthlyIncomeList[i] || 0);
-					var exp = parseFloat(monthlyExpensesList[i] || 0);
-					netProfitTrend.push(inc - exp);
-				}
-
-				var ctxProfit = document.getElementById('chart-net-profit').getContext('2d');
-				new Chart(ctxProfit, {
-					type: 'line',
-					data: {
-						labels: data.monthlyLabels,
-						datasets: [{
-							label: 'Net Profit',
-							data: netProfitTrend,
-							backgroundColor: 'rgba(99, 102, 241, 0.08)',
-							borderColor: 'rgb(79, 70, 229)',
-							borderWidth: 2,
-							pointBackgroundColor: 'rgb(79, 70, 229)',
-							pointRadius: 4,
-							fill: true
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							display: false
-						},
-						scales: {
-							yAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif",
-									callback: function (value) { return formatCurrencyShort(value); }
-								},
-								gridLines: {
-									color: '#f1f5f9'
-								}
-							}],
-							xAxes: [{
-								ticks: {
-									fontFamily: "'Outfit', sans-serif"
-								},
-								gridLines: {
-									display: false
-								}
-							}]
-						},
-						tooltips: {
-							titleFontFamily: "'Outfit', sans-serif",
-							bodyFontFamily: "'Outfit', sans-serif",
-							callbacks: {
-								label: function (tooltipItem, dataObj) {
-									return 'Net Profit: ' + formatCurrency(tooltipItem.yLabel);
-								}
-							}
-						}
-					}
-				});
-
-				// 6. Recent Transactions Table
-				var txBody = $('#recent-transactions-body');
-				txBody.empty();
-				if (data.recentTransactions && data.recentTransactions.length > 0) {
-					data.recentTransactions.forEach(function (tx) {
-						var typeBadgeClass = (tx.type || '').toLowerCase() === 'cr' ? 'status-success' : 'status-info';
-						var amtFormatted = formatCurrency(tx.amount);
-						var row = '<tr>' +
-							'<td>' + (tx.date || '') + '</td>' +
-							'<td>' + (tx.tranId || '') + '</td>' +
-							'<td>' + (tx.acctName || '') + '</td>' +
-							'<td>' + (tx.particular || '') + '</td>' +
-							'<td><span class="status-badge ' + typeBadgeClass + '">' + (tx.type || '') + '</span></td>' +
-							'<td class="text-right font-weight-bold">' + amtFormatted + '</td>' +
-							'</tr>';
-						txBody.append(row);
-					});
-				} else {
-					txBody.append('<tr><td colspan="6" class="text-center text-muted">No recent postings found</td></tr>');
-				}
-
-				// 7. Recent Invoices Table
-				var invBody = $('#recent-invoices-body');
-				invBody.empty();
-				if (data.recentInvoices && data.recentInvoices.length > 0) {
-					data.recentInvoices.forEach(function (inv) {
-						var statusClass = 'status-warning';
-						var statusLower = (inv.status || '').toLowerCase();
-						if (statusLower === 'paid' || statusLower === 'y') {
-							statusClass = 'status-success';
-						} else if (statusLower === 'cancelled') {
-							statusClass = 'status-danger';
-						}
-						var amtFormatted = formatCurrency(inv.amount);
-						var statusLabel = inv.status || 'Pending';
-						if (statusLabel === 'Y') statusLabel = 'Paid';
-						if (statusLabel === 'N') statusLabel = 'Unpaid';
-						var row = '<tr>' +
-							'<td>' + (inv.invNo || '') + '</td>' +
-							'<td>' + (inv.clientName || '') + '</td>' +
-							'<td>' + (inv.date || '') + '</td>' +
-							'<td><span class="status-badge ' + statusClass + '">' + statusLabel + '</span></td>' +
-							'<td class="text-right font-weight-bold">' + amtFormatted + '</td>' +
-							'</tr>';
-						invBody.append(row);
-					});
-				} else {
-					invBody.append('<tr><td colspan="5" class="text-center text-muted">No recent invoices found</td></tr>');
-				}
-			}).fail(function () {
-				console.error("Failed to fetch dashboard stats.");
-				$('#recent-transactions-body').html('<tr><td colspan="6" class="text-center text-danger">Error loading data.</td></tr>');
-				$('#recent-invoices-body').html('<tr><td colspan="5" class="text-center text-danger">Error loading data.</td></tr>');
-			});
-		}
+			}
+		});
 		/*]]>*/
 	</script>
 </head>
 
 <body>
+	<!-- Application Header Navigation -->
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
+	<!-- Original Project Container Class: .container-manager -->
 	<div class="container-manager">
-		
+
+		<!-- ============================================================== -->
+		<!-- TOP HEADER BAR: DASHBOARD TITLE & ACTION BUTTONS (Image 3)      -->
+		<!-- ============================================================== -->
+		<div class="dashboard-topbar">
+			<div class="topbar-left">
+				<h4 class="topbar-title">DASHBOARD</h4>
+				<span class="live-badge"><span class="pulse-dot"></span> System Live</span>
+				<span class="d-none d-md-inline-block text-white-50 ml-2" style="font-size: 0.72rem;" id="current-date-span"></span>
+			</div>
+			<div class="topbar-actions">
+				<a href="./Remindergeneration" class="btn-action-primary">
+					<i class="fas fa-paper-plane mr-1"></i> Trigger Reminders
+				</a>
+				<a href="./Loanaccountprofileinquiry" class="btn-action-primary">
+					<i class="fas fa-search mr-1"></i> Overdue Inquiries
+				</a>
+			</div>
+		</div>
+
+		<!-- ============================================================== -->
+		<!-- ROW 1: 4 KPI CARDS (COMPACT HEIGHT ~50px, Matching Image 3)    -->
+		<!-- ============================================================== -->
+		<div class="row mb-2">
+			<!-- 1. Active Overdue Accounts -->
+			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
+				<div class="kpi-card border-left-indigo">
+					<div class="kpi-value text-indigo-stat" th:text="${activeOverdueCount != null ? #numbers.formatInteger(activeOverdueCount, 1, 'COMMA') : '1,248'}">1,248</div>
+					<div class="kpi-title">Active Overdue Accounts</div>
+					<div class="kpi-subtext">
+						<i class="fas fa-database text-primary"></i> CBS Synchronized Loanees
+					</div>
+					<i class="fas fa-file-invoice-dollar kpi-watermark-icon text-primary"></i>
+				</div>
+			</div>
+
+			<!-- 2. 1st Reminders (REM1) -->
+			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
+				<div class="kpi-card border-left-orange">
+					<div class="kpi-value text-orange-stat">620</div>
+					<div class="kpi-title">1st Reminders (REM1)</div>
+					<div class="kpi-subtext" style="color: #e67e22;">
+						<i class="fas fa-bell"></i> 30 DPD Stage Notification
+					</div>
+					<i class="fas fa-bell kpi-watermark-icon text-warning"></i>
+				</div>
+			</div>
+
+			<!-- 3. 2nd Reminders (REM2) -->
+			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
+				<div class="kpi-card border-left-rose">
+					<div class="kpi-value text-rose-stat">380</div>
+					<div class="kpi-title">2nd Reminders (REM2)</div>
+					<div class="kpi-subtext" style="color: #d9383a;">
+						<i class="fas fa-exclamation-triangle"></i> 60 DPD Urgent Warning
+					</div>
+					<i class="fas fa-exclamation-circle kpi-watermark-icon text-danger"></i>
+				</div>
+			</div>
+
+			<!-- 4. Final Reminders (REM3) -->
+			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
+				<div class="kpi-card border-left-emerald">
+					<div class="kpi-value text-emerald-stat">248</div>
+					<div class="kpi-title">Final Reminders (REM3)</div>
+					<div class="kpi-subtext" style="color: #27ae60;">
+						<i class="fas fa-shield-alt"></i> 90+ DPD Legal Notice
+					</div>
+					<i class="fas fa-shield-alt kpi-watermark-icon text-success"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- ============================================================== -->
+		<!-- ROW 2: BATCH JOB PIPELINE & ALERTS (Directly Under KPIs)       -->
+		<!-- ============================================================== -->
+		<div class="table-card">
+			<div class="pipeline-title-bar">
+				<div class="pipeline-tag">
+					Batch Job Pipeline & Alerts
+				</div>
+				<div>
+					<a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2 mr-1" style="font-size: 0.68rem; font-weight: 600;">
+						<i class="fas fa-play mr-1"></i> Job Execution
+					</a>
+					<a href="./Batchjobscheduler" class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 0.68rem; font-weight: 600;">
+						<i class="fas fa-cog mr-1"></i> Scheduler
+					</a>
+				</div>
+			</div>
+
+			<div class="table-responsive">
+				<table id="batchJobTable" class="custom-table table table-hover">
+					<thead>
+						<tr>
+							<th>Job Name</th>
+							<th>Job Type</th>
+							<th>Scheme Code</th>
+							<th>Periodicity</th>
+							<th>Last Run Date</th>
+							<th>Next Run Date</th>
+							<th class="text-center">Job Status</th>
+							<th class="text-center">Action</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Dynamic batch jobs from DB if available -->
+						<th:block th:if="${dashboardJobs != null and !#lists.isEmpty(dashboardJobs)}">
+							<tr th:each="j : ${dashboardJobs}">
+								<td>
+									<div class="job-title-text">
+										<i class="fas fa-cogs"></i>
+										<span th:text="${j.job_name}">JOB NAME</span>
+									</div>
+								</td>
+								<td>
+									<span class="job-type-pill" th:text="${j.job_type != null ? j.job_type : 'BUSINESS JOBS'}">BUSINESS JOBS</span>
+								</td>
+								<td>
+									<!-- Elegant chip with tooltip for long scheme codes -->
+									<span class="scheme-chip" data-toggle="tooltip" data-placement="top"
+										th:title="${j.schm_code != null ? j.schm_code : 'ALL'}"
+										th:text="${j.schm_code != null ? j.schm_code : 'ALL'}">ALL</span>
+								</td>
+								<td>
+									<span th:if="${#strings.equalsIgnoreCase(j.periodicity, 'DAILY')}" class="pill-periodicity pill-daily">
+										<i class="far fa-clock"></i> DAILY
+									</span>
+									<span th:if="${#strings.equalsIgnoreCase(j.periodicity, 'WEEKLY')}" class="pill-periodicity pill-weekly">
+										<i class="far fa-calendar-alt"></i> WEEKLY
+									</span>
+									<span th:if="${#strings.equalsIgnoreCase(j.periodicity, 'MONTHLY')}" class="pill-periodicity pill-monthly">
+										<i class="far fa-calendar-check"></i> MONTHLY
+									</span>
+									<span th:if="${!#strings.equalsIgnoreCase(j.periodicity, 'DAILY') and !#strings.equalsIgnoreCase(j.periodicity, 'WEEKLY') and !#strings.equalsIgnoreCase(j.periodicity, 'MONTHLY')}"
+										class="pill-periodicity pill-daily" th:text="${j.periodicity != null ? j.periodicity : 'DAILY'}">DAILY</span>
+								</td>
+								<td th:text="${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}">-</td>
+								<td th:text="${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}">-</td>
+								<td class="text-center">
+									<!-- Safe status badge: Never shows empty line -->
+									<th:block th:with="st=${j.job_status != null ? #strings.toUpperCase(#strings.trim(j.job_status)) : 'READY'}">
+										<span th:if="${st == 'COMPLETED'}" class="status-badge status-success">
+											<i class="fas fa-check-circle mr-1"></i>COMPLETED
+										</span>
+										<span th:if="${st == 'SCHEDULED'}" class="status-badge status-warning">
+											<i class="fas fa-clock mr-1"></i>SCHEDULED
+										</span>
+										<span th:if="${st == 'READY' or st == ''}" class="status-badge status-info">
+											<i class="fas fa-play-circle mr-1"></i>READY
+										</span>
+										<span th:if="${st == 'STARTED' or st == 'RUNNING'}" class="status-badge status-purple">
+											<i class="fas fa-spinner fa-spin mr-1"></i>STARTED
+										</span>
+										<span th:if="${st == 'FAILED'}" class="status-badge status-danger">
+											<i class="fas fa-times-circle mr-1"></i>FAILED
+										</span>
+										<span th:if="${st != 'COMPLETED' and st != 'SCHEDULED' and st != 'READY' and st != '' and st != 'STARTED' and st != 'RUNNING' and st != 'FAILED'}"
+											class="status-badge status-info">
+											<i class="fas fa-info-circle mr-1"></i><span th:text="${st}">READY</span>
+										</span>
+									</th:block>
+								</td>
+								<td class="text-center">
+									<a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem; font-weight: 600; border-radius: 4px;" title="Execute Job">
+										<i class="fas fa-play"></i>
+									</a>
+								</td>
+							</tr>
+						</th:block>
+
+						<!-- Default Reference Rows (matching user's uploaded image exactly) -->
+						<th:block th:if="${dashboardJobs == null or #lists.isEmpty(dashboardJobs)}">
+							<tr>
+								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>FINACLE OVERDUE EXTRACTION</span></div></td>
+								<td><span class="job-type-pill">FINACLE</span></td>
+								<td><span class="scheme-chip">ALL</span></td>
+								<td><span class="pill-periodicity pill-daily"><i class="far fa-clock"></i> DAILY</span></td>
+								<td>05-10-2026</td>
+								<td>06-10-2026</td>
+								<td class="text-center"><span class="status-badge status-success"><i class="fas fa-check-circle mr-1"></i>COMPLETED</span></td>
+								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+							</tr>
+							<tr>
+								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>REMINDER LEVEL 1 GENERATOR</span></div></td>
+								<td><span class="job-type-pill">REMINDER</span></td>
+								<td><span class="scheme-chip">PERSONAL</span></td>
+								<td><span class="pill-periodicity pill-monthly"><i class="far fa-calendar-check"></i> MONTHLY</span></td>
+								<td>01-10-2026</td>
+								<td>01-11-2026</td>
+								<td class="text-center"><span class="status-badge status-success"><i class="fas fa-check-circle mr-1"></i>COMPLETED</span></td>
+								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+							</tr>
+							<tr>
+								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>REMINDER LEVEL 2 GENERATOR</span></div></td>
+								<td><span class="job-type-pill">REMINDER</span></td>
+								<td><span class="scheme-chip">HOUSING</span></td>
+								<td><span class="pill-periodicity pill-monthly"><i class="far fa-calendar-check"></i> MONTHLY</span></td>
+								<td>01-10-2026</td>
+								<td>01-11-2026</td>
+								<td class="text-center"><span class="status-badge status-warning"><i class="fas fa-clock mr-1"></i>SCHEDULED</span></td>
+								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+							</tr>
+							<tr>
+								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>LEGAL RECOVERY NOTICE EXTRACTION</span></div></td>
+								<td><span class="job-type-pill">RECOVERY</span></td>
+								<td><span class="scheme-chip">ALL</span></td>
+								<td><span class="pill-periodicity pill-monthly"><i class="far fa-calendar-check"></i> MONTHLY</span></td>
+								<td>30-09-2026</td>
+								<td>31-10-2026</td>
+								<td class="text-center"><span class="status-badge status-info"><i class="fas fa-play-circle mr-1"></i>READY</span></td>
+								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+		</div>
+
+		<!-- ============================================================== -->
+		<!-- ROW 3: THREE-COLUMN BALANCED BOTTOM SECTION                    -->
+		<!-- Col 1: Recent Activities | Col 2: Pie/Donut Chart | Col 3: Compliance -->
+		<!-- ============================================================== -->
+		<div class="row">
+			<!-- Column 1: Recent Loan Recovery Activities (Matching Image 3) -->
+			<div class="col-lg-4 col-md-6 mb-2">
+				<div class="table-card h-100 mb-0">
+					<div class="section-header-bar">
+						<h6 class="section-header-title">
+							<i class="fas fa-history mr-1"></i> Recent Loan Recovery Activities
+						</h6>
+						<span class="badge badge-light" style="font-size: 0.62rem; color: #475569;">Live Logs</span>
+					</div>
+					<ul class="bullet-activity-list">
+						<li class="bullet-activity-item">
+							Automated SMS Dispatch executed for 428 borrowers.
+							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Today • SMS Gateway</span>
+						</li>
+						<li class="bullet-activity-item">
+							Batch file generation completed for Postal Dispatch.
+							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Today • Postal Dispatch</span>
+						</li>
+						<li class="bullet-activity-item">
+							Monthly Overdue Accounts report synchronized from Finacle.
+							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Yesterday • Core Banking</span>
+						</li>
+						<li class="bullet-activity-item">
+							Guarantor notification batch generated for 380 loan accounts.
+							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Yesterday • Legal Engine</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+			<!-- Column 2: Loan Recovery Stage Breakdown (Unique Pie/Donut Visual) -->
+			<div class="col-lg-4 col-md-6 mb-2">
+				<div class="table-card h-100 mb-0">
+					<div class="section-header-bar">
+						<h6 class="section-header-title">
+							<i class="fas fa-chart-pie mr-1 text-warning"></i> Overdue Stage Breakdown
+						</h6>
+						<div class="btn-group btn-group-toggle">
+							<button type="button" class="btn btn-xs btn-light text-dark py-0 px-2" id="btn-show-pie" onclick="toggleDashboardChart('pie')" style="font-size: 0.62rem; font-weight: 700;">Stages</button>
+							<button type="button" class="btn btn-xs btn-outline-light py-0 px-2" id="btn-show-bar" onclick="toggleDashboardChart('bar')" style="font-size: 0.62rem; font-weight: 700;">Arrears</button>
+						</div>
+					</div>
+					<div class="p-1" style="position: relative;">
+						<!-- Compact Donut Chart -->
+						<div id="wrap-pie-chart" style="position: relative; height: 95px; width: 100%;">
+							<canvas id="reminderPieChart"></canvas>
+							<div class="chart-center-label">
+								<div class="chart-center-val">1,248</div>
+								<div class="chart-center-sub">Total</div>
+							</div>
+						</div>
+						<!-- Secondary Arrears Chart (Hidden by default, toggleable without layout shift) -->
+						<div id="wrap-bar-chart" style="display: none; position: relative; height: 110px; width: 100%;">
+							<canvas id="arrearsBarChart"></canvas>
+						</div>
+						<!-- Legend pills with counts & percentages -->
+						<div class="chart-legend-pills" id="wrap-pie-legend">
+							<span class="legend-pill"><span class="legend-dot" style="background-color: #e67e22;"></span> REM1: 620 (49.7%)</span>
+							<span class="legend-pill"><span class="legend-dot" style="background-color: #d9383a;"></span> REM2: 380 (30.4%)</span>
+							<span class="legend-pill"><span class="legend-dot" style="background-color: #27ae60;"></span> REM3: 248 (19.9%)</span>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Column 3: System Status & Compliance (Matching Image 3) -->
+			<div class="col-lg-4 col-md-12 mb-2">
+				<div class="table-card h-100 mb-0">
+					<div class="section-header-bar">
+						<h6 class="section-header-title">
+							<i class="fas fa-shield-alt mr-1"></i> System Status & Compliance
+						</h6>
+						<span class="badge badge-success" style="font-size: 0.62rem; background-color: #27ae60;">ACTIVE</span>
+					</div>
+					<div class="compliance-panel-body">
+						<div class="compliance-entry">
+							<span class="compliance-entry-label">Audit Inquiries:</span>
+							<span class="compliance-entry-value text-success-val">
+								ACTIVE <span style="font-size: 0.65rem; color: #475569; font-weight: normal;">(All logs)</span>
+							</span>
+						</div>
+						<div class="compliance-entry">
+							<span class="compliance-entry-label">Maker-Checker Auth:</span>
+							<span class="compliance-entry-value text-success-val">ENFORCED</span>
+						</div>
+						<div class="compliance-entry">
+							<span class="compliance-entry-label">Active CBS Connector:</span>
+							<span class="compliance-entry-value" style="color: #1e293b;">Finacle CBS</span>
+						</div>
+						<div class="compliance-entry">
+							<span class="compliance-entry-label">Database Mode:</span>
+							<span class="compliance-entry-value" style="color: #1e293b;">PostgreSQL Prod</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- ============================================================== -->
+		<!-- ROW 4: QUICK SHORTCUTS TO USER MANUAL MODULES                  -->
+		<!-- ============================================================== -->
+		<div class="quick-shortcuts-bar">
+			<div class="text-muted font-weight-bold" style="font-size: 0.70rem;">
+				<i class="fas fa-bolt text-warning mr-1"></i> Shortcuts:
+			</div>
+			<div class="d-flex flex-wrap" style="gap: 4px;">
+				<a href="./Remindergeneration" class="shortcut-btn"><i class="fas fa-file-invoice"></i> Reminder Gen</a>
+				<a href="./Dispatchdetails" class="shortcut-btn"><i class="fas fa-truck"></i> Dispatch</a>
+				<a href="./Loanaccountprofileinquiry" class="shortcut-btn"><i class="fas fa-address-book"></i> Inquiries</a>
+				<a href="./Parameters" class="shortcut-btn"><i class="fas fa-envelope"></i> Email/SMS</a>
+				<a href="./Reminder" class="shortcut-btn"><i class="fas fa-sliders-h"></i> Parameters</a>
+				<a href="./Overduereports" class="shortcut-btn"><i class="fas fa-chart-pie"></i> Reports</a>
+				<a href="./Batchjobscheduler" class="shortcut-btn"><i class="fas fa-calendar-alt"></i> Batch Jobs</a>
+			</div>
+		</div>
+
 	</div>
 
-	<!-- Password change modals -->
+	<!-- Password change modals (Original IDs and structures preserved) -->
 	<div class="modal fade" id="alert1">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 			<div class="modal-content"
-				style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+				style="border-radius: 10px; border: none; box-shadow: 0 15px 20px -5px rgba(0,0,0,0.12);">
 				<div class="modal-header border-bottom-0 bg-light p-3"
-					style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
-					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b;">BORNFIRE MANAGER
-					</h5>
+					style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 0.95rem;">BORNFIRE MANAGER</h5>
 				</div>
-				<div class="modal-body text-center p-4">
-					<p id="alertmsg1" style="font-size: 1rem; color: #475569;">Your password is expiring soon. Do you
-						want to change it now?</p>
-					<div class="mt-4">
-						<button type="button" class="btn btn-primary px-4 py-2 mr-2" style="border-radius: 6px;"
+				<div class="modal-body text-center p-3">
+					<p id="alertmsg1" style="font-size: 0.88rem; color: #475569;">Your password is expiring soon. Do you want to change it now?</p>
+					<div class="mt-3">
+						<button type="button" class="btn btn-primary px-3 py-1 mr-2" style="border-radius: 4px; font-size: 0.82rem;"
 							data-dismiss="modal" onclick="Yes();">Yes</button>
-						<button type="button" class="btn btn-light px-4 py-2 border" style="border-radius: 6px;"
+						<button type="button" class="btn btn-light px-3 py-1 border" style="border-radius: 4px; font-size: 0.82rem;"
 							data-dismiss="modal">No</button>
 					</div>
 				</div>
@@ -706,17 +1265,15 @@
 	<div class="modal fade" id="alert2">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 			<div class="modal-content"
-				style="border-radius: 12px; border: none; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+				style="border-radius: 10px; border: none; box-shadow: 0 15px 20px -5px rgba(0,0,0,0.12);">
 				<div class="modal-header border-bottom-0 bg-light p-3"
-					style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
-					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b;">BORNFIRE MANAGER
-					</h5>
+					style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 0.95rem;">BORNFIRE MANAGER</h5>
 				</div>
-				<div class="modal-body text-center p-4">
-					<p id="alertmsg2" style="font-size: 1rem; color: #475569;">Your password has expired. You must
-						change your password to continue.</p>
-					<div class="mt-4">
-						<button type="button" class="btn btn-primary px-4 py-2" style="border-radius: 6px;"
+				<div class="modal-body text-center p-3">
+					<p id="alertmsg2" style="font-size: 0.88rem; color: #475569;">Your password has expired. You must change your password to continue.</p>
+					<div class="mt-3">
+						<button type="button" class="btn btn-primary px-3 py-1" style="border-radius: 4px; font-size: 0.82rem;"
 							data-dismiss="modal" onclick="Yes();">OK</button>
 					</div>
 				</div>

@@ -261,12 +261,12 @@
 								</form>
 							</div>
 							<div class="card-footer text-center" style="padding: 6px 10px; gap: 4px;">
-																					
-							<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
-							<button type="button" class="btn btn-sm btn-primary" id="btnSubmit" onclick="submit();">Submit</button>
-						    <button type="button" class="btn btn-sm btn-primary" id="btnBack" onclick="back()">Back</button>
-
-						</div> 
+								<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
+								<button type="button" class="btn btn-sm btn-primary" id="btnSubmit" onclick="submitForm();">Submit</button>
+								<button type="button" class="btn btn-sm btn-info" id="btnTestEmail" onclick="testEmail();">Test Email</button>
+								<button type="button" class="btn btn-sm btn-info" id="btnTestSms" onclick="testSms();">Test SMS</button>
+								<button type="button" class="btn btn-sm btn-secondary" id="btnBack" onclick="Back();">Back</button>
+							</div> 
 						</div>
 					</div>
 				</div>
@@ -274,23 +274,60 @@
 		</div>
 	</div>
 	<script>
-		$(function () {
-			$("#btnSubmit").on("click", function () {
-				if ($("#emailEnable").val() === "Y" && ($("#emailHost").val() === "" || $("#senderEmail").val() === "")) {
-					alert("Enter the email host and sender email to enable Email.");
-					return;
-				}
-				$.ajax({
-					url: "saveEmailSms",
-					type: "POST",
-					data: new FormData(document.getElementById("parameterForm")),
-					processData: false,
-					contentType: false,
-					success: function (res) { alert(res); location.reload(); },
-					error: function () { alert("Parameters could not be saved."); }
-				});
+		function submitForm() {
+			if ($("#emailEnable").val() === "Y" && ($("#emailHost").val() === "" || $("#senderEmail").val() === "")) {
+				alert("Enter the email host and sender email to enable Email.");
+				return;
+			}
+			var btn = $("#btnSubmit");
+			var old = btn.text();
+			btn.prop("disabled", true).text("Saving...");
+			$.ajax({
+				url: "saveEmailSms",
+				type: "POST",
+				data: new FormData(document.getElementById("parameterForm")),
+				processData: false,
+				contentType: false,
+				success: function (res) { alert(res); location.reload(); },
+				error: function (xhr) { alert("Parameters could not be saved: " + (xhr.responseText || "Server error")); },
+				complete: function () { btn.prop("disabled", false).text(old); }
 			});
-		});
+		}
+
+		function testEmail() {
+			var defTo = $("#senderEmail").val() || "";
+			var to = prompt("Enter recipient email address to send test email:", defTo);
+			if (to === null) return;
+			if (!to.trim()) { alert("Recipient email is required."); return; }
+			var btn = $("#btnTestEmail");
+			var old = btn.text();
+			btn.prop("disabled", true).text("Testing...");
+			$.ajax({
+				url: "testEmail",
+				type: "POST",
+				data: { toEmail: to.trim() },
+				success: function (res) { alert(res); },
+				error: function () { alert("Failed to communicate with test email endpoint."); },
+				complete: function () { btn.prop("disabled", false).text(old); }
+			});
+		}
+
+		function testSms() {
+			var to = prompt("Enter recipient mobile number to send test SMS:", "");
+			if (to === null) return;
+			if (!to.trim()) { alert("Recipient mobile is required."); return; }
+			var btn = $("#btnTestSms");
+			var old = btn.text();
+			btn.prop("disabled", true).text("Testing...");
+			$.ajax({
+				url: "testSms",
+				type: "POST",
+				data: { toMobile: to.trim() },
+				success: function (res) { alert(res); },
+				error: function () { alert("Failed to communicate with test SMS endpoint."); },
+				complete: function () { btn.prop("disabled", false).text(old); }
+			});
+		}
 	</script>
 </body>
 </html>

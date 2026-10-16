@@ -8,7 +8,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
+import java.util.Map;
+import com.bornfire.entities.BLRS_EmailSmsParam_Entity;
+import com.bornfire.entities.BLRS_ReminderParam_Entity;
+import com.bornfire.entities.BLRS_ReminderGenerator_Entity;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,10 +25,18 @@ import com.bornfire.entities.BLRS_BatchJobScheduler_Repo;
 
 @Service
 public class BLRS_BatchJobSchedulerService {
-
+	@Autowired private com.bornfire.services.BLRS_NotificationService    notificationService;
+	@Autowired private com.bornfire.entities.BLRS_EmailSmsParam_Repo     emailSmsRepo;
+	@Autowired private com.bornfire.services.BLRS_ParameterService       parameterService;
+	@Autowired private com.bornfire.services.BLRS_ReminderGeneratorService reminderGenService;
 	@Autowired
 	private BLRS_BatchJobScheduler_Repo batchJobRepo;
+    
+	
+	
 
+	    private static final org.slf4j.Logger log =
+	            org.slf4j.LoggerFactory.getLogger(BLRS_BatchJobSchedulerService.class);
 	private static final String[] BASE_SCHEMES = { "ALL", "CLN2", "CLN4", "CPL1", "DPEMI", "ELN1", "FINLI", "HOULN",
 			"LNBPA", "LNEST", "MQL1", "PLBPA", "PLN1", "PPL1", "SMEAG", "SMELG", "SSL1", "TLEMI" };
 
@@ -414,7 +425,55 @@ public class BLRS_BatchJobSchedulerService {
 			batchJobRepo.save(job);
  
 			executeJob(job); // <<< your existing execution (same as Operation > Batch Job Execution)
- 
+			try {
+			    if ("BUSINESS JOBS".equalsIgnoreCase(job.getJob_type())
+			            && "Y".equalsIgnoreCase(job.getEntity_flg())) {
+
+			        BLRS_EmailSmsParam_Entity emailSms = emailSmsRepo.findById("EMAILSMS").orElse(null);
+
+			        // find the matching ReminderParam row (REM1 / REM2 / REM3 or Reminder-1/2/3)
+			        String remNo = job.getReminder_type();
+			        Map<String, String> opt = null;
+			        if (remNo != null) {
+			            String remDigits = remNo.replaceAll("[^0-9]", "");
+			            for (BLRS_ReminderParam_Entity rp : parameterService.getReminders()) {
+			                String rpDigits = rp.getReminder_no() != null ? rp.getReminder_no().replaceAll("[^0-9]", "") : "";
+			                if (rp.getReminder_no().equalsIgnoreCase(remNo) || (!remDigits.isEmpty() && remDigits.equals(rpDigits))) {
+			                    Map<String, String> m = new java.util.LinkedHashMap<>();
+			                    m.put("no",        rp.getReminder_no());
+			                    m.put("name",      "Reminder-" + (rpDigits.isEmpty() ? "1" : rpDigits));
+			                    m.put("download",  rp.getDownload_flg());
+			                    m.put("signature", rp.getSignature_flg());
+			                    m.put("email",     rp.getEmail_flg());
+			                    m.put("sms",       rp.getSms_flg());
+			                    opt = m;
+			                    break;
+			                }
+			            }
+			        }
+
+			        if (emailSms != null && opt != null) {
+			            List<BLRS_ReminderGenerator_Entity> rows = reminderGenService.getReminderList();
+			            if (rows != null && !rows.isEmpty() && !isBlank(job.getSchm_code()) && !"ALL".equalsIgnoreCase(job.getSchm_code().trim())) {
+			                String[] schemes = job.getSchm_code().split("[,\\s]+");
+			                java.util.Set<String> schemeSet = new java.util.HashSet<>(java.util.Arrays.asList(schemes));
+			                List<BLRS_ReminderGenerator_Entity> filtered = new java.util.ArrayList<>();
+			                for (BLRS_ReminderGenerator_Entity r : rows) {
+			                    if (r.getSchem_code() != null && schemeSet.contains(r.getSchem_code().trim())) {
+			                        filtered.add(r);
+			                    }
+			                }
+			                rows = filtered;
+			            }
+			            notificationService.dispatchReminders(emailSms, opt, rows,
+			                    "Y".equalsIgnoreCase(job.getEmail_flg()),
+			                    "Y".equalsIgnoreCase(job.getSms_flg()),
+			                    loginUser);
+			        }
+			    }
+			} catch (Exception ne) {
+			    log.error("Batch job notification failed", ne);
+			}
 			job.setJob_status("COMPLETED");
 			job.setLast_run_date(new Date());
 			job.setNext_run_date(calcNextRun(job.getNext_run_date(), job.getPeriodicity()));
