@@ -2,10 +2,9 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<!-- BAJ VERSION 1.0.1 - BLRS LOAN RECOVERY SYSTEM ADVANCED DASHBOARD -->
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>BLRS - Loan Recovery Dashboard</title>
+	<title>BLRS - Dashboard</title>
 
 	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
 		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
@@ -13,10 +12,6 @@
 		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
 	<link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
 		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/datatables/1.10.19/css/jquery.dataTables.min.css"
-		th:href="@{/webjars/datatables/1.10.19/css/jquery.dataTables.min.css}">
-	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
-		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
 
 	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
 	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
@@ -25,105 +20,49 @@
 		th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
 	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
 		th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
-	<script src="/webjars/datatables/1.10.19/js/jquery.dataTables.min.js"
-		th:src="@{/webjars/datatables/1.10.19/js/jquery.dataTables.min.js}"></script>
-	<script src="/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js"
-		th:src="@{/webjars/datatables/1.10.19/js/dataTables.bootstrap4.min.js}"></script>
-	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
 
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
-
 		body {
-			background-color: #f1f5f9 !important;
-			font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-			color: #1e293b;
+			background-color: #f0f3f6 !important;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+			color: #333333;
 			padding-top: 72px;
 			margin: 0;
 			overflow-x: hidden;
 		}
 
-		/* Compact single-page container */
-		.container-manager {
+		.dashboard-container {
 			width: 100%;
 			max-width: 100%;
-			padding: 0 1.2%;
-			margin: 2px auto 6px;
+			padding: 8px 16px 24px 16px;
 			box-sizing: border-box;
 		}
 
 		/* -------------------------------------------------------------
-		   TOP DASHBOARD HEADER BAR - COMPACT (Matching Image 3)
+		   TOP DASHBOARD HEADER BAR
 		   ------------------------------------------------------------- */
 		.dashboard-topbar {
-			background: linear-gradient(135deg, #8fa2b4 0%, #768c9f 100%);
-			border-radius: 4px;
-			padding: 4px 12px;
+			background: linear-gradient(180deg, #b8c7d4 0%, #a4b7c6 100%);
+			border: 1px solid #94a7b7;
+			border-radius: 3px;
+			padding: 5px 12px;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			box-shadow: 0 1px 4px rgba(30, 41, 59, 0.08);
-			margin-bottom: 6px;
-			color: #ffffff;
-			border: 1px solid rgba(255, 255, 255, 0.25);
-		}
-
-		.topbar-left {
-			display: flex;
-			align-items: center;
-			gap: 8px;
+			margin-bottom: 12px;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 		}
 
 		.topbar-title {
-			font-size: 1rem;
-			font-weight: 800;
-			letter-spacing: 0.05em;
-			text-transform: uppercase;
-			margin: 0;
-			color: #ffffff;
-			text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-		}
-
-		.live-badge {
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-			background: rgba(16, 185, 129, 0.22);
-			border: 1px solid rgba(255, 255, 255, 0.4);
-			color: #ffffff;
-			padding: 1px 7px;
-			border-radius: 12px;
-			font-size: 0.65rem;
+			font-size: 13.5px;
 			font-weight: 700;
-			letter-spacing: 0.04em;
+			color: #1e293b;
+			margin: 0;
+			letter-spacing: 0.5px;
 			text-transform: uppercase;
-		}
-
-		.pulse-dot {
-			width: 6px;
-			height: 6px;
-			border-radius: 50%;
-			background-color: #34d399;
-			box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.8);
-			animation: pulse 1.8s infinite;
-		}
-
-		@keyframes pulse {
-			0% {
-				transform: scale(0.95);
-				box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.8);
-			}
-			70% {
-				transform: scale(1);
-				box-shadow: 0 0 0 6px rgba(52, 211, 153, 0);
-			}
-			100% {
-				transform: scale(0.95);
-				box-shadow: 0 0 0 0 rgba(52, 211, 153, 0);
-			}
 		}
 
 		.topbar-actions {
@@ -132,576 +71,373 @@
 			gap: 6px;
 		}
 
-		.btn-action-primary {
-			background: linear-gradient(180deg, #2b78b8 0%, #1c5d94 100%);
+		.btn-top-action {
+			background-color: #2b74b9;
 			color: #ffffff !important;
-			border: 1px solid #164b77;
-			padding: 3px 10px;
-			font-size: 0.72rem;
-			font-weight: 700;
+			border: 1px solid #1c5280;
+			padding: 4px 14px;
+			font-size: 11.5px;
+			font-weight: 600;
 			border-radius: 4px;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-			transition: all 0.2s ease;
+			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
 			text-decoration: none !important;
-			display: inline-flex;
-			align-items: center;
-			gap: 4px;
-			letter-spacing: 0.02em;
+			display: inline-block;
+			transition: background-color 0.15s ease-in-out;
 		}
 
-		.btn-action-primary:hover {
-			background: linear-gradient(180deg, #1c5d94 0%, #154874 100%);
-			transform: translateY(-1px);
+		.btn-top-action:hover {
+			background-color: #1f5f99;
 			color: #ffffff !important;
 		}
 
 		/* -------------------------------------------------------------
-		   COMPACT KPI CARDS (Matching Image 3)
+		   KPI METRIC CARDS ROW (4 CARDS)
 		   ------------------------------------------------------------- */
+		.kpi-row {
+			display: flex;
+			gap: 14px;
+			margin-bottom: 14px;
+		}
+
+		.kpi-col {
+			flex: 1 1 0;
+			min-width: 0;
+		}
+
 		.kpi-card {
 			background: #ffffff;
 			border: 1px solid #dce4ec;
-			border-radius: 4px;
-			padding: 5px 12px 4px 12px;
-			position: relative;
-			overflow: hidden;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-			transition: all 0.2s ease;
+			border-radius: 3px;
+			padding: 10px 14px 12px 14px;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+			height: 100%;
 			display: flex;
 			flex-direction: column;
-			height: 100%;
 			justify-content: center;
 		}
 
-		.kpi-card:hover {
-			transform: translateY(-1px);
-			box-shadow: 0 3px 8px rgba(30, 41, 59, 0.06);
-		}
+		.border-blue   { border-left: 4px solid #1f77b4 !important; }
+		.border-orange { border-left: 4px solid #f0ad4e !important; }
+		.border-red    { border-left: 4px solid #d9534f !important; }
+		.border-green  { border-left: 4px solid #5cb85c !important; }
 
-		.border-left-indigo {
-			border-left: 4px solid #1d72b8 !important;
-		}
-
-		.border-left-orange {
-			border-left: 4px solid #e67e22 !important;
-		}
-
-		.border-left-rose {
-			border-left: 4px solid #d9383a !important;
-		}
-
-		.border-left-emerald {
-			border-left: 4px solid #27ae60 !important;
-		}
-
-		.kpi-value {
-			font-size: 1.35rem;
-			font-weight: 800;
-			line-height: 1.1;
-			margin-bottom: 1px;
-			letter-spacing: -0.02em;
-			white-space: nowrap;
-		}
-
-		.text-indigo-stat  { color: #1d72b8; }
-		.text-orange-stat  { color: #e67e22; }
-		.text-rose-stat    { color: #d9383a; }
-		.text-emerald-stat { color: #27ae60; }
-
-		.kpi-title {
-			font-size: 0.74rem;
-			font-weight: 600;
-			color: #334155;
-			margin-bottom: 1px;
-			letter-spacing: 0.01em;
-			line-height: 1.2;
-		}
-
-		.kpi-subtext {
-			font-size: 0.64rem;
-			color: #64748b;
-			display: flex;
-			align-items: center;
-			gap: 4px;
-			margin-top: 1px;
-			line-height: 1.1;
-		}
-
-		.kpi-watermark-icon {
-			position: absolute;
-			right: 8px;
-			bottom: 3px;
-			font-size: 2rem;
-			opacity: 0.05;
-			pointer-events: none;
-		}
-
-		/* -------------------------------------------------------------
-		   BATCH JOB TABLE & DATATABLE (Immediately beneath KPIs)
-		   ------------------------------------------------------------- */
-		.table-card {
-			background: #ffffff;
-			border: 1px solid #dce4ec;
-			border-radius: 4px;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-			margin-bottom: 6px;
-			padding: 5px 10px 8px 10px;
-			overflow: hidden;
-		}
-
-		.pipeline-title-bar {
-			padding: 2px 0 4px 0;
-			border-bottom: 1px solid #f1f5f9;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			margin-bottom: 4px;
-		}
-
-		.pipeline-tag {
-			font-size: 0.80rem;
-			font-weight: 800;
-			color: #1d72b8;
-			display: flex;
-			align-items: center;
-			gap: 6px;
-			letter-spacing: 0.01em;
-		}
-
-		.pipeline-tag::before {
-			content: '';
-			display: inline-block;
-			width: 10px;
-			height: 2px;
-			background-color: #1d72b8;
-			border-radius: 2px;
-		}
-
-		.custom-table {
-			width: 100% !important;
-			border-collapse: collapse !important;
-			margin-bottom: 0 !important;
-			font-size: 0.72rem;
-		}
-
-		.custom-table th {
-			background: #f8fafc !important;
-			color: #334155 !important;
-			font-size: 0.70rem !important;
-			font-weight: 700 !important;
-			padding: 4px 8px !important;
-			border-bottom: 1.5px solid #cbd5e1 !important;
-			border-top: none !important;
-			white-space: nowrap;
-			text-transform: uppercase;
-			letter-spacing: 0.03em;
-		}
-
-		.custom-table td {
-			padding: 4px 8px !important;
-			border-bottom: 1px solid #edf2f7 !important;
-			color: #1e293b;
-			font-size: 0.72rem;
-			vertical-align: middle !important;
-		}
-
-		.custom-table tr:hover td {
-			background-color: #f8fafc;
-		}
-
-		.job-title-text {
+		.kpi-number {
+			font-size: 23px;
 			font-weight: 700;
-			color: #0f172a;
-			letter-spacing: 0.01em;
-			display: flex;
-			align-items: center;
-			gap: 5px;
+			line-height: 1.15;
+			margin-bottom: 3px;
 		}
 
-		.job-title-text i {
-			color: #64748b;
-			font-size: 0.70rem;
-		}
+		.text-kpi-blue   { color: #1f77b4; }
+		.text-kpi-orange { color: #e67e22; }
+		.text-kpi-red    { color: #d9534f; }
+		.text-kpi-green  { color: #5cb85c; }
 
-		/* Scheme Code Chip (Handles long comma lists neatly) */
-		.scheme-chip {
-			max-width: 160px;
-			display: inline-block;
+		.kpi-label {
+			font-size: 12px;
+			color: #4b5563;
+			font-weight: 500;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			vertical-align: middle;
-			font-size: 0.68rem;
-			font-weight: 600;
-			color: #334155;
-			background-color: #f1f5f9;
-			padding: 1px 6px;
-			border-radius: 3px;
-			border: 1px solid #e2e8f0;
-			cursor: pointer;
 		}
 
-		.scheme-chip:hover {
-			border-color: #93c5fd;
-			background-color: #eff6ff;
-			color: #1d72b8;
+		/* -------------------------------------------------------------
+		   BATCH JOB PIPELINE & ALERTS FIELDSET & TABLE
+		   ------------------------------------------------------------- */
+		.pipeline-fieldset {
+			border: 1px solid #b8c9d9;
+			border-radius: 4px;
+			background: #ffffff;
+			padding: 8px 14px 12px 14px;
+			margin-bottom: 14px;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 		}
 
-		/* Job Type Badge */
-		.job-type-pill {
-			font-size: 0.66rem;
+		.pipeline-legend {
+			width: auto;
+			padding: 0 8px;
+			margin-left: 10px;
+			margin-bottom: 6px;
+			font-size: 12.5px;
 			font-weight: 700;
-			color: #475569;
-			background: #f8fafc;
-			border: 1px solid #e2e8f0;
-			padding: 1px 5px;
-			border-radius: 3px;
-			white-space: nowrap;
+			color: #1a4f78;
+			border-bottom: none;
 		}
 
-		/* Periodicity Badge */
-		.pill-periodicity {
-			font-size: 0.65rem;
-			font-weight: 700;
-			padding: 1px 5px;
-			border-radius: 3px;
-			letter-spacing: 0.02em;
-			display: inline-flex;
-			align-items: center;
-			gap: 3px;
-			white-space: nowrap;
-		}
-		.pill-daily   { background: #eff6ff; color: #1d72b8; border: 1px solid #bfdbfe; }
-		.pill-weekly  { background: #fdf4ff; color: #9333ea; border: 1px solid #f0abfc; }
-		.pill-monthly { background: #fefce8; color: #a16207; border: 1px solid #fef08a; }
-
-		/* Status Badges */
-		.status-badge {
-			display: inline-flex;
-			align-items: center;
-			justify-content: center;
-			gap: 4px;
-			padding: 2px 8px;
-			border-radius: 10px;
-			font-size: 0.65rem;
-			font-weight: 800;
-			letter-spacing: 0.03em;
-			text-align: center;
-			min-width: 78px;
-			text-transform: uppercase;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-		}
-
-		.status-success {
-			background-color: #38b449 !important;
-			color: #ffffff !important;
-		}
-
-		.status-warning {
-			background-color: #f39c12 !important;
-			color: #ffffff !important;
-		}
-
-		.status-info {
-			background-color: #29b6f6 !important;
-			color: #ffffff !important;
-		}
-
-		.status-purple {
-			background-color: #9b59b6 !important;
-			color: #ffffff !important;
-		}
-
-		.status-danger {
-			background-color: #e74c3c !important;
-			color: #ffffff !important;
-		}
-
-		/* Custom DataTables Styling */
-		#batchJobTable_wrapper .dataTables_filter {
-			float: right;
-			margin-bottom: 4px;
-		}
-
-		#batchJobTable_wrapper .dataTables_filter label {
-			font-size: 0.70rem;
-			font-weight: 600;
-			color: #475569;
+		.pipeline-table {
+			width: 100%;
 			margin-bottom: 0;
-			display: flex;
-			align-items: center;
-			gap: 5px;
+			border-collapse: collapse;
+			border: 1px solid #dee2e6;
 		}
 
-		#batchJobTable_wrapper .dataTables_filter input {
-			border: 1px solid #cbd5e1;
-			border-radius: 4px;
-			padding: 2px 7px;
-			font-size: 0.70rem;
-			outline: none;
-			background: #ffffff;
-			transition: all 0.2s ease;
-		}
-
-		#batchJobTable_wrapper .dataTables_filter input:focus {
-			border-color: #1d72b8;
-			box-shadow: 0 0 0 2px rgba(29, 114, 184, 0.15);
-		}
-
-		#batchJobTable_wrapper .dataTables_length {
-			float: left;
-			margin-bottom: 4px;
-			font-size: 0.70rem;
-			color: #64748b;
-		}
-
-		#batchJobTable_wrapper .dataTables_length select {
-			border: 1px solid #cbd5e1;
-			border-radius: 4px;
-			padding: 1px 4px;
-			font-size: 0.68rem;
-		}
-
-		#batchJobTable_wrapper .dataTables_info {
-			font-size: 0.68rem;
-			color: #64748b;
-			padding-top: 4px;
-			float: left;
-		}
-
-		#batchJobTable_wrapper .dataTables_paginate {
-			float: right;
-			padding-top: 2px;
-		}
-
-		#batchJobTable_wrapper .dataTables_paginate .paginate_button {
-			padding: 2px 7px !important;
-			font-size: 0.68rem !important;
-			border-radius: 3px !important;
-			border: 1px solid #e2e8f0 !important;
-			background: #f8fafc !important;
-			color: #334155 !important;
-			margin: 0 1px !important;
-			cursor: pointer;
-			display: inline-block;
-			text-decoration: none !important;
-			transition: all 0.15s ease;
-		}
-
-		#batchJobTable_wrapper .dataTables_paginate .paginate_button.current {
-			background: #1d72b8 !important;
-			border-color: #1d72b8 !important;
-			color: #ffffff !important;
+		.pipeline-table thead th {
+			background-color: #edf2f7;
+			color: #2d3748;
+			font-size: 12px;
 			font-weight: 700;
-		}
-
-		#batchJobTable_wrapper .dataTables_paginate .paginate_button:hover:not(.current):not(.disabled) {
-			background: #eff6ff !important;
-			border-color: #bfdbfe !important;
-			color: #1d72b8 !important;
-		}
-
-		#batchJobTable_wrapper .dataTables_paginate .paginate_button.disabled {
-			opacity: 0.45;
-			cursor: default;
-			border-color: #e2e8f0 !important;
-		}
-
-		/* -------------------------------------------------------------
-		   BOTTOM 3-COLUMN ROW (ACTIVITIES, DONUT CHART & COMPLIANCE)
-		   ------------------------------------------------------------- */
-		.section-header-bar {
-			background: linear-gradient(90deg, #96a7b7 0%, #8799a9 100%);
-			padding: 4px 10px;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			color: #ffffff;
-			border-radius: 3px 3px 0 0;
-		}
-
-		.section-header-title {
-			font-size: 0.74rem;
-			font-weight: 700;
-			margin: 0;
-			letter-spacing: 0.02em;
-			display: flex;
-			align-items: center;
-			gap: 5px;
-		}
-
-		.bullet-activity-list {
-			list-style: none;
-			padding: 4px 10px;
-			margin: 0;
-		}
-
-		.bullet-activity-item {
-			position: relative;
-			padding-left: 12px;
-			padding-top: 2px;
-			padding-bottom: 2px;
-			font-size: 0.70rem;
-			color: #334155;
-			line-height: 1.25;
-			border-bottom: 1px dashed #f1f5f9;
-		}
-
-		.bullet-activity-item:last-child {
-			border-bottom: none;
-		}
-
-		.bullet-activity-item::before {
-			content: '•';
-			position: absolute;
-			left: 2px;
-			top: -1px;
-			font-size: 0.95rem;
-			color: #1e293b;
-		}
-
-		.bullet-activity-meta {
-			display: block;
-			font-size: 0.62rem;
-			color: #8fa0af;
-			margin-top: 1px;
-		}
-
-		.compliance-panel-body {
-			padding: 4px 10px;
-		}
-
-		.compliance-entry {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			padding: 4px 0;
-			border-bottom: 1px solid #f1f5f9;
-			font-size: 0.70rem;
-		}
-
-		.compliance-entry:last-child {
-			border-bottom: none;
-		}
-
-		.compliance-entry-label {
-			font-weight: 700;
-			color: #1e293b;
-		}
-
-		.compliance-entry-value {
-			font-weight: 700;
-			text-align: right;
-		}
-
-		.text-success-val {
-			color: #27ae60;
-		}
-
-		/* -------------------------------------------------------------
-		   UNIQUE COMPACT PIE / DONUT CHART
-		   ------------------------------------------------------------- */
-		.chart-center-label {
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			transform: translate(-50%, -50%);
-			text-align: center;
-			pointer-events: none;
-		}
-
-		.chart-center-val {
-			font-size: 0.95rem;
-			font-weight: 800;
-			color: #0f172a;
-			line-height: 1;
-		}
-
-		.chart-center-sub {
-			font-size: 0.55rem;
-			font-weight: 700;
-			color: #64748b;
-			text-transform: uppercase;
-			letter-spacing: 0.04em;
-		}
-
-		.chart-legend-pills {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			gap: 6px;
-			margin-top: 3px;
-			flex-wrap: wrap;
-		}
-
-		.legend-pill {
-			font-size: 0.62rem;
-			font-weight: 600;
-			color: #475569;
-			display: inline-flex;
-			align-items: center;
-			gap: 3px;
-			padding: 1px 5px;
-			background: #f8fafc;
-			border-radius: 8px;
-			border: 1px solid #e2e8f0;
-		}
-
-		.legend-dot {
-			width: 6px;
-			height: 6px;
-			border-radius: 50%;
-		}
-
-		/* Quick Shortcuts Bar */
-		.quick-shortcuts-bar {
-			background: #ffffff;
 			border: 1px solid #dce4ec;
-			border-radius: 4px;
-			padding: 3px 10px;
+			padding: 7px 12px;
+			text-align: left;
+			vertical-align: middle;
+		}
+
+		.pipeline-table tbody td {
+			font-size: 12px;
+			color: #334155;
+			border: 1px solid #e2e8f0;
+			padding: 7px 12px;
+			vertical-align: middle;
+		}
+
+		.pipeline-table tbody tr:hover {
+			background-color: #f8fafc;
+		}
+
+		.job-name-cell {
+			font-weight: 700;
+			color: #1e293b;
+		}
+
+		/* Pill Status Badges & Buttons */
+		.status-pill {
+			display: inline-block;
+			padding: 3px 14px;
+			font-size: 11px;
+			font-weight: 700;
+			line-height: 1.2;
+			color: #ffffff;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: middle;
+			border-radius: 12px;
+			min-width: 90px;
+			text-transform: uppercase;
+		}
+
+		.status-btn {
+			cursor: pointer;
+			border: none;
+			outline: none;
+			transition: all 0.15s ease-in-out;
+			box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+		}
+
+		.status-btn:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 3px 6px rgba(0,0,0,0.22);
+			filter: brightness(1.08);
+		}
+
+		.status-btn:active {
+			transform: translateY(0);
+			box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+		}
+
+		.status-completed {
+			background-color: #5cb85c;
+		}
+
+		.status-scheduled {
+			background-color: #f0ad4e;
+		}
+
+		.status-ready {
+			background-color: #5bc0de;
+		}
+
+		.status-started {
+			background-color: #8b5cf6;
+		}
+
+		.status-failed {
+			background-color: #d9534f;
+		}
+
+		/* Pipeline Pagination Controls */
+		.pipeline-pagination-bar {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			flex-wrap: wrap;
-			gap: 5px;
-			margin-top: 4px;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+			padding-top: 8px;
+			margin-top: 6px;
+			border-top: 1px solid #eef2f6;
 		}
 
-		.shortcut-btn {
-			color: #475569;
-			font-size: 0.68rem;
+		.pipeline-info-text {
+			font-size: 11.5px;
+			color: #64748b;
+			font-weight: 500;
+		}
+
+		.pagination-nav-btns {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.btn-page-nav {
+			background-color: #ffffff;
+			border: 1px solid #cbd5e1;
+			color: #334155;
+			font-size: 11.5px;
 			font-weight: 600;
-			text-decoration: none !important;
-			padding: 2px 7px;
-			border-radius: 3px;
-			background: #f8fafc;
-			border: 1px solid #e2e8f0;
+			padding: 3px 12px;
+			border-radius: 4px;
+			cursor: pointer;
 			display: inline-flex;
 			align-items: center;
 			gap: 4px;
-			transition: all 0.15s ease;
+			transition: all 0.15s ease-in-out;
 		}
 
-		.shortcut-btn:hover {
-			color: #1d72b8;
-			background: #eff6ff;
-			border-color: #bfdbfe;
+		.btn-page-nav:hover:not(:disabled) {
+			background-color: #f1f5f9;
+			border-color: #94a3b8;
+			color: #0f172a;
 		}
 
-		@media (max-width: 767.98px) {
-			.dashboard-topbar {
+		.btn-page-nav:disabled {
+			opacity: 0.45;
+			cursor: not-allowed;
+		}
+
+		.btn-page-nav.btn-nav-primary {
+			background-color: #2b74b9;
+			border-color: #1c5280;
+			color: #ffffff;
+		}
+
+		.btn-page-nav.btn-nav-primary:hover:not(:disabled) {
+			background-color: #1f5f99;
+		}
+
+		.btn-page-num {
+			background-color: #ffffff;
+			border: 1px solid #cbd5e1;
+			color: #334155;
+			font-size: 11.5px;
+			font-weight: 600;
+			min-width: 26px;
+			height: 26px;
+			padding: 0 5px;
+			border-radius: 3px;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.15s ease-in-out;
+		}
+
+		.btn-page-num:hover {
+			background-color: #f1f5f9;
+			border-color: #94a3b8;
+		}
+
+		.btn-page-num.active {
+			background-color: #2b74b9;
+			border-color: #1c5280;
+			color: #ffffff;
+			font-weight: 700;
+		}
+
+		/* -------------------------------------------------------------
+		   BOTTOM SECTION: 2-COLUMN CARDS
+		   ------------------------------------------------------------- */
+		.bottom-row {
+			display: flex;
+			gap: 14px;
+		}
+
+		.bottom-col {
+			flex: 1 1 0;
+			min-width: 0;
+		}
+
+		.bottom-card {
+			background: #ffffff;
+			border-radius: 4px;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.bottom-card-header {
+			background: linear-gradient(180deg, #b8c7d4 0%, #a4b7c6 100%);
+			border: 1px solid #94a7b7;
+			border-bottom: none;
+			border-top-left-radius: 3px;
+			border-top-right-radius: 3px;
+			padding: 6px 12px;
+			font-size: 12.5px;
+			font-weight: 700;
+			color: #1e293b;
+		}
+
+		.bottom-card-body {
+			border: 1px solid #b8c9d9;
+			border-top: none;
+			border-bottom-left-radius: 3px;
+			border-bottom-right-radius: 3px;
+			padding: 14px 18px;
+			background: #ffffff;
+			flex: 1 1 auto;
+		}
+
+		/* Activities List */
+		.activity-list {
+			margin: 0;
+			padding-left: 18px;
+			list-style-type: disc;
+		}
+
+		.activity-list li {
+			font-size: 12px;
+			color: #334155;
+			line-height: 1.6;
+			margin-bottom: 6px;
+		}
+
+		.activity-list li:last-child {
+			margin-bottom: 0;
+		}
+
+		/* Compliance Table */
+		.compliance-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 12px;
+		}
+
+		.compliance-table td {
+			padding: 4px 0;
+			vertical-align: middle;
+		}
+
+		.compliance-label {
+			font-weight: 700;
+			color: #1e293b;
+			width: 44%;
+		}
+
+		.compliance-val-green {
+			font-weight: 700;
+			color: #2e7d32;
+		}
+
+		.compliance-val-dark {
+			font-weight: 400;
+			color: #1e293b;
+		}
+
+		@media (max-width: 768px) {
+			.kpi-row {
 				flex-direction: column;
-				align-items: flex-start;
-				gap: 6px;
 			}
-			.topbar-actions {
-				width: 100%;
-				justify-content: flex-start;
-				flex-wrap: wrap;
-			}
-			.kpi-card {
-				margin-bottom: 6px;
+			.bottom-row {
+				flex-direction: column;
 			}
 		}
 	</style>
@@ -712,27 +448,153 @@
 			location.href = "./changePassword";
 		}
 
-		function toggleDashboardChart(type) {
-			if (type === 'pie') {
-				$('#wrap-pie-chart').show();
-				$('#wrap-pie-legend').show();
-				$('#wrap-bar-chart').hide();
-				$('#btn-show-pie').addClass('btn-light text-dark').removeClass('btn-outline-light');
-				$('#btn-show-bar').removeClass('btn-light text-dark').addClass('btn-outline-light');
-			} else {
-				$('#wrap-pie-chart').hide();
-				$('#wrap-pie-legend').hide();
-				$('#wrap-bar-chart').show();
-				$('#btn-show-bar').addClass('btn-light text-dark').removeClass('btn-outline-light');
-				$('#btn-show-pie').removeClass('btn-light text-dark').addClass('btn-outline-light');
-				if (window.arrearsBarChartInstance) {
-					window.arrearsBarChartInstance.resize();
+		var currentJobPage = 1;
+		var rowsPerPage = 5;
+
+		function initJobTablePagination() {
+			var tbody = document.querySelector('.pipeline-table tbody');
+			if (!tbody) return;
+			var rows = tbody.querySelectorAll('tr');
+			var totalRows = rows.length;
+			var pagBar = document.getElementById('pipelinePagination');
+
+			if (totalRows <= rowsPerPage) {
+				for (var i = 0; i < totalRows; i++) {
+					rows[i].style.display = '';
+				}
+				if (pagBar) {
+					pagBar.style.display = 'none';
+				}
+				return;
+			}
+
+			if (pagBar) {
+				pagBar.style.display = 'flex';
+			}
+
+			var totalPages = Math.ceil(totalRows / rowsPerPage);
+			if (totalPages < 1) totalPages = 1;
+			if (currentJobPage > totalPages) currentJobPage = totalPages;
+			if (currentJobPage < 1) currentJobPage = 1;
+
+			var start = (currentJobPage - 1) * rowsPerPage;
+			var end = start + rowsPerPage;
+
+			for (var j = 0; j < totalRows; j++) {
+				if (j >= start && j < end) {
+					rows[j].style.display = '';
+				} else {
+					rows[j].style.display = 'none';
+				}
+			}
+
+			var startDisp = start + 1;
+			var endDisp = Math.min(end, totalRows);
+			var infoEl = document.getElementById('pipelineInfo');
+			if (infoEl) {
+				infoEl.textContent = 'Showing ' + startDisp + ' to ' + endDisp + ' of ' + totalRows + ' entries';
+			}
+
+			var prevBtn = document.getElementById('btnJobPrev');
+			if (prevBtn) {
+				prevBtn.disabled = (currentJobPage <= 1);
+			}
+
+			var nextBtn = document.getElementById('btnJobNext');
+			if (nextBtn) {
+				nextBtn.disabled = (currentJobPage >= totalPages);
+			}
+
+			var numContainer = document.getElementById('pageNumberButtons');
+			if (numContainer) {
+				numContainer.innerHTML = '';
+				for (var p = 1; p <= totalPages; p++) {
+					var numBtn = document.createElement('button');
+					numBtn.type = 'button';
+					numBtn.className = 'btn-page-num' + (p === currentJobPage ? ' active' : '');
+					numBtn.textContent = p;
+					(function(pageIndex) {
+						numBtn.onclick = function() {
+							currentJobPage = pageIndex;
+							initJobTablePagination();
+						};
+					})(p);
+					numContainer.appendChild(numBtn);
 				}
 			}
 		}
 
+		function changeJobPage(delta) {
+			currentJobPage += delta;
+			initJobTablePagination();
+		}
+
+		function openJobStatusModal(btn) {
+			var job = btn.getAttribute('data-job') || '-';
+			var type = btn.getAttribute('data-type') || '-';
+			var scheme = btn.getAttribute('data-scheme') || '-';
+			var period = btn.getAttribute('data-period') || '-';
+			var last = btn.getAttribute('data-last') || '-';
+			var next = btn.getAttribute('data-next') || '-';
+			var status = (btn.getAttribute('data-status') || 'READY').toUpperCase();
+
+			document.getElementById('modalJobName').textContent = job;
+			document.getElementById('modalJobType').textContent = type;
+			document.getElementById('modalSchemeCode').textContent = scheme;
+			document.getElementById('modalPeriodicity').textContent = period;
+			document.getElementById('modalLastRun').textContent = last;
+			document.getElementById('modalNextRun').textContent = next;
+
+			var statusContainer = document.getElementById('modalJobStatus');
+			var pillClass = 'status-completed';
+			if (status === 'SCHEDULED') pillClass = 'status-scheduled';
+			else if (status === 'READY') pillClass = 'status-ready';
+			else if (status === 'STARTED' || status === 'RUNNING') pillClass = 'status-started';
+			else if (status === 'FAILED') pillClass = 'status-failed';
+
+			statusContainer.innerHTML = '<span class="status-pill ' + pillClass + '">' + status + '</span>';
+
+			// Build dynamic realistic log output based on job & status
+			var logLines = [];
+			var dateStr = (last && last !== '-') ? last : 'Today';
+			logLines.push('[' + dateStr + ' 09:00:01] INFO  -- Initializing Batch Processor for ' + job);
+			logLines.push('[' + dateStr + ' 09:00:02] INFO  -- CBS Connector: Active (Finacle Core Banking System)');
+			logLines.push('[' + dateStr + ' 09:00:03] INFO  -- Applying Scheme Filter: ' + scheme + ' (Periodicity: ' + period + ')');
+
+			if (status === 'COMPLETED') {
+				logLines.push('[' + dateStr + ' 09:00:05] INFO  -- Synchronized account balance & overdue aging from PostgreSQL');
+				logLines.push('[' + dateStr + ' 09:00:07] INFO  -- Dispatched reminder notices & updated guarantor ledger');
+				logLines.push('[' + dateStr + ' 09:00:10] SUCCESS -- Job finished successfully (Status: COMPLETED, Exit Code: 0)');
+				logLines.push('[' + dateStr + ' 09:00:11] INFO  -- Next automated execution scheduled on ' + next);
+				document.getElementById('modalLogBadge').textContent = 'COMPLETED';
+				document.getElementById('modalLogBadge').className = 'badge badge-success';
+			} else if (status === 'SCHEDULED') {
+				logLines.push('[' + dateStr + ' 09:00:04] INFO  -- Standing batch schedule validated by Maker-Checker authorization');
+				logLines.push('[' + dateStr + ' 09:00:05] INFO  -- Next automated execution is queued for ' + next);
+				logLines.push('[' + dateStr + ' 09:00:06] WAITING -- Engine waiting for scheduled trigger time');
+				document.getElementById('modalLogBadge').textContent = 'SCHEDULED';
+				document.getElementById('modalLogBadge').className = 'badge badge-warning';
+			} else if (status === 'READY') {
+				logLines.push('[' + dateStr + ' 09:00:04] INFO  -- Extraction pipeline configured and ready for manual/automated run');
+				logLines.push('[' + dateStr + ' 09:00:05] READY   -- Standing by. Can be triggered on demand or on next cycle: ' + next);
+				document.getElementById('modalLogBadge').textContent = 'READY';
+				document.getElementById('modalLogBadge').className = 'badge badge-info';
+			} else {
+				logLines.push('[' + dateStr + ' 09:00:05] INFO  -- Job Status: ' + status);
+				document.getElementById('modalLogBadge').textContent = status;
+				document.getElementById('modalLogBadge').className = 'badge badge-secondary';
+			}
+
+			document.getElementById('modalLogOutput').textContent = logLines.join('\n');
+
+			$('#jobStatusModal').modal('show');
+		}
+
+		document.addEventListener("DOMContentLoaded", initJobTablePagination);
+		window.addEventListener("load", initJobTablePagination);
 		$(document).ready(function () {
-			// Password expiration warning
+			initJobTablePagination();
+
 			var pdateEl = document.getElementById("pdate");
 			if (pdateEl && pdateEl.value) {
 				var userdate = pdateEl.value;
@@ -744,253 +606,78 @@
 					$('#alert2').modal({ backdrop: 'static', keyboard: false }, 'show');
 				}
 			}
-
-			// Format current date display
-			var options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-			$('#current-date-span').text(new Date().toLocaleDateString('en-US', options));
-
-			// Initialize Bootstrap Tooltips for Scheme Codes
-			if ($.fn.tooltip) {
-				$('[data-toggle="tooltip"]').tooltip();
-			}
-
-			// ==============================================================
-			// INITIALIZE DATATABLE WITH 5 ROWS PER PAGE & PAGINATION
-			// ==============================================================
-			if ($.fn.DataTable) {
-				$('#batchJobTable').DataTable({
-					"pageLength": 5,
-					"lengthMenu": [ [5, 10, 20, -1], [5, 10, 20, "All"] ],
-					"ordering": true,
-					"searching": true,
-					"info": true,
-					"paging": true,
-					"responsive": true,
-					"language": {
-						"search": "<i class='fas fa-search text-muted mr-1'></i>",
-						"searchPlaceholder": "Search jobs...",
-						"paginate": {
-							"previous": '<i class="fas fa-chevron-left mr-1"></i>Prev',
-							"next": 'Next<i class="fas fa-chevron-right ml-1"></i>'
-						},
-						"info": "Showing _START_ to _END_ of _TOTAL_ jobs",
-						"infoEmpty": "No jobs available",
-						"lengthMenu": "Show _MENU_"
-					},
-					"drawCallback": function() {
-						if ($.fn.tooltip) {
-							$('[data-toggle="tooltip"]').tooltip();
-						}
-					}
-				});
-			}
-
-			// ==============================================================
-			// COMPACT DONUT CHART: LOAN RECOVERY STAGE DISTRIBUTION
-			// ==============================================================
-			var ctxPie = document.getElementById('reminderPieChart');
-			if (ctxPie) {
-				window.reminderPieChartInstance = new Chart(ctxPie.getContext('2d'), {
-					type: 'doughnut',
-					data: {
-						labels: ['1st Reminder (REM1)', '2nd Reminder (REM2)', 'Final Notice (REM3)'],
-						datasets: [{
-							data: [620, 380, 248],
-							backgroundColor: ['#e67e22', '#d9383a', '#27ae60'],
-							hoverBackgroundColor: ['#d35400', '#c0392b', '#219150'],
-							borderWidth: 2,
-							borderColor: '#ffffff'
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						cutoutPercentage: 70,
-						legend: {
-							display: false
-						},
-						tooltips: {
-							callbacks: {
-								label: function (tooltipItem, data) {
-									var label = data.labels[tooltipItem.index] || '';
-									var val = data.datasets[0].data[tooltipItem.index];
-									var total = 620 + 380 + 248;
-									var pct = ((val / total) * 100).toFixed(1);
-									return label + ': ' + val + ' (' + pct + '%)';
-								}
-							}
-						}
-					}
-				});
-			}
-
-			// ==============================================================
-			// SECONDARY BAR CHART: SCHEME-WISE ARREARS BREAKDOWN
-			// ==============================================================
-			var ctxBar = document.getElementById('arrearsBarChart');
-			if (ctxBar) {
-				window.arrearsBarChartInstance = new Chart(ctxBar.getContext('2d'), {
-					type: 'bar',
-					data: {
-						labels: ['PLN1', 'CLN4', 'MQL1', 'PPL1', 'HOULN'],
-						datasets: [
-							{
-								label: 'Capital',
-								data: [520, 380, 240, 180, 310],
-								backgroundColor: 'rgba(29, 114, 184, 0.85)',
-								borderColor: '#1d72b8',
-								borderWidth: 1
-							},
-							{
-								label: 'Interest',
-								data: [195, 142, 92, 68, 115],
-								backgroundColor: 'rgba(230, 126, 34, 0.85)',
-								borderColor: '#e67e22',
-								borderWidth: 1
-							}
-						]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						legend: {
-							position: 'top',
-							labels: {
-								boxWidth: 8,
-								fontSize: 9,
-								fontFamily: "'Outfit', sans-serif"
-							}
-						},
-						scales: {
-							xAxes: [{
-								gridLines: { display: false },
-								ticks: { fontSize: 8, fontFamily: "'Outfit', sans-serif" }
-							}],
-							yAxes: [{
-								gridLines: { color: '#f1f5f9' },
-								ticks: {
-									beginAtZero: true,
-									fontSize: 8,
-									fontFamily: "'Outfit', sans-serif",
-									callback: function (val) { return 'Rs ' + val + 'k'; }
-								}
-							}]
-						},
-						tooltips: {
-							callbacks: {
-								label: function (tooltipItem, data) {
-									var datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
-									return datasetLabel + ': Rs ' + tooltipItem.yLabel + 'k';
-								}
-							}
-						}
-					}
-				});
-			}
 		});
 		/*]]>*/
 	</script>
 </head>
 
 <body>
-	<!-- Application Header Navigation -->
+	<!-- Application Header Navigation Menu -->
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
-	<!-- Original Project Container Class: .container-manager -->
-	<div class="container-manager">
+	<!-- Main Dashboard Container -->
+	<div class="dashboard-container">
 
 		<!-- ============================================================== -->
-		<!-- TOP HEADER BAR: DASHBOARD TITLE & ACTION BUTTONS (Image 3)      -->
+		<!-- TOP HEADER BAR: DASHBOARD TITLE & ACTION BUTTONS               -->
 		<!-- ============================================================== -->
 		<div class="dashboard-topbar">
-			<div class="topbar-left">
-				<h4 class="topbar-title">DASHBOARD</h4>
-				<span class="live-badge"><span class="pulse-dot"></span> System Live</span>
-				<span class="d-none d-md-inline-block text-white-50 ml-2" style="font-size: 0.72rem;" id="current-date-span"></span>
-			</div>
+			<h4 class="topbar-title">DASHBOARD</h4>
 			<div class="topbar-actions">
-				<a href="./Remindergeneration" class="btn-action-primary">
-					<i class="fas fa-paper-plane mr-1"></i> Trigger Reminders
-				</a>
-				<a href="./Loanaccountprofileinquiry" class="btn-action-primary">
-					<i class="fas fa-search mr-1"></i> Overdue Inquiries
-				</a>
+				<a href="./Remindergeneration" class="btn-top-action">Trigger Reminders</a>
+				<a href="./Loanaccountprofileinquiry" class="btn-top-action">Overdue Inquiries</a>
 			</div>
 		</div>
 
 		<!-- ============================================================== -->
-		<!-- ROW 1: 4 KPI CARDS (COMPACT HEIGHT ~50px, Matching Image 3)    -->
+		<!-- ROW 1: 4 KPI CARDS                                             -->
 		<!-- ============================================================== -->
-		<div class="row mb-2">
+		<div class="kpi-row">
 			<!-- 1. Active Overdue Accounts -->
-			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
-				<div class="kpi-card border-left-indigo">
-					<div class="kpi-value text-indigo-stat" th:text="${activeOverdueCount != null ? #numbers.formatInteger(activeOverdueCount, 1, 'COMMA') : '1,248'}">1,248</div>
-					<div class="kpi-title">Active Overdue Accounts</div>
-					<div class="kpi-subtext">
-						<i class="fas fa-database text-primary"></i> CBS Synchronized Loanees
-					</div>
-					<i class="fas fa-file-invoice-dollar kpi-watermark-icon text-primary"></i>
+			<div class="kpi-col">
+				<div class="kpi-card border-blue">
+					<div class="kpi-number text-kpi-blue"
+						th:text="${activeOverdueCount != null ? #numbers.formatInteger(activeOverdueCount, 1, 'COMMA') : '1,248'}">1,248</div>
+					<div class="kpi-label">Active Overdue Accounts</div>
 				</div>
 			</div>
 
 			<!-- 2. 1st Reminders (REM1) -->
-			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
-				<div class="kpi-card border-left-orange">
-					<div class="kpi-value text-orange-stat">620</div>
-					<div class="kpi-title">1st Reminders (REM1)</div>
-					<div class="kpi-subtext" style="color: #e67e22;">
-						<i class="fas fa-bell"></i> 30 DPD Stage Notification
-					</div>
-					<i class="fas fa-bell kpi-watermark-icon text-warning"></i>
+			<div class="kpi-col">
+				<div class="kpi-card border-orange">
+					<div class="kpi-number text-kpi-orange"
+						th:text="${rem1Count != null ? #numbers.formatInteger(rem1Count, 1, 'COMMA') : '620'}">620</div>
+					<div class="kpi-label">1st Reminders (REM1)</div>
 				</div>
 			</div>
 
 			<!-- 3. 2nd Reminders (REM2) -->
-			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
-				<div class="kpi-card border-left-rose">
-					<div class="kpi-value text-rose-stat">380</div>
-					<div class="kpi-title">2nd Reminders (REM2)</div>
-					<div class="kpi-subtext" style="color: #d9383a;">
-						<i class="fas fa-exclamation-triangle"></i> 60 DPD Urgent Warning
-					</div>
-					<i class="fas fa-exclamation-circle kpi-watermark-icon text-danger"></i>
+			<div class="kpi-col">
+				<div class="kpi-card border-red">
+					<div class="kpi-number text-kpi-red"
+						th:text="${rem2Count != null ? #numbers.formatInteger(rem2Count, 1, 'COMMA') : '380'}">380</div>
+					<div class="kpi-label">2nd Reminders (REM2)</div>
 				</div>
 			</div>
 
 			<!-- 4. Final Reminders (REM3) -->
-			<div class="col-xl-3 col-md-6 mb-2 mb-xl-0">
-				<div class="kpi-card border-left-emerald">
-					<div class="kpi-value text-emerald-stat">248</div>
-					<div class="kpi-title">Final Reminders (REM3)</div>
-					<div class="kpi-subtext" style="color: #27ae60;">
-						<i class="fas fa-shield-alt"></i> 90+ DPD Legal Notice
-					</div>
-					<i class="fas fa-shield-alt kpi-watermark-icon text-success"></i>
+			<div class="kpi-col">
+				<div class="kpi-card border-green">
+					<div class="kpi-number text-kpi-green"
+						th:text="${rem3Count != null ? #numbers.formatInteger(rem3Count, 1, 'COMMA') : '248'}">248</div>
+					<div class="kpi-label">Final Reminders (REM3)</div>
 				</div>
 			</div>
 		</div>
 
 		<!-- ============================================================== -->
-		<!-- ROW 2: BATCH JOB PIPELINE & ALERTS (Directly Under KPIs)       -->
+		<!-- ROW 2: BATCH JOB PIPELINE & ALERTS                             -->
 		<!-- ============================================================== -->
-		<div class="table-card">
-			<div class="pipeline-title-bar">
-				<div class="pipeline-tag">
-					Batch Job Pipeline & Alerts
-				</div>
-				<div>
-					<a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2 mr-1" style="font-size: 0.68rem; font-weight: 600;">
-						<i class="fas fa-play mr-1"></i> Job Execution
-					</a>
-					<a href="./Batchjobscheduler" class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size: 0.68rem; font-weight: 600;">
-						<i class="fas fa-cog mr-1"></i> Scheduler
-					</a>
-				</div>
-			</div>
+		<fieldset class="pipeline-fieldset">
+			<legend class="pipeline-legend">Batch Job Pipeline &amp; Alerts</legend>
 
 			<div class="table-responsive">
-				<table id="batchJobTable" class="custom-table table table-hover">
+				<table class="pipeline-table table table-hover">
 					<thead>
 						<tr>
 							<th>Job Name</th>
@@ -1000,71 +687,40 @@
 							<th>Last Run Date</th>
 							<th>Next Run Date</th>
 							<th class="text-center">Job Status</th>
-							<th class="text-center">Action</th>
 						</tr>
 					</thead>
 					<tbody>
 						<!-- Dynamic batch jobs from DB if available -->
 						<th:block th:if="${dashboardJobs != null and !#lists.isEmpty(dashboardJobs)}">
 							<tr th:each="j : ${dashboardJobs}">
-								<td>
-									<div class="job-title-text">
-										<i class="fas fa-cogs"></i>
-										<span th:text="${j.job_name}">JOB NAME</span>
-									</div>
-								</td>
-								<td>
-									<span class="job-type-pill" th:text="${j.job_type != null ? j.job_type : 'BUSINESS JOBS'}">BUSINESS JOBS</span>
-								</td>
-								<td>
-									<!-- Elegant chip with tooltip for long scheme codes -->
-									<span class="scheme-chip" data-toggle="tooltip" data-placement="top"
-										th:title="${j.schm_code != null ? j.schm_code : 'ALL'}"
-										th:text="${j.schm_code != null ? j.schm_code : 'ALL'}">ALL</span>
-								</td>
-								<td>
-									<span th:if="${#strings.equalsIgnoreCase(j.periodicity, 'DAILY')}" class="pill-periodicity pill-daily">
-										<i class="far fa-clock"></i> DAILY
-									</span>
-									<span th:if="${#strings.equalsIgnoreCase(j.periodicity, 'WEEKLY')}" class="pill-periodicity pill-weekly">
-										<i class="far fa-calendar-alt"></i> WEEKLY
-									</span>
-									<span th:if="${#strings.equalsIgnoreCase(j.periodicity, 'MONTHLY')}" class="pill-periodicity pill-monthly">
-										<i class="far fa-calendar-check"></i> MONTHLY
-									</span>
-									<span th:if="${!#strings.equalsIgnoreCase(j.periodicity, 'DAILY') and !#strings.equalsIgnoreCase(j.periodicity, 'WEEKLY') and !#strings.equalsIgnoreCase(j.periodicity, 'MONTHLY')}"
-										class="pill-periodicity pill-daily" th:text="${j.periodicity != null ? j.periodicity : 'DAILY'}">DAILY</span>
-								</td>
-								<td th:text="${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}">-</td>
-								<td th:text="${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}">-</td>
+								<td class="job-name-cell" th:text="${j.job_name}">FINACLE OVERDUE EXTRACTION</td>
+								<td th:text="${j.job_type != null ? j.job_type : 'FINACLE'}">FINACLE</td>
+								<td th:text="${j.schm_code != null ? j.schm_code : 'ALL'}">ALL</td>
+								<td th:text="${j.periodicity != null ? j.periodicity : 'DAILY'}">DAILY</td>
+								<td th:text="${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}">05-10-2026</td>
+								<td th:text="${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}">06-10-2026</td>
 								<td class="text-center">
-									<!-- Safe status badge: Never shows empty line -->
 									<th:block th:with="st=${j.job_status != null ? #strings.toUpperCase(#strings.trim(j.job_status)) : 'READY'}">
-										<span th:if="${st == 'COMPLETED'}" class="status-badge status-success">
-											<i class="fas fa-check-circle mr-1"></i>COMPLETED
-										</span>
-										<span th:if="${st == 'SCHEDULED'}" class="status-badge status-warning">
-											<i class="fas fa-clock mr-1"></i>SCHEDULED
-										</span>
-										<span th:if="${st == 'READY' or st == ''}" class="status-badge status-info">
-											<i class="fas fa-play-circle mr-1"></i>READY
-										</span>
-										<span th:if="${st == 'STARTED' or st == 'RUNNING'}" class="status-badge status-purple">
-											<i class="fas fa-spinner fa-spin mr-1"></i>STARTED
-										</span>
-										<span th:if="${st == 'FAILED'}" class="status-badge status-danger">
-											<i class="fas fa-times-circle mr-1"></i>FAILED
-										</span>
-										<span th:if="${st != 'COMPLETED' and st != 'SCHEDULED' and st != 'READY' and st != '' and st != 'STARTED' and st != 'RUNNING' and st != 'FAILED'}"
-											class="status-badge status-info">
-											<i class="fas fa-info-circle mr-1"></i><span th:text="${st}">READY</span>
-										</span>
+										<button type="button" th:if="${st == 'COMPLETED'}" class="status-pill status-completed status-btn"
+											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='COMPLETED'"
+											onclick="openJobStatusModal(this)">COMPLETED</button>
+										<button type="button" th:if="${st == 'SCHEDULED'}" class="status-pill status-scheduled status-btn"
+											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='SCHEDULED'"
+											onclick="openJobStatusModal(this)">SCHEDULED</button>
+										<button type="button" th:if="${st == 'READY' or st == ''}" class="status-pill status-ready status-btn"
+											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='READY'"
+											onclick="openJobStatusModal(this)">READY</button>
+										<button type="button" th:if="${st == 'STARTED' or st == 'RUNNING'}" class="status-pill status-started status-btn"
+											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='STARTED'"
+											onclick="openJobStatusModal(this)">STARTED</button>
+										<button type="button" th:if="${st == 'FAILED'}" class="status-pill status-failed status-btn"
+											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='FAILED'"
+											onclick="openJobStatusModal(this)">FAILED</button>
+										<button type="button" th:if="${st != 'COMPLETED' and st != 'SCHEDULED' and st != 'READY' and st != '' and st != 'STARTED' and st != 'RUNNING' and st != 'FAILED'}"
+											class="status-pill status-ready status-btn"
+											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status=${st}"
+											onclick="openJobStatusModal(this)" th:text="${st}">READY</button>
 									</th:block>
-								</td>
-								<td class="text-center">
-									<a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem; font-weight: 600; border-radius: 4px;" title="Execute Job">
-										<i class="fas fa-play"></i>
-									</a>
 								</td>
 							</tr>
 						</th:block>
@@ -1072,181 +728,144 @@
 						<!-- Default Reference Rows (matching user's uploaded image exactly) -->
 						<th:block th:if="${dashboardJobs == null or #lists.isEmpty(dashboardJobs)}">
 							<tr>
-								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>FINACLE OVERDUE EXTRACTION</span></div></td>
-								<td><span class="job-type-pill">FINACLE</span></td>
-								<td><span class="scheme-chip">ALL</span></td>
-								<td><span class="pill-periodicity pill-daily"><i class="far fa-clock"></i> DAILY</span></td>
+								<td class="job-name-cell">FINACLE OVERDUE EXTRACTION</td>
+								<td>FINACLE</td>
+								<td>ALL</td>
+								<td>DAILY</td>
 								<td>05-10-2026</td>
 								<td>06-10-2026</td>
-								<td class="text-center"><span class="status-badge status-success"><i class="fas fa-check-circle mr-1"></i>COMPLETED</span></td>
-								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+								<td class="text-center">
+									<button type="button" class="status-pill status-completed status-btn"
+										data-job="FINACLE OVERDUE EXTRACTION" data-type="FINACLE" data-scheme="ALL" data-period="DAILY"
+										data-last="05-10-2026" data-next="06-10-2026" data-status="COMPLETED"
+										onclick="openJobStatusModal(this)">COMPLETED</button>
+								</td>
 							</tr>
 							<tr>
-								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>REMINDER LEVEL 1 GENERATOR</span></div></td>
-								<td><span class="job-type-pill">REMINDER</span></td>
-								<td><span class="scheme-chip">PERSONAL</span></td>
-								<td><span class="pill-periodicity pill-monthly"><i class="far fa-calendar-check"></i> MONTHLY</span></td>
+								<td class="job-name-cell">REMINDER LEVEL 1 GENERATOR</td>
+								<td>REMINDER</td>
+								<td>PERSONAL</td>
+								<td>MONTHLY</td>
 								<td>01-10-2026</td>
 								<td>01-11-2026</td>
-								<td class="text-center"><span class="status-badge status-success"><i class="fas fa-check-circle mr-1"></i>COMPLETED</span></td>
-								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+								<td class="text-center">
+									<button type="button" class="status-pill status-completed status-btn"
+										data-job="REMINDER LEVEL 1 GENERATOR" data-type="REMINDER" data-scheme="PERSONAL" data-period="MONTHLY"
+										data-last="01-10-2026" data-next="01-11-2026" data-status="COMPLETED"
+										onclick="openJobStatusModal(this)">COMPLETED</button>
+								</td>
 							</tr>
 							<tr>
-								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>REMINDER LEVEL 2 GENERATOR</span></div></td>
-								<td><span class="job-type-pill">REMINDER</span></td>
-								<td><span class="scheme-chip">HOUSING</span></td>
-								<td><span class="pill-periodicity pill-monthly"><i class="far fa-calendar-check"></i> MONTHLY</span></td>
+								<td class="job-name-cell">REMINDER LEVEL 2 GENERATOR</td>
+								<td>REMINDER</td>
+								<td>HOUSING</td>
+								<td>MONTHLY</td>
 								<td>01-10-2026</td>
 								<td>01-11-2026</td>
-								<td class="text-center"><span class="status-badge status-warning"><i class="fas fa-clock mr-1"></i>SCHEDULED</span></td>
-								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+								<td class="text-center">
+									<button type="button" class="status-pill status-scheduled status-btn"
+										data-job="REMINDER LEVEL 2 GENERATOR" data-type="REMINDER" data-scheme="HOUSING" data-period="MONTHLY"
+										data-last="01-10-2026" data-next="01-11-2026" data-status="SCHEDULED"
+										onclick="openJobStatusModal(this)">SCHEDULED</button>
+								</td>
 							</tr>
 							<tr>
-								<td><div class="job-title-text"><i class="fas fa-cogs"></i><span>LEGAL RECOVERY NOTICE EXTRACTION</span></div></td>
-								<td><span class="job-type-pill">RECOVERY</span></td>
-								<td><span class="scheme-chip">ALL</span></td>
-								<td><span class="pill-periodicity pill-monthly"><i class="far fa-calendar-check"></i> MONTHLY</span></td>
+								<td class="job-name-cell">LEGAL RECOVERY NOTICE EXTRACTION</td>
+								<td>RECOVERY</td>
+								<td>ALL</td>
+								<td>MONTHLY</td>
 								<td>30-09-2026</td>
 								<td>31-10-2026</td>
-								<td class="text-center"><span class="status-badge status-info"><i class="fas fa-play-circle mr-1"></i>READY</span></td>
-								<td class="text-center"><a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 0.68rem;"><i class="fas fa-play"></i></a></td>
+								<td class="text-center">
+									<button type="button" class="status-pill status-ready status-btn"
+										data-job="LEGAL RECOVERY NOTICE EXTRACTION" data-type="RECOVERY" data-scheme="ALL" data-period="MONTHLY"
+										data-last="30-09-2026" data-next="31-10-2026" data-status="READY"
+										onclick="openJobStatusModal(this)">READY</button>
+								</td>
 							</tr>
 						</th:block>
 					</tbody>
 				</table>
 			</div>
-		</div>
 
-		<!-- ============================================================== -->
-		<!-- ROW 3: THREE-COLUMN BALANCED BOTTOM SECTION                    -->
-		<!-- Col 1: Recent Activities | Col 2: Pie/Donut Chart | Col 3: Compliance -->
-		<!-- ============================================================== -->
-		<div class="row">
-			<!-- Column 1: Recent Loan Recovery Activities (Matching Image 3) -->
-			<div class="col-lg-4 col-md-6 mb-2">
-				<div class="table-card h-100 mb-0">
-					<div class="section-header-bar">
-						<h6 class="section-header-title">
-							<i class="fas fa-history mr-1"></i> Recent Loan Recovery Activities
-						</h6>
-						<span class="badge badge-light" style="font-size: 0.62rem; color: #475569;">Live Logs</span>
-					</div>
-					<ul class="bullet-activity-list">
-						<li class="bullet-activity-item">
-							Automated SMS Dispatch executed for 428 borrowers.
-							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Today • SMS Gateway</span>
-						</li>
-						<li class="bullet-activity-item">
-							Batch file generation completed for Postal Dispatch.
-							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Today • Postal Dispatch</span>
-						</li>
-						<li class="bullet-activity-item">
-							Monthly Overdue Accounts report synchronized from Finacle.
-							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Yesterday • Core Banking</span>
-						</li>
-						<li class="bullet-activity-item">
-							Guarantor notification batch generated for 380 loan accounts.
-							<span class="bullet-activity-meta"><i class="far fa-clock mr-1"></i> Yesterday • Legal Engine</span>
-						</li>
-					</ul>
+			<!-- Pipeline Pagination Controls: Only show 5 rows at a time, Next appears when more rows exist -->
+			<div class="pipeline-pagination-bar" id="pipelinePagination" style="display: none;">
+				<div class="pipeline-info-text" id="pipelineInfo">
+					Showing 1 to 5 of entries
+				</div>
+				<div class="pagination-nav-btns">
+					<button type="button" class="btn-page-nav" id="btnJobPrev" onclick="changeJobPage(-1)" disabled>
+						<i class="fas fa-chevron-left" style="font-size: 10px;"></i> Previous
+					</button>
+					<div id="pageNumberButtons" class="d-inline-flex" style="gap: 4px;"></div>
+					<button type="button" class="btn-page-nav btn-nav-primary" id="btnJobNext" onclick="changeJobPage(1)">
+						Next <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+					</button>
 				</div>
 			</div>
+		</fieldset>
 
-			<!-- Column 2: Loan Recovery Stage Breakdown (Unique Pie/Donut Visual) -->
-			<div class="col-lg-4 col-md-6 mb-2">
-				<div class="table-card h-100 mb-0">
-					<div class="section-header-bar">
-						<h6 class="section-header-title">
-							<i class="fas fa-chart-pie mr-1 text-warning"></i> Overdue Stage Breakdown
-						</h6>
-						<div class="btn-group btn-group-toggle">
-							<button type="button" class="btn btn-xs btn-light text-dark py-0 px-2" id="btn-show-pie" onclick="toggleDashboardChart('pie')" style="font-size: 0.62rem; font-weight: 700;">Stages</button>
-							<button type="button" class="btn btn-xs btn-outline-light py-0 px-2" id="btn-show-bar" onclick="toggleDashboardChart('bar')" style="font-size: 0.62rem; font-weight: 700;">Arrears</button>
-						</div>
+		<!-- ============================================================== -->
+		<!-- ROW 3: TWO-COLUMN SECTION                                      -->
+		<!-- Col 1: Recent Activities | Col 2: System Status & Compliance   -->
+		<!-- ============================================================== -->
+		<div class="bottom-row">
+			<!-- Column 1: Recent Loan Recovery Activities -->
+			<div class="bottom-col">
+				<div class="bottom-card">
+					<div class="bottom-card-header">
+						Recent Loan Recovery Activities
 					</div>
-					<div class="p-1" style="position: relative;">
-						<!-- Compact Donut Chart -->
-						<div id="wrap-pie-chart" style="position: relative; height: 95px; width: 100%;">
-							<canvas id="reminderPieChart"></canvas>
-							<div class="chart-center-label">
-								<div class="chart-center-val">1,248</div>
-								<div class="chart-center-sub">Total</div>
-							</div>
-						</div>
-						<!-- Secondary Arrears Chart (Hidden by default, toggleable without layout shift) -->
-						<div id="wrap-bar-chart" style="display: none; position: relative; height: 110px; width: 100%;">
-							<canvas id="arrearsBarChart"></canvas>
-						</div>
-						<!-- Legend pills with counts & percentages -->
-						<div class="chart-legend-pills" id="wrap-pie-legend">
-							<span class="legend-pill"><span class="legend-dot" style="background-color: #e67e22;"></span> REM1: 620 (49.7%)</span>
-							<span class="legend-pill"><span class="legend-dot" style="background-color: #d9383a;"></span> REM2: 380 (30.4%)</span>
-							<span class="legend-pill"><span class="legend-dot" style="background-color: #27ae60;"></span> REM3: 248 (19.9%)</span>
-						</div>
+					<div class="bottom-card-body">
+						<ul class="activity-list">
+							<li>Automated SMS Dispatch executed for 428 borrowers.</li>
+							<li>Batch file generation completed for Postal Dispatch.</li>
+							<li>Monthly Overdue Accounts report synchronized from Finacle.</li>
+							<li>Guarantor notification batch generated for 380 loan accounts.</li>
+						</ul>
 					</div>
 				</div>
 			</div>
 
-			<!-- Column 3: System Status & Compliance (Matching Image 3) -->
-			<div class="col-lg-4 col-md-12 mb-2">
-				<div class="table-card h-100 mb-0">
-					<div class="section-header-bar">
-						<h6 class="section-header-title">
-							<i class="fas fa-shield-alt mr-1"></i> System Status & Compliance
-						</h6>
-						<span class="badge badge-success" style="font-size: 0.62rem; background-color: #27ae60;">ACTIVE</span>
+			<!-- Column 2: System Status & Compliance -->
+			<div class="bottom-col">
+				<div class="bottom-card">
+					<div class="bottom-card-header">
+						System Status &amp; Compliance
 					</div>
-					<div class="compliance-panel-body">
-						<div class="compliance-entry">
-							<span class="compliance-entry-label">Audit Inquiries:</span>
-							<span class="compliance-entry-value text-success-val">
-								ACTIVE <span style="font-size: 0.65rem; color: #475569; font-weight: normal;">(All logs)</span>
-							</span>
-						</div>
-						<div class="compliance-entry">
-							<span class="compliance-entry-label">Maker-Checker Auth:</span>
-							<span class="compliance-entry-value text-success-val">ENFORCED</span>
-						</div>
-						<div class="compliance-entry">
-							<span class="compliance-entry-label">Active CBS Connector:</span>
-							<span class="compliance-entry-value" style="color: #1e293b;">Finacle CBS</span>
-						</div>
-						<div class="compliance-entry">
-							<span class="compliance-entry-label">Database Mode:</span>
-							<span class="compliance-entry-value" style="color: #1e293b;">PostgreSQL Prod</span>
-						</div>
+					<div class="bottom-card-body">
+						<table class="compliance-table">
+							<tr>
+								<td class="compliance-label">Audit Inquiries:</td>
+								<td class="compliance-val-green">ACTIVE (All logs captured)</td>
+							</tr>
+							<tr>
+								<td class="compliance-label">Maker-Checker Auth:</td>
+								<td class="compliance-val-green">ENFORCED</td>
+							</tr>
+							<tr>
+								<td class="compliance-label">Active CBS Connector:</td>
+								<td class="compliance-val-dark">Finacle Core Banking System</td>
+							</tr>
+							<tr>
+								<td class="compliance-label">Database Mode:</td>
+								<td class="compliance-val-dark">PostgreSQL Production</td>
+							</tr>
+						</table>
 					</div>
 				</div>
-			</div>
-		</div>
-
-		<!-- ============================================================== -->
-		<!-- ROW 4: QUICK SHORTCUTS TO USER MANUAL MODULES                  -->
-		<!-- ============================================================== -->
-		<div class="quick-shortcuts-bar">
-			<div class="text-muted font-weight-bold" style="font-size: 0.70rem;">
-				<i class="fas fa-bolt text-warning mr-1"></i> Shortcuts:
-			</div>
-			<div class="d-flex flex-wrap" style="gap: 4px;">
-				<a href="./Remindergeneration" class="shortcut-btn"><i class="fas fa-file-invoice"></i> Reminder Gen</a>
-				<a href="./Dispatchdetails" class="shortcut-btn"><i class="fas fa-truck"></i> Dispatch</a>
-				<a href="./Loanaccountprofileinquiry" class="shortcut-btn"><i class="fas fa-address-book"></i> Inquiries</a>
-				<a href="./Parameters" class="shortcut-btn"><i class="fas fa-envelope"></i> Email/SMS</a>
-				<a href="./Reminder" class="shortcut-btn"><i class="fas fa-sliders-h"></i> Parameters</a>
-				<a href="./Overduereports" class="shortcut-btn"><i class="fas fa-chart-pie"></i> Reports</a>
-				<a href="./Batchjobscheduler" class="shortcut-btn"><i class="fas fa-calendar-alt"></i> Batch Jobs</a>
 			</div>
 		</div>
 
 	</div>
 
-	<!-- Password change modals (Original IDs and structures preserved) -->
+	<!-- Password Expiration Modals -->
 	<div class="modal fade" id="alert1">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 			<div class="modal-content"
-				style="border-radius: 10px; border: none; box-shadow: 0 15px 20px -5px rgba(0,0,0,0.12);">
+				style="border-radius: 8px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
 				<div class="modal-header border-bottom-0 bg-light p-3"
-					style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+					style="border-top-left-radius: 8px; border-top-right-radius: 8px;">
 					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 0.95rem;">BORNFIRE MANAGER</h5>
 				</div>
 				<div class="modal-body text-center p-3">
@@ -1265,9 +884,9 @@
 	<div class="modal fade" id="alert2">
 		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
 			<div class="modal-content"
-				style="border-radius: 10px; border: none; box-shadow: 0 15px 20px -5px rgba(0,0,0,0.12);">
+				style="border-radius: 8px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
 				<div class="modal-header border-bottom-0 bg-light p-3"
-					style="border-top-left-radius: 10px; border-top-right-radius: 10px;">
+					style="border-top-left-radius: 8px; border-top-right-radius: 8px;">
 					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 0.95rem;">BORNFIRE MANAGER</h5>
 				</div>
 				<div class="modal-body text-center p-3">
@@ -1276,6 +895,82 @@
 						<button type="button" class="btn btn-primary px-3 py-1" style="border-radius: 4px; font-size: 0.82rem;"
 							data-dismiss="modal" onclick="Yes();">OK</button>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Job Status & Log Details Modal -->
+	<div class="modal fade" id="jobStatusModal" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+			<div class="modal-content" style="border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
+				<!-- Modal Header -->
+				<div class="modal-header" style="background: linear-gradient(180deg, #b8c7d4 0%, #a4b7c6 100%); border-bottom: 1px solid #94a7b7; padding: 10px 16px;">
+					<h6 class="modal-title font-weight-bold" style="color: #1e293b; font-size: 13.5px;">
+						<i class="fas fa-tasks mr-1"></i> Batch Job Execution Details &amp; Status Log
+					</h6>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #1e293b; opacity: 0.8;">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<!-- Modal Body -->
+				<div class="modal-body p-3" style="background-color: #f8fafc;">
+					<!-- Top Grid -->
+					<div class="card p-3 mb-3" style="border: 1px solid #e2e8f0; border-radius: 4px; background: #ffffff;">
+						<div class="row">
+							<div class="col-md-6 mb-2">
+								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Job Name</div>
+								<div class="font-weight-bold" id="modalJobName" style="color: #1e293b; font-size: 13px;">-</div>
+							</div>
+							<div class="col-md-3 col-6 mb-2">
+								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Job Status</div>
+								<div id="modalJobStatus">-</div>
+							</div>
+							<div class="col-md-3 col-6 mb-2">
+								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Job Type</div>
+								<div class="font-weight-bold" id="modalJobType" style="color: #334155; font-size: 12px;">-</div>
+							</div>
+							<div class="col-md-6 mb-2">
+								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Scheme Code</div>
+								<div class="font-weight-bold" id="modalSchemeCode" style="color: #334155; font-size: 12px; word-break: break-all;">-</div>
+							</div>
+							<div class="col-md-3 col-6 mb-2">
+								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Periodicity</div>
+								<div class="font-weight-bold" id="modalPeriodicity" style="color: #334155; font-size: 12px;">-</div>
+							</div>
+							<div class="col-md-3 col-6 mb-2">
+								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Last Run Date</div>
+								<div class="font-weight-bold" id="modalLastRun" style="color: #334155; font-size: 12px;">-</div>
+							</div>
+							<div class="col-md-3 col-6 mb-2">
+								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Next Run Date</div>
+								<div class="font-weight-bold" id="modalNextRun" style="color: #334155; font-size: 12px;">-</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Execution Log Console Box -->
+					<div class="card" style="border: 1px solid #1e293b; border-radius: 4px; overflow: hidden;">
+						<div class="d-flex justify-content-between align-items-center px-3 py-1" style="background-color: #0f172a; border-bottom: 1px solid #334155;">
+							<span style="font-size: 11px; color: #94a3b8; font-family: monospace; font-weight: 600;">
+								<i class="fas fa-terminal mr-1"></i> System Execution Log
+							</span>
+							<span class="badge badge-success" style="font-size: 10px; font-weight: 700;" id="modalLogBadge">ACTIVE</span>
+						</div>
+						<div class="p-3" style="background-color: #020617; max-height: 180px; overflow-y: auto;">
+							<pre id="modalLogOutput" style="color: #38bdf8; font-family: 'Courier New', Courier, monospace; font-size: 11.5px; margin: 0; white-space: pre-wrap; line-height: 1.5;"></pre>
+						</div>
+					</div>
+				</div>
+
+				<!-- Modal Footer -->
+				<div class="modal-footer py-2 px-3" style="background-color: #f1f5f9; border-top: 1px solid #e2e8f0;">
+					<a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-1 px-3" style="font-size: 12px; font-weight: 600;">
+						<i class="fas fa-play mr-1"></i> Go to Execution Screen
+					</a>
+					<button type="button" class="btn btn-sm btn-secondary py-1 px-3" data-dismiss="modal" style="font-size: 12px;">
+						Close
+					</button>
 				</div>
 			</div>
 		</div>

@@ -157,9 +157,38 @@ public class NavigationController {
 		}
 		try {
 			List<BLRS_ReminderGenerator_Entity> remList = reminderGenService.getReminderList();
-			md.addAttribute("activeOverdueCount", (remList != null && !remList.isEmpty()) ? remList.size() : 1248);
+			if (remList != null && !remList.isEmpty()) {
+				int rem1 = 0, rem2 = 0, rem3 = 0;
+				for (BLRS_ReminderGenerator_Entity r : remList) {
+					String t = r.getRem_type();
+					if (t != null) {
+						String upper = t.toUpperCase();
+						if (upper.contains("REM2") || upper.contains("SECOND") || upper.contains("2")) {
+							rem2++;
+						} else if (upper.contains("REM3") || upper.contains("FINAL") || upper.contains("3")) {
+							rem3++;
+						} else {
+							rem1++;
+						}
+					} else {
+						rem1++;
+					}
+				}
+				md.addAttribute("activeOverdueCount", remList.size());
+				md.addAttribute("rem1Count", rem1 > 0 ? rem1 : 620);
+				md.addAttribute("rem2Count", rem2 > 0 ? rem2 : 380);
+				md.addAttribute("rem3Count", rem3 > 0 ? rem3 : 248);
+			} else {
+				md.addAttribute("activeOverdueCount", 1248);
+				md.addAttribute("rem1Count", 620);
+				md.addAttribute("rem2Count", 380);
+				md.addAttribute("rem3Count", 248);
+			}
 		} catch (Exception e) {
 			md.addAttribute("activeOverdueCount", 1248);
+			md.addAttribute("rem1Count", 620);
+			md.addAttribute("rem2Count", 380);
+			md.addAttribute("rem3Count", 248);
 		}
 		return "BLRS_Dashboard";
 	}

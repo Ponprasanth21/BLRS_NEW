@@ -12,7 +12,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@ComponentScan(basePackages = { "com.bornfire" })
 @EnableScheduling
 @EnableAsync
 public class BLRSApplication extends SpringBootServletInitializer {
