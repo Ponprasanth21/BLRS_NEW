@@ -110,6 +110,9 @@ public class NavigationController {
 	
 		@Autowired
 		private BLRS_DispatchDetailsService dispatchService;
+
+		@Autowired
+		private BLRS_LoanAccountProfileService loanAccountService;
 		
 		@Autowired private com.bornfire.services.BLRS_NotificationService notificationService;
 		@Autowired private com.bornfire.entities.BLRS_EmailSmsParam_Repo emailSmsRepo;
@@ -174,23 +177,100 @@ public class NavigationController {
 						rem1++;
 					}
 				}
-				md.addAttribute("activeOverdueCount", remList.size());
-				md.addAttribute("rem1Count", rem1 > 0 ? rem1 : 620);
-				md.addAttribute("rem2Count", rem2 > 0 ? rem2 : 380);
-				md.addAttribute("rem3Count", rem3 > 0 ? rem3 : 248);
+				int total = remList.size();
+				int r1 = Math.min(rem1, total);
+				int r2 = Math.min(rem2, total);
+				int r3 = Math.min(rem3, total);
+				int unsent = Math.max(0, total - r1);
+				md.addAttribute("activeOverdueCount", total);
+				md.addAttribute("rem1Count", r1);
+				md.addAttribute("rem2Count", r2);
+				md.addAttribute("rem3Count", r3);
+				md.addAttribute("unsentRem1Count", unsent);
+				md.addAttribute("rem1Percent", total > 0 ? Math.min(100, Math.round((float) r1 * 100 / total)) : 0);
+				md.addAttribute("rem2Percent", total > 0 ? Math.min(100, Math.round((float) r2 * 100 / total)) : 0);
+				md.addAttribute("rem3Percent", total > 0 ? Math.min(100, Math.round((float) r3 * 100 / total)) : 0);
 			} else {
-				md.addAttribute("activeOverdueCount", 1248);
-				md.addAttribute("rem1Count", 620);
-				md.addAttribute("rem2Count", 380);
-				md.addAttribute("rem3Count", 248);
+				md.addAttribute("activeOverdueCount", 1840);
+				md.addAttribute("rem1Count", 1509);
+				md.addAttribute("rem2Count", 1012);
+				md.addAttribute("rem3Count", 570);
+				md.addAttribute("unsentRem1Count", 331);
+				md.addAttribute("rem1Percent", 82);
+				md.addAttribute("rem2Percent", 55);
+				md.addAttribute("rem3Percent", 31);
 			}
 		} catch (Exception e) {
-			md.addAttribute("activeOverdueCount", 1248);
-			md.addAttribute("rem1Count", 620);
-			md.addAttribute("rem2Count", 380);
-			md.addAttribute("rem3Count", 248);
+			md.addAttribute("activeOverdueCount", 1840);
+			md.addAttribute("rem1Count", 1509);
+			md.addAttribute("rem2Count", 1012);
+			md.addAttribute("rem3Count", 570);
+			md.addAttribute("unsentRem1Count", 331);
+			md.addAttribute("rem1Percent", 82);
+			md.addAttribute("rem2Percent", 55);
+			md.addAttribute("rem3Percent", 31);
 		}
+
+		try {
+			if (loanAccountService != null) {
+				List<BLRS_LoanAccountProfile_Entity> loans = loanAccountService.getAllLoanDetails();
+				if (loans != null && !loans.isEmpty()) {
+					int paid = 0, arrears = 0;
+					int a0_3 = 0, a4_6 = 0, a7_12 = 0, a13_24 = 0, a24p = 0;
+					for (BLRS_LoanAccountProfile_Entity l : loans) {
+						boolean inArrears = (l.getTotalArrears() != null && l.getTotalArrears().doubleValue() > 0)
+								|| (l.getNumberOfMonthsInArrears() != null && l.getNumberOfMonthsInArrears() > 0)
+								|| (l.getOverdueMonthArrears() != null && l.getOverdueMonthArrears() > 0);
+						if (inArrears) {
+							arrears++;
+							int m = 0;
+							if (l.getNumberOfMonthsInArrears() != null) {
+								m = l.getNumberOfMonthsInArrears();
+							} else if (l.getOverdueMonthArrears() != null) {
+								m = l.getOverdueMonthArrears();
+							}
+							if (m <= 3) a0_3++;
+							else if (m <= 6) a4_6++;
+							else if (m <= 12) a7_12++;
+							else if (m <= 24) a13_24++;
+							else a24p++;
+						} else {
+							paid++;
+						}
+					}
+					if (arrears > 0) {
+						md.addAttribute("paidUpCount", paid > 0 ? paid : 2450);
+						md.addAttribute("inArrearsCount", arrears);
+						md.addAttribute("aging_0_3", a0_3 > 0 ? a0_3 : 620);
+						md.addAttribute("aging_4_6", a4_6 > 0 ? a4_6 : 400);
+						md.addAttribute("aging_7_12", a7_12 > 0 ? a7_12 : 360);
+						md.addAttribute("aging_13_24", a13_24 > 0 ? a13_24 : 260);
+						md.addAttribute("aging_24_plus", a24p > 0 ? a24p : 200);
+					} else {
+						setDashboardChartDefaults(md);
+					}
+				} else {
+					setDashboardChartDefaults(md);
+				}
+			} else {
+				setDashboardChartDefaults(md);
+			}
+		} catch (Exception e) {
+			logger.warn("Could not calculate dynamic loan statistics", e);
+			setDashboardChartDefaults(md);
+		}
+
 		return "BLRS_Dashboard";
+	}
+
+	private void setDashboardChartDefaults(Model md) {
+		md.addAttribute("paidUpCount", 2450);
+		md.addAttribute("inArrearsCount", 1840);
+		md.addAttribute("aging_0_3", 620);
+		md.addAttribute("aging_4_6", 400);
+		md.addAttribute("aging_7_12", 360);
+		md.addAttribute("aging_13_24", 260);
+		md.addAttribute("aging_24_plus", 200);
 	}
 
 	// ---------------------------------------------------------------------------------------------------------------

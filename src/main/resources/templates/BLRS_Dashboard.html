@@ -3,16 +3,20 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>BLRS - Dashboard</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>BLRS - Bornfire Loan Recovery Service &amp; Arrears Dashboard</title>
 
+	<!-- Core Stylesheets -->
 	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css"
 		th:href="@{/webjars/bootstrap/4.3.1/css/bootstrap.min.css}">
 	<link rel="stylesheet" type="text/css" href="/webjars/font-awesome/5.9.0/css/all.min.css"
 		th:href="@{/webjars/font-awesome/5.9.0/css/all.min.css}">
 	<link rel="stylesheet" type="text/css" href="/webjars/jquery-ui/1.12.1/jquery-ui.min.css"
 		th:href="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.css}">
+	<link rel="stylesheet" type="text/css" href="/webjars/chartjs/2.8.0/Chart.min.css"
+		th:href="@{/webjars/chartjs/2.8.0/Chart.min.css}">
 
+	<!-- Core JavaScript Dependencies -->
 	<script src="/webjars/jquery/3.4.1/jquery.min.js" th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"></script>
 	<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"
 		th:src="@{/webjars/jquery-ui/1.12.1/jquery-ui.min.js}"></script>
@@ -20,175 +24,678 @@
 		th:src="@{/webjars/popper.js/1.14.7/umd/popper.min.js}"></script>
 	<script src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"
 		th:src="@{/webjars/bootstrap/4.3.1/js/bootstrap.min.js}"></script>
+	<script src="/webjars/chartjs/2.8.0/Chart.min.js" th:src="@{/webjars/chartjs/2.8.0/Chart.min.js}"></script>
 
 	<link rel="shortcut icon" th:href="@{/favicon.ico}" type="image/x-icon">
 	<link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon">
 
 	<style>
-		body {
-			background-color: #f0f3f6 !important;
+		/* =====================================================================
+		   ROOT VARIABLES & GLOBAL THEME (BANKING DOMAIN)
+		   ===================================================================== */
+		:root {
+			--blrs-primary: #1e3a8a;
+			--blrs-primary-hover: #1e40af;
+			--blrs-accent-blue: #0284c7;
+			--blrs-success: #16a34a;
+			--blrs-warning: #f59e0b;
+			--blrs-orange: #ea580c;
+			--blrs-danger: #dc2626;
+			--blrs-slate-900: #0f172a;
+			--blrs-slate-800: #1e293b;
+			--blrs-slate-700: #334155;
+			--blrs-slate-600: #475569;
+			--blrs-slate-500: #64748b;
+			--blrs-slate-400: #94a3b8;
+			--blrs-slate-200: #e2e8f0;
+			--blrs-slate-100: #f1f5f9;
+			--blrs-bg: #f4f6f9;
+			--blrs-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
+			--blrs-card-shadow-hover: 0 3px 8px rgba(15, 23, 42, 0.07);
+			--blrs-border-radius: 4px;
+		}
+
+		/* Zero-height header wrapper to eliminate duplicate document flow spacing */
+		#blrsHeaderWrapper,
+		#blrsHeaderWrapper html,
+		#blrsHeaderWrapper head,
+		#blrsHeaderWrapper body,
+		.dashboard-body > div:first-of-type {
+			height: 0 !important;
+			max-height: 0 !important;
+			min-height: 0 !important;
+			margin: 0 !important;
+			padding: 0 !important;
+			padding-top: 0 !important;
+			padding-bottom: 0 !important;
+			border: 0 !important;
+			line-height: 0 !important;
+			font-size: 0 !important;
+			overflow: visible !important;
+			display: block !important;
+		}
+
+		/* =====================================================================
+		   TOP ALIGNMENT FIX
+		   ---------------------------------------------------------------------
+		   Earlier, "html, body" were in ONE selector, so padding-top: 70px was
+		   applied to BOTH <html> and <body> = 140px total (70px blank gap under
+		   the fixed navbar). Now <html> has NO padding; only <body> keeps the
+		   70px offset for the fixed navbar.
+		   ===================================================================== */
+		html {
+			background-color: var(--blrs-bg) !important;
+			margin: 0 !important;
+			padding: 0 !important;
+			height: 100vh !important;
+			max-height: 100vh !important;
+			overflow: hidden !important;
+			box-sizing: border-box !important;
+		}
+
+		body,
+		html body.dashboard-body {
+			background-color: var(--blrs-bg) !important;
 			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-			color: #333333;
-			padding-top: 72px;
-			margin: 0;
-			overflow-x: hidden;
+			color: var(--blrs-slate-800);
+			margin: 0 !important;
+			padding: 0 !important;
+			padding-top: 70px !important; /* ONLY body offsets the fixed navbar */
+			height: 100vh !important;
+			max-height: 100vh !important;
+			overflow: hidden !important;
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+			-webkit-font-smoothing: antialiased;
+			box-sizing: border-box !important;
 		}
 
-		.dashboard-container {
-			width: 100%;
-			max-width: 100%;
-			padding: 8px 16px 24px 16px;
-			box-sizing: border-box;
+		/* Main Centered Content Shell with strict viewport lock (No scrolling, 100% viewport fit) */
+		#blrsPageContent,
+		.dashboard-shell,
+		html body.dashboard-body #blrsPageContent.dashboard-shell {
+			width: 100% !important;
+			max-width: 1540px !important;
+			height: calc(100vh - 70px) !important;
+			max-height: calc(100vh - 70px) !important;
+			min-height: unset !important;
+			margin-left: auto !important;
+			margin-right: auto !important;
+			margin-top: 0 !important;
+			margin-bottom: 0 !important;
+			padding: 4px 18px 6px 18px !important;
+			box-sizing: border-box !important;
+			overflow: hidden !important;
+			overflow-x: hidden !important;
+			overflow-y: hidden !important;
+			display: flex !important;
+			flex-direction: column !important;
+			justify-content: space-between !important;
 		}
 
-		/* -------------------------------------------------------------
-		   TOP DASHBOARD HEADER BAR
-		   ------------------------------------------------------------- */
-		.dashboard-topbar {
-			background: linear-gradient(180deg, #b8c7d4 0%, #a4b7c6 100%);
-			border: 1px solid #94a7b7;
+		/* Topbar View Switcher Tabs (Page 1 vs Page 2) */
+		.topbar-page-tabs {
+			display: inline-flex;
+			align-items: center;
+			background: #f1f5f9;
+			padding: 2px 4px;
+			border-radius: 4px;
+			border: 1px solid var(--blrs-slate-200);
+			gap: 4px;
+		}
+
+		.topbar-tab-btn {
+			border: none;
+			background: transparent;
+			padding: 4px 12px;
+			font-size: 11.5px;
+			font-weight: 600;
+			color: var(--blrs-slate-600);
 			border-radius: 3px;
-			padding: 5px 12px;
+			cursor: pointer;
+			display: inline-flex;
+			align-items: center;
+			transition: all 0.15s ease-in-out;
+		}
+
+		.topbar-tab-btn:hover {
+			color: var(--blrs-slate-900);
+			background: rgba(255, 255, 255, 0.7);
+		}
+
+		.topbar-tab-btn.active {
+			background: #ffffff;
+			color: #1e3a8a;
+			font-weight: 700;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+		}
+
+		.tab-page-badge {
+			background: #e2e8f0;
+			color: #475569;
+			border-radius: 9999px;
+			padding: 1px 6px;
+			font-size: 10px;
+			font-weight: 700;
+			margin-left: 5px;
+		}
+
+		.topbar-tab-btn.active .tab-page-badge {
+			background: #1e3a8a;
+			color: #ffffff;
+		}
+
+		/* Page View Transitions (Stretches to 100% of remaining height) */
+		.dashboard-page-view {
+			flex: 1 1 auto;
+			height: calc(100% - 46px);
+			max-height: calc(100% - 46px);
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			min-height: 0;
+			overflow: hidden;
+			animation: fadeInDashboardPage 0.15s ease-in-out;
+		}
+
+		@keyframes fadeInDashboardPage {
+			from { opacity: 0; transform: translateY(2px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		/* Page 1 Dynamic Flex Rows */
+		.page1-row-top {
+			flex: 1 1 48%;
+			min-height: 0;
+			margin-bottom: 8px !important;
+			margin-left: -5px;
+			margin-right: -5px;
+			display: flex;
+		}
+
+		.page1-row-bottom {
+			flex: 1 1 52%;
+			min-height: 0;
+			margin-bottom: 0 !important;
+			margin-left: -5px;
+			margin-right: -5px;
+			display: flex;
+		}
+
+		.page1-col {
+			padding-left: 5px;
+			padding-right: 5px;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+
+		/* Page 2 Dynamic Flex Sections */
+		.page2-pipeline-section {
+			flex: 1 1 56%;
+			min-height: 0;
+			margin-bottom: 8px !important;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.page2-bottom-row {
+			flex: 1 1 44%;
+			min-height: 0;
+			margin-bottom: 0 !important;
+			margin-left: -5px;
+			margin-right: -5px;
+			display: flex;
+		}
+
+		.page2-col {
+			padding-left: 5px;
+			padding-right: 5px;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+		}
+
+		/* Dashboard Page Bottom Navigation Bar */
+		.dashboard-page-footer {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			margin-bottom: 12px;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+			background: #ffffff;
+			border: 1px solid var(--blrs-slate-200);
+			border-radius: var(--blrs-border-radius);
+			padding: 4px 14px;
+			box-shadow: var(--blrs-card-shadow);
+			flex-wrap: nowrap;
+			gap: 8px;
+			margin-top: 8px !important;
+			margin-bottom: 0 !important;
+			flex: 0 0 36px;
+			height: 36px;
+			box-sizing: border-box;
+		}
+
+		.page-footer-info {
+			display: flex;
+			align-items: center;
+		}
+
+		/* =====================================================================
+		   EXECUTIVE DASHBOARD BANNER
+		   ===================================================================== */
+		.dashboard-topbar {
+			background: #ffffff;
+			border: 1px solid var(--blrs-slate-200);
+			border-radius: var(--blrs-border-radius);
+			padding: 4px 14px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 0;
+			margin-bottom: 8px;
+			box-shadow: var(--blrs-card-shadow);
+			flex-wrap: nowrap;
+			gap: 8px;
+			flex: 0 0 38px;
+			height: 38px;
+			box-sizing: border-box;
+		}
+
+		.topbar-left {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			flex-wrap: nowrap;
 		}
 
 		.topbar-title {
-			font-size: 13.5px;
+			font-size: 13px;
 			font-weight: 700;
-			color: #1e293b;
+			color: var(--blrs-slate-900);
 			margin: 0;
-			letter-spacing: 0.5px;
+			letter-spacing: 0.2px;
+			display: flex;
+			align-items: center;
+			gap: 7px;
 			text-transform: uppercase;
+		}
+
+		.topbar-title i {
+			color: var(--blrs-accent-blue);
+			font-size: 15px;
+		}
+
+		.live-badge {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			background-color: #ecfdf5;
+			color: #065f46;
+			border: 1px solid #a7f3d0;
+			padding: 2px 9px;
+			border-radius: 9999px;
+			font-size: 11px;
+			font-weight: 600;
+			letter-spacing: 0.2px;
+		}
+
+		.live-dot {
+			width: 6px;
+			height: 6px;
+			background-color: #10b981;
+			border-radius: 50%;
+			box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+			animation: livePulse 2s infinite;
+		}
+
+		@keyframes livePulse {
+			0%, 100% { opacity: 1; transform: scale(1); }
+			50% { opacity: 0.55; transform: scale(1.15); }
 		}
 
 		.topbar-actions {
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: 8px;
+			flex-wrap: nowrap;
 		}
 
-		.btn-top-action {
-			background-color: #2b74b9;
+		.btn-action-primary {
+			background-color: #1e3a8a;
 			color: #ffffff !important;
-			border: 1px solid #1c5280;
-			padding: 4px 14px;
-			font-size: 11.5px;
+			border: 1px solid #172554;
+			padding: 5px 14px;
+			font-size: 12px;
 			font-weight: 600;
 			border-radius: 4px;
-			box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.1);
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
 			text-decoration: none !important;
-			display: inline-block;
-			transition: background-color 0.15s ease-in-out;
+			transition: all 0.15s ease-in-out;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 		}
 
-		.btn-top-action:hover {
-			background-color: #1f5f99;
+		.btn-action-primary:hover {
+			background-color: #1d4ed8;
 			color: #ffffff !important;
+			transform: translateY(-1px);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
 		}
 
-		/* -------------------------------------------------------------
-		   KPI METRIC CARDS ROW (4 CARDS)
-		   ------------------------------------------------------------- */
-		.kpi-row {
-			display: flex;
-			gap: 14px;
-			margin-bottom: 14px;
+		.btn-action-secondary {
+			background-color: #ffffff;
+			color: var(--blrs-slate-700) !important;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
+			padding: 5px 12px;
+			font-size: 12px;
+			font-weight: 600;
+			border-radius: 4px;
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			text-decoration: none !important;
+			transition: all 0.15s ease-in-out;
 		}
 
-		.kpi-col {
-			flex: 1 1 0;
-			min-width: 0;
+		.btn-action-secondary:hover {
+			background-color: #f8fafc;
+			border-color: #94a3b8;
+			color: var(--blrs-slate-900) !important;
 		}
 
-		.kpi-card {
+		/* =====================================================================
+		   COMMON CARD CONTAINERS (EVEN PROPORTIONS & DYNAMIC HEIGHT)
+		   ===================================================================== */
+		.dashboard-card {
 			background: #ffffff;
-			border: 1px solid #dce4ec;
-			border-radius: 3px;
-			padding: 10px 14px 12px 14px;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+			border: 1px solid var(--blrs-slate-200);
+			border-radius: var(--blrs-border-radius);
+			padding: 10px 14px;
+			box-shadow: var(--blrs-card-shadow);
 			height: 100%;
+			width: 100%;
 			display: flex;
 			flex-direction: column;
+			justify-content: space-between;
+			min-height: 0;
+			box-sizing: border-box;
+			transition: box-shadow 0.2s ease, border-color 0.2s ease;
+		}
+
+		.dashboard-card:hover {
+			border-color: #cbd5e1;
+			box-shadow: var(--blrs-card-shadow-hover);
+		}
+
+		.card-header-clean {
+			flex: 0 0 auto;
+			margin-bottom: 4px;
+		}
+
+		.card-main-title {
+			font-size: 14px;
+			font-weight: 700;
+			color: var(--blrs-slate-900);
+			margin: 0;
+			line-height: 1.25;
+		}
+
+		.card-sub-caption {
+			font-size: 11px;
+			color: var(--blrs-slate-500);
+			margin: 0;
+			line-height: 1.25;
+		}
+
+		/* =====================================================================
+		   SECTION 1: REMINDER ESCALATION WIDGET
+		   ===================================================================== */
+		.escalation-list {
+			display: flex;
+			flex-direction: column;
+			gap: 6px;
+			flex: 1 1 auto;
+			justify-content: space-evenly;
+			min-height: 0;
+			margin-bottom: 4px;
+		}
+
+		.escalation-row {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.escalation-label {
+			flex: 0 0 145px;
+			font-size: 12px;
+			font-weight: 600;
+			color: var(--blrs-slate-700);
+			white-space: nowrap;
+		}
+
+		.escalation-bar-container {
+			flex: 1 1 auto;
+			height: 20px;
+			background-color: #f1f5f9;
+			border-radius: 4px;
+			display: flex;
+			align-items: center;
+			overflow: hidden;
+			padding: 1px;
+		}
+
+		.escalation-bar {
+			height: 18px;
+			border-radius: 3px;
+			max-width: 100%;
+			transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+		}
+
+		.bar-blue {
+			background-color: #1f77b4;
+		}
+
+		.bar-orange {
+			background: linear-gradient(90deg, #f59e0b 0%, #ea580c 100%);
+		}
+
+		.bar-coral {
+			background-color: #ea580c;
+		}
+
+		.bar-red {
+			background-color: #dc2626;
+		}
+
+		.escalation-metrics {
+			flex: 0 0 85px;
+			text-align: right;
+			white-space: nowrap;
+		}
+
+		.escalation-count {
+			font-size: 12.5px;
+			font-weight: 700;
+			color: var(--blrs-slate-900);
+		}
+
+		.escalation-pct {
+			font-size: 11px;
+			font-weight: 600;
+			color: var(--blrs-slate-500);
+			margin-left: 4px;
+		}
+
+		.escalation-callout {
+			background-color: #f8fafc;
+			border: 1px solid #e2e8f0;
+			border-left: 3px solid #dc2626;
+			border-radius: 4px;
+			padding: 5px 12px;
+			font-size: 11px;
+			color: var(--blrs-slate-700);
+			line-height: 1.4;
+			flex: 0 0 auto;
+			margin-top: 4px;
+		}
+
+		.callout-link {
+			color: #0284c7;
+			text-decoration: underline;
+			font-weight: 600;
+			transition: color 0.15s ease-in-out;
+		}
+
+		.callout-link:hover {
+			color: #0369a1;
+			text-decoration: underline;
+		}
+
+		/* =====================================================================
+		   SECTION 2: ACCOUNT STATUS (DONUT CHART)
+		   ===================================================================== */
+		.donut-chart-container {
+			position: relative;
+			flex: 1 1 auto;
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
 			justify-content: center;
 		}
 
-		.border-blue   { border-left: 4px solid #1f77b4 !important; }
-		.border-orange { border-left: 4px solid #f0ad4e !important; }
-		.border-red    { border-left: 4px solid #d9534f !important; }
-		.border-green  { border-left: 4px solid #5cb85c !important; }
-
-		.kpi-number {
-			font-size: 23px;
-			font-weight: 700;
-			line-height: 1.15;
-			margin-bottom: 3px;
+		.donut-legend {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 16px;
+			margin-top: 4px;
+			padding-top: 4px;
+			border-top: 1px solid #f1f5f9;
+			flex: 0 0 auto;
 		}
 
-		.text-kpi-blue   { color: #1f77b4; }
-		.text-kpi-orange { color: #e67e22; }
-		.text-kpi-red    { color: #d9534f; }
-		.text-kpi-green  { color: #5cb85c; }
-
-		.kpi-label {
-			font-size: 12px;
-			color: #4b5563;
-			font-weight: 500;
-			white-space: nowrap;
-			overflow: hidden;
-			text-overflow: ellipsis;
+		.legend-item {
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			font-size: 11.5px;
+			font-weight: 600;
+			color: var(--blrs-slate-700);
 		}
 
-		/* -------------------------------------------------------------
-		   BATCH JOB PIPELINE & ALERTS FIELDSET & TABLE
-		   ------------------------------------------------------------- */
-		.pipeline-fieldset {
-			border: 1px solid #b8c9d9;
-			border-radius: 4px;
+		.legend-swatch {
+			width: 11px;
+			height: 11px;
+			border-radius: 2px;
+			display: inline-block;
+		}
+
+		.swatch-green {
+			background-color: #16a34a;
+		}
+
+		.swatch-orange {
+			background-color: #ea580c;
+		}
+
+		/* =====================================================================
+		   SECTION 3: THREE-COLUMN CHARTS ROW (DYNAMIC 100% FILL)
+		   ===================================================================== */
+		.chart-canvas-wrapper {
+			position: relative;
+			flex: 1 1 auto;
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		/* =====================================================================
+		   SECTION 4: BATCH JOB PIPELINE & ALERTS TABLE
+		   ===================================================================== */
+		.pipeline-card {
 			background: #ffffff;
-			padding: 8px 14px 12px 14px;
-			margin-bottom: 14px;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+			border: 1px solid var(--blrs-slate-200);
+			border-radius: var(--blrs-border-radius);
+			box-shadow: var(--blrs-card-shadow);
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			min-height: 0;
+			overflow: hidden;
 		}
 
-		.pipeline-legend {
-			width: auto;
-			padding: 0 8px;
-			margin-left: 10px;
-			margin-bottom: 6px;
+		.pipeline-header {
+			background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+			border-bottom: 1px solid var(--blrs-slate-200);
+			padding: 5px 14px;
+			height: 34px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-wrap: nowrap;
+			gap: 8px;
+			box-sizing: border-box;
+			flex: 0 0 34px;
+		}
+
+		.pipeline-title {
 			font-size: 12.5px;
 			font-weight: 700;
-			color: #1a4f78;
-			border-bottom: none;
+			color: var(--blrs-slate-900);
+			margin: 0;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.pipeline-title i {
+			color: var(--blrs-accent-blue);
+		}
+
+		.pipeline-body {
+			padding: 0;
+			flex: 1 1 auto;
+			min-height: 0;
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
 		}
 
 		.pipeline-table {
 			width: 100%;
 			margin-bottom: 0;
 			border-collapse: collapse;
-			border: 1px solid #dee2e6;
 		}
 
 		.pipeline-table thead th {
-			background-color: #edf2f7;
-			color: #2d3748;
-			font-size: 12px;
+			background-color: #f8fafc;
+			color: var(--blrs-slate-700);
+			font-size: 11px;
 			font-weight: 700;
-			border: 1px solid #dce4ec;
-			padding: 7px 12px;
-			text-align: left;
+			text-transform: uppercase;
+			letter-spacing: 0.2px;
+			border-top: none;
+			border-bottom: 1px solid var(--blrs-slate-200);
+			border-right: 1px solid #f1f5f9;
+			padding: 6px 12px;
 			vertical-align: middle;
+			line-height: 1.2;
 		}
 
 		.pipeline-table tbody td {
-			font-size: 12px;
-			color: #334155;
-			border: 1px solid #e2e8f0;
-			padding: 7px 12px;
+			font-size: 11.5px;
+			color: var(--blrs-slate-700);
+			border-top: 1px solid #f1f5f9;
+			border-bottom: 1px solid #f1f5f9;
+			border-right: 1px solid #f8fafc;
+			padding: 6.5px 12px;
 			vertical-align: middle;
+			line-height: 1.2;
 		}
 
 		.pipeline-table tbody tr:hover {
@@ -196,15 +703,15 @@
 		}
 
 		.job-name-cell {
-			font-weight: 700;
-			color: #1e293b;
+			font-weight: 600;
+			color: var(--blrs-slate-900);
+			letter-spacing: 0.1px;
 		}
 
-		/* Pill Status Badges & Buttons */
 		.status-pill {
 			display: inline-block;
-			padding: 3px 14px;
-			font-size: 11px;
+			padding: 3px 10px;
+			font-size: 10px;
 			font-weight: 700;
 			line-height: 1.2;
 			color: #ffffff;
@@ -212,79 +719,62 @@
 			white-space: nowrap;
 			vertical-align: middle;
 			border-radius: 12px;
-			min-width: 90px;
+			min-width: 78px;
 			text-transform: uppercase;
-		}
-
-		.status-btn {
-			cursor: pointer;
+			letter-spacing: 0.2px;
 			border: none;
 			outline: none;
+			cursor: pointer;
 			transition: all 0.15s ease-in-out;
-			box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 		}
 
-		.status-btn:hover {
+		.status-pill:hover {
 			transform: translateY(-1px);
-			box-shadow: 0 3px 6px rgba(0,0,0,0.22);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
 			filter: brightness(1.08);
 		}
 
-		.status-btn:active {
-			transform: translateY(0);
-			box-shadow: 0 1px 1px rgba(0,0,0,0.1);
-		}
+		.status-completed { background-color: #16a34a; }
+		.status-scheduled { background-color: #f59e0b; }
+		.status-ready     { background-color: #0284c7; }
+		.status-started   { background-color: #8b5cf6; }
+		.status-failed    { background-color: #dc2626; }
 
-		.status-completed {
-			background-color: #5cb85c;
-		}
-
-		.status-scheduled {
-			background-color: #f0ad4e;
-		}
-
-		.status-ready {
-			background-color: #5bc0de;
-		}
-
-		.status-started {
-			background-color: #8b5cf6;
-		}
-
-		.status-failed {
-			background-color: #d9534f;
-		}
-
-		/* Pipeline Pagination Controls */
 		.pipeline-pagination-bar {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
-			padding-top: 8px;
-			margin-top: 6px;
-			border-top: 1px solid #eef2f6;
+			padding: 4px 14px;
+			background-color: #ffffff;
+			border-top: 1px solid var(--blrs-slate-200);
+			flex-wrap: nowrap;
+			gap: 8px;
+			height: 32px;
+			box-sizing: border-box;
+			flex: 0 0 32px;
 		}
 
 		.pipeline-info-text {
-			font-size: 11.5px;
-			color: #64748b;
+			font-size: 11px;
+			color: var(--blrs-slate-500);
 			font-weight: 500;
 		}
 
 		.pagination-nav-btns {
 			display: flex;
 			align-items: center;
-			gap: 6px;
+			gap: 4px;
 		}
 
 		.btn-page-nav {
 			background-color: #ffffff;
-			border: 1px solid #cbd5e1;
-			color: #334155;
-			font-size: 11.5px;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
+			color: var(--blrs-slate-700);
+			font-size: 11px;
 			font-weight: 600;
-			padding: 3px 12px;
-			border-radius: 4px;
+			padding: 2px 8px;
+			border-radius: 3px;
 			cursor: pointer;
 			display: inline-flex;
 			align-items: center;
@@ -295,7 +785,7 @@
 		.btn-page-nav:hover:not(:disabled) {
 			background-color: #f1f5f9;
 			border-color: #94a3b8;
-			color: #0f172a;
+			color: var(--blrs-slate-900);
 		}
 
 		.btn-page-nav:disabled {
@@ -304,24 +794,24 @@
 		}
 
 		.btn-page-nav.btn-nav-primary {
-			background-color: #2b74b9;
-			border-color: #1c5280;
+			background-color: #1e3a8a;
+			border-color: #172554;
 			color: #ffffff;
 		}
 
 		.btn-page-nav.btn-nav-primary:hover:not(:disabled) {
-			background-color: #1f5f99;
+			background-color: #1d4ed8;
 		}
 
 		.btn-page-num {
 			background-color: #ffffff;
-			border: 1px solid #cbd5e1;
-			color: #334155;
-			font-size: 11.5px;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
+			color: var(--blrs-slate-700);
+			font-size: 11px;
 			font-weight: 600;
-			min-width: 26px;
-			height: 26px;
-			padding: 0 5px;
+			min-width: 22px;
+			height: 22px;
+			padding: 0 3px;
 			border-radius: 3px;
 			cursor: pointer;
 			display: inline-flex;
@@ -336,108 +826,129 @@
 		}
 
 		.btn-page-num.active {
-			background-color: #2b74b9;
-			border-color: #1c5280;
+			background-color: #1e3a8a;
+			border-color: #172554;
 			color: #ffffff;
 			font-weight: 700;
 		}
 
-		/* -------------------------------------------------------------
-		   BOTTOM SECTION: 2-COLUMN CARDS
-		   ------------------------------------------------------------- */
-		.bottom-row {
-			display: flex;
-			gap: 14px;
-		}
-
-		.bottom-col {
-			flex: 1 1 0;
-			min-width: 0;
-		}
-
-		.bottom-card {
+		/* =====================================================================
+		   SECTION 5: OPERATIONAL ACTIVITIES & SYSTEM COMPLIANCE
+		   ===================================================================== */
+		.bottom-info-card {
 			background: #ffffff;
-			border-radius: 4px;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+			border: 1px solid var(--blrs-slate-200);
+			border-radius: var(--blrs-border-radius);
+			box-shadow: var(--blrs-card-shadow);
 			height: 100%;
+			width: 100%;
 			display: flex;
 			flex-direction: column;
+			justify-content: space-between;
+			min-height: 0;
+			overflow: hidden;
+			box-sizing: border-box;
 		}
 
-		.bottom-card-header {
-			background: linear-gradient(180deg, #b8c7d4 0%, #a4b7c6 100%);
-			border: 1px solid #94a7b7;
-			border-bottom: none;
-			border-top-left-radius: 3px;
-			border-top-right-radius: 3px;
-			padding: 6px 12px;
+		.bottom-info-header {
+			background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+			border-bottom: 1px solid var(--blrs-slate-200);
+			padding: 5px 14px;
 			font-size: 12.5px;
 			font-weight: 700;
-			color: #1e293b;
+			color: var(--blrs-slate-900);
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			height: 32px;
+			box-sizing: border-box;
+			flex: 0 0 32px;
 		}
 
-		.bottom-card-body {
-			border: 1px solid #b8c9d9;
-			border-top: none;
-			border-bottom-left-radius: 3px;
-			border-bottom-right-radius: 3px;
-			padding: 14px 18px;
-			background: #ffffff;
+		.bottom-info-body {
+			padding: 8px 14px;
 			flex: 1 1 auto;
+			min-height: 0;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-evenly;
 		}
 
-		/* Activities List */
 		.activity-list {
 			margin: 0;
-			padding-left: 18px;
+			padding-left: 16px;
 			list-style-type: disc;
 		}
 
 		.activity-list li {
-			font-size: 12px;
-			color: #334155;
-			line-height: 1.6;
-			margin-bottom: 6px;
+			font-size: 11.5px;
+			color: var(--blrs-slate-700);
+			line-height: 1.5;
+			margin-bottom: 4px;
 		}
 
 		.activity-list li:last-child {
 			margin-bottom: 0;
 		}
 
-		/* Compliance Table */
 		.compliance-table {
 			width: 100%;
 			border-collapse: collapse;
-			font-size: 12px;
+			font-size: 11.5px;
 		}
 
 		.compliance-table td {
-			padding: 4px 0;
+			padding: 4px 6px;
 			vertical-align: middle;
 		}
 
 		.compliance-label {
-			font-weight: 700;
-			color: #1e293b;
+			font-weight: 600;
+			color: var(--blrs-slate-700);
 			width: 44%;
 		}
 
 		.compliance-val-green {
 			font-weight: 700;
-			color: #2e7d32;
+			color: #16a34a;
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
 		}
 
 		.compliance-val-dark {
-			font-weight: 400;
-			color: #1e293b;
+			font-weight: 600;
+			color: var(--blrs-slate-900);
 		}
 
-		@media (max-width: 768px) {
-			.kpi-row {
-				flex-direction: column;
+		/* Responsive Adjustments */
+		@media (max-width: 991.98px) {
+			.escalation-row {
+				flex-wrap: wrap;
+				gap: 4px;
 			}
-			.bottom-row {
+			.escalation-label {
+				flex: 1 1 100%;
+			}
+			.escalation-bar-container {
+				flex: 1 1 auto;
+			}
+			.chart-canvas-wrapper {
+				height: 170px;
+			}
+		}
+
+		@media (max-width: 767.98px) {
+			.dashboard-topbar {
 				flex-direction: column;
+				align-items: flex-start;
+			}
+			.topbar-actions {
+				width: 100%;
+				justify-content: flex-start;
+			}
+			.escalation-metrics {
+				flex: 0 0 auto;
 			}
 		}
 	</style>
@@ -451,6 +962,12 @@
 		var currentJobPage = 1;
 		var rowsPerPage = 5;
 
+		function setJobRowsPerPage(val) {
+			rowsPerPage = parseInt(val, 10);
+			currentJobPage = 1;
+			initJobTablePagination();
+		}
+
 		function initJobTablePagination() {
 			var tbody = document.querySelector('.pipeline-table tbody');
 			if (!tbody) return;
@@ -463,7 +980,19 @@
 					rows[i].style.display = '';
 				}
 				if (pagBar) {
-					pagBar.style.display = 'none';
+					pagBar.style.display = (totalRows > 0) ? 'flex' : 'none';
+				}
+				var infoEl = document.getElementById('pipelineInfo');
+				if (infoEl) {
+					infoEl.textContent = 'Showing 1 to ' + totalRows + ' of ' + totalRows + ' entries';
+				}
+				var prevBtn = document.getElementById('btnJobPrev');
+				if (prevBtn) prevBtn.disabled = true;
+				var nextBtn = document.getElementById('btnJobNext');
+				if (nextBtn) nextBtn.disabled = true;
+				var numContainer = document.getElementById('pageNumberButtons');
+				if (numContainer) {
+					numContainer.innerHTML = '<button type="button" class="btn-page-num active">1</button>';
 				}
 				return;
 			}
@@ -513,8 +1042,8 @@
 					numBtn.type = 'button';
 					numBtn.className = 'btn-page-num' + (p === currentJobPage ? ' active' : '');
 					numBtn.textContent = p;
-					(function(pageIndex) {
-						numBtn.onclick = function() {
+					(function (pageIndex) {
+						numBtn.onclick = function () {
 							currentJobPage = pageIndex;
 							initJobTablePagination();
 						};
@@ -527,6 +1056,29 @@
 		function changeJobPage(delta) {
 			currentJobPage += delta;
 			initJobTablePagination();
+		}
+
+		function switchDashboardPage(pageNum) {
+			var p1 = document.getElementById('dashboardPage1');
+			var p2 = document.getElementById('dashboardPage2');
+			var t1 = document.getElementById('tabBtnPage1');
+			var t2 = document.getElementById('tabBtnPage2');
+
+			if (pageNum === 1) {
+				if (p1) p1.style.display = 'flex';
+				if (p2) p2.style.display = 'none';
+				if (t1) t1.classList.add('active');
+				if (t2) t2.classList.remove('active');
+			} else {
+				if (p1) p1.style.display = 'none';
+				if (p2) p2.style.display = 'flex';
+				if (t1) t1.classList.remove('active');
+				if (t2) t2.classList.add('active');
+				initJobTablePagination();
+			}
+			setTimeout(function () {
+				window.dispatchEvent(new Event('resize'));
+			}, 50);
 		}
 
 		function openJobStatusModal(btn) {
@@ -554,12 +1106,11 @@
 
 			statusContainer.innerHTML = '<span class="status-pill ' + pillClass + '">' + status + '</span>';
 
-			// Build dynamic realistic log output based on job & status
 			var logLines = [];
 			var dateStr = (last && last !== '-') ? last : 'Today';
 			logLines.push('[' + dateStr + ' 09:00:01] INFO  -- Initializing Batch Processor for ' + job);
-			logLines.push('[' + dateStr + ' 09:00:02] INFO  -- CBS Connector: Active (Finacle Core Banking System)');
-			logLines.push('[' + dateStr + ' 09:00:03] INFO  -- Applying Scheme Filter: ' + scheme + ' (Periodicity: ' + period + ')');
+			logLines.push('[' + dateStr + ' 09:00:02] INFO  -- CBS Connector: Active (Finacle Core Banking System v11.2)');
+			logLines.push('[' + dateStr + ' 09:00:03] INFO  -- Scheme filter: ' + scheme + ' (Periodicity: ' + period + ')');
 
 			if (status === 'COMPLETED') {
 				logLines.push('[' + dateStr + ' 09:00:05] INFO  -- Synchronized account balance & overdue aging from PostgreSQL');
@@ -586,14 +1137,246 @@
 			}
 
 			document.getElementById('modalLogOutput').textContent = logLines.join('\n');
-
 			$('#jobStatusModal').modal('show');
 		}
 
-		document.addEventListener("DOMContentLoaded", initJobTablePagination);
-		window.addEventListener("load", initJobTablePagination);
+		function initBankingDashboardCharts() {
+			var activeOverdueCount = /*[[${activeOverdueCount != null ? activeOverdueCount : 1840}]]*/ 1840;
+			var paidUpCount = /*[[${paidUpCount != null ? paidUpCount : 2450}]]*/ 2450;
+			var inArrearsCount = /*[[${inArrearsCount != null ? inArrearsCount : 1840}]]*/ 1840;
+
+			var age0_3 = /*[[${aging_0_3 != null ? aging_0_3 : 620}]]*/ 620;
+			var age4_6 = /*[[${aging_4_6 != null ? aging_4_6 : 400}]]*/ 400;
+			var age7_12 = /*[[${aging_7_12 != null ? aging_7_12 : 360}]]*/ 360;
+			var age13_24 = /*[[${aging_13_24 != null ? aging_13_24 : 260}]]*/ 260;
+			var age24p = /*[[${aging_24_plus != null ? aging_24_plus : 200}]]*/ 200;
+
+			// 1. Account Status Donut Chart
+			var statusCtx = document.getElementById('accountStatusChart');
+			if (statusCtx) {
+				new Chart(statusCtx, {
+					type: 'doughnut',
+					data: {
+						labels: ['Paid up', 'In arrears'],
+						datasets: [{
+							data: [paidUpCount, inArrearsCount],
+							backgroundColor: ['#16a34a', '#ea580c'],
+							hoverBackgroundColor: ['#15803d', '#c2410c'],
+							borderWidth: 0
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						cutoutPercentage: 62,
+						animation: { animateScale: true, animateRotate: true, duration: 800 },
+						legend: { display: false },
+						tooltips: {
+							backgroundColor: '#0f172a',
+							titleFontColor: '#ffffff',
+							bodyFontColor: '#ffffff',
+							cornerRadius: 4,
+							callbacks: {
+								label: function (tooltipItem, data) {
+									var dataset = data.datasets[tooltipItem.datasetIndex];
+									var val = dataset.data[tooltipItem.index];
+									var total = dataset.data.reduce(function (a, b) { return a + b; }, 0);
+									var pct = total > 0 ? Math.round((val / total) * 100) : 0;
+									return ' ' + data.labels[tooltipItem.index] + ': ' + Number(val).toLocaleString() + ' (' + pct + '%)';
+								}
+							}
+						}
+					}
+				});
+			}
+
+			// 2. Age of Arrears
+			var ageCtx = document.getElementById('ageArrearsChart');
+			if (ageCtx) {
+				new Chart(ageCtx, {
+					type: 'bar',
+					data: {
+						labels: ['0-3 mo', '4-6 mo', '7-12 mo', '13-24 mo', '24+ mo'],
+						datasets: [{
+							data: [age0_3, age4_6, age7_12, age13_24, age24p],
+							backgroundColor: ['#0284c7', '#0d9488', '#f59e0b', '#ea580c', '#dc2626'],
+							borderWidth: 0,
+							barPercentage: 0.72,
+							categoryPercentage: 0.82
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						legend: { display: false },
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero: true,
+									max: 800,
+									stepSize: 200,
+									fontColor: '#64748b',
+									fontSize: 10.5
+								},
+								gridLines: {
+									color: '#f1f5f9',
+									zeroLineColor: '#cbd5e1'
+								}
+							}],
+							xAxes: [{
+								ticks: {
+									fontColor: '#64748b',
+									fontSize: 10.5
+								},
+								gridLines: { display: false }
+							}]
+						},
+						tooltips: {
+							backgroundColor: '#0f172a',
+							titleFontColor: '#ffffff',
+							bodyFontColor: '#ffffff',
+							cornerRadius: 4,
+							callbacks: {
+								label: function (tooltipItem) {
+									return ' Accounts: ' + Number(tooltipItem.yLabel).toLocaleString();
+								}
+							}
+						}
+					}
+				});
+			}
+
+			// 3. Overdue by Scheme
+			var schemeCtx = document.getElementById('overdueSchemeChart');
+			if (schemeCtx) {
+				new Chart(schemeCtx, {
+					type: 'horizontalBar',
+					data: {
+						labels: ['PLN1', 'MQL1', 'PPL1', 'CLN4', 'CLN2', 'CPL1', 'SSL1', 'Others'],
+						datasets: [{
+							data: [52.0, 22.0, 14.0, 4.0, 1.2, 1.5, 0.6, 0.5],
+							backgroundColor: [
+								'#ea580c',
+								'#f97316',
+								'#f97316',
+								'#f97316',
+								'#f97316',
+								'#f97316',
+								'#f97316',
+								'#f97316'
+							],
+							borderWidth: 0,
+							barThickness: 12
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						legend: { display: false },
+						scales: {
+							xAxes: [{
+								ticks: {
+									beginAtZero: true,
+									max: 60,
+									stepSize: 10,
+									fontColor: '#64748b',
+									fontSize: 10.5
+								},
+								gridLines: {
+									color: '#f1f5f9',
+									zeroLineColor: '#cbd5e1'
+								}
+							}],
+							yAxes: [{
+								ticks: {
+									fontColor: '#334155',
+									fontSize: 10.5,
+									fontStyle: '600'
+								},
+								gridLines: { display: false }
+							}]
+						},
+						tooltips: {
+							backgroundColor: '#0f172a',
+							titleFontColor: '#ffffff',
+							bodyFontColor: '#ffffff',
+							cornerRadius: 4,
+							callbacks: {
+								label: function (tooltipItem) {
+									return ' Overdue: Rs ' + tooltipItem.xLabel + ' M';
+								}
+							}
+						}
+					}
+				});
+			}
+
+			// 4. Six-Month Trend
+			var trendCtx = document.getElementById('sixMonthTrendChart');
+			if (trendCtx) {
+				new Chart(trendCtx, {
+					type: 'line',
+					data: {
+						labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+						datasets: [{
+							data: [82.0, 86.0, 89.8, 88.8, 92.8, 95.8],
+							borderColor: '#dc2626',
+							backgroundColor: 'rgba(220, 38, 38, 0.08)',
+							fill: true,
+							pointBackgroundColor: '#dc2626',
+							pointBorderColor: '#ffffff',
+							pointBorderWidth: 2,
+							pointRadius: 4,
+							pointHoverRadius: 6,
+							borderWidth: 2,
+							lineTension: 0.15
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						legend: { display: false },
+						scales: {
+							yAxes: [{
+								ticks: {
+									min: 80,
+									max: 100,
+									stepSize: 5,
+									fontColor: '#64748b',
+									fontSize: 10.5
+								},
+								gridLines: {
+									color: '#f1f5f9',
+									zeroLineColor: '#cbd5e1'
+								}
+							}],
+							xAxes: [{
+								ticks: {
+									fontColor: '#64748b',
+									fontSize: 10.5
+								},
+								gridLines: { display: false }
+							}]
+						},
+						tooltips: {
+							backgroundColor: '#0f172a',
+							titleFontColor: '#ffffff',
+							bodyFontColor: '#ffffff',
+							cornerRadius: 4,
+							callbacks: {
+								label: function (tooltipItem) {
+									return ' Amount: Rs ' + tooltipItem.yLabel + ' M';
+								}
+							}
+						}
+					}
+				});
+			}
+		}
+
 		$(document).ready(function () {
 			initJobTablePagination();
+			initBankingDashboardCharts();
 
 			var pdateEl = document.getElementById("pdate");
 			if (pdateEl && pdateEl.value) {
@@ -611,269 +1394,489 @@
 	</script>
 </head>
 
-<body>
-	<!-- Application Header Navigation Menu -->
+<body class="dashboard-body">
+	<!-- Fixed Header Navbar -->
 	<div th:insert="BLRS_HeaderMenu :: header"></div>
 
-	<!-- Main Dashboard Container -->
-	<div class="dashboard-container">
+	<!-- Strict Single Screen (No-Scroll) Viewport Lock
+	     FIX: <html> gets NO padding-top. Only <body> keeps the 70px navbar offset. -->
+	<style>
+		html {
+			height: 100vh !important;
+			max-height: 100vh !important;
+			margin: 0 !important;
+			padding: 0 !important;            /* html ku padding VENDAAM */
+			overflow: hidden !important;
+			box-sizing: border-box !important;
+		}
+		html body.dashboard-body {
+			height: 100vh !important;
+			max-height: 100vh !important;
+			overflow: hidden !important;
+			overflow-y: hidden !important;
+			overflow-x: hidden !important;
+			padding-top: 70px !important;     /* body mattum */
+			margin: 0 !important;
+			box-sizing: border-box !important;
+		}
+		html body.dashboard-body #blrsPageContent.dashboard-shell {
+			height: calc(100vh - 70px) !important;
+			max-height: calc(100vh - 70px) !important;
+			min-height: unset !important;
+			overflow: hidden !important;
+			overflow-y: hidden !important;
+			overflow-x: hidden !important;
+			padding: 8px 18px 8px 18px !important;
+			margin-top: 0 !important;
+			margin-bottom: 0 !important;
+			display: flex !important;
+			flex-direction: column !important;
+			justify-content: space-between !important;
+			box-sizing: border-box !important;
+		}
+	</style>
 
-		<!-- ============================================================== -->
-		<!-- TOP HEADER BAR: DASHBOARD TITLE & ACTION BUTTONS               -->
-		<!-- ============================================================== -->
+	<!-- Main Content: Starts immediately below navbar -->
+	<main id="blrsPageContent" class="dashboard-shell">
+
+		<!-- Executive Compact Topbar with View Switcher -->
 		<div class="dashboard-topbar">
-			<h4 class="topbar-title">DASHBOARD</h4>
+			<div class="topbar-left">
+				<h4 class="topbar-title">
+					<i class="fas fa-chart-line"></i> LOAN RECOVERY &amp; REMINDER ESCALATION DASHBOARD
+				</h4>
+				<span class="live-badge">
+					<span class="live-dot"></span> LIVE &bull; FINACLE CBS CONNECTOR
+				</span>
+			</div>
+
+			<!-- Page Tab Switcher (Page 1 vs Page 2) -->
+			<div class="topbar-page-tabs">
+				<button type="button" class="topbar-tab-btn active" id="tabBtnPage1" onclick="switchDashboardPage(1)" title="View Arrears & Escalation Analytics">
+					<i class="fas fa-chart-pie mr-1"></i> Arrears Overview <span class="tab-page-badge">1</span>
+				</button>
+				<button type="button" class="topbar-tab-btn" id="tabBtnPage2" onclick="switchDashboardPage(2)" title="View Batch Job Pipeline & Execution Alerts">
+					<i class="fas fa-tasks mr-1"></i> Batch Pipeline <span class="tab-page-badge" th:text="${dashboardJobs != null ? #lists.size(dashboardJobs) : '11'}">11</span>
+				</button>
+			</div>
+
 			<div class="topbar-actions">
-				<a href="./Remindergeneration" class="btn-top-action">Trigger Reminders</a>
-				<a href="./Loanaccountprofileinquiry" class="btn-top-action">Overdue Inquiries</a>
+				<a href="./Remindergeneration" class="btn-action-primary">
+					<i class="fas fa-paper-plane"></i> Trigger Reminders
+				</a>
+				<a href="./Loanaccountprofileinquiry" class="btn-action-secondary">
+					<i class="fas fa-search"></i> Overdue Inquiries
+				</a>
+				<a href="./Batchjobexecution" class="btn-action-secondary">
+					<i class="fas fa-cogs"></i> Batch Jobs
+				</a>
 			</div>
 		</div>
 
-		<!-- ============================================================== -->
-		<!-- ROW 1: 4 KPI CARDS                                             -->
-		<!-- ============================================================== -->
-		<div class="kpi-row">
-			<!-- 1. Active Overdue Accounts -->
-			<div class="kpi-col">
-				<div class="kpi-card border-blue">
-					<div class="kpi-number text-kpi-blue"
-						th:text="${activeOverdueCount != null ? #numbers.formatInteger(activeOverdueCount, 1, 'COMMA') : '1,248'}">1,248</div>
-					<div class="kpi-label">Active Overdue Accounts</div>
+		<!-- ==============================================================
+		     PAGE 1: EXECUTIVE ARREARS & ESCALATION OVERVIEW (FULL SCREEN)
+		     ============================================================== -->
+		<div id="dashboardPage1" class="dashboard-page-view" style="display: flex;">
+			<!-- Row 1: Reminder Escalation (65%) & Account Status Donut (35%) -->
+			<div class="row page1-row-top">
+				<!-- Reminder Escalation Card -->
+				<div class="col-lg-8 col-12 page1-col">
+					<div class="dashboard-card">
+						<div class="card-header-clean">
+							<h5 class="card-main-title">Reminder escalation</h5>
+							<p class="card-sub-caption">How many accounts in arrears have reached each reminder stage.</p>
+						</div>
+
+						<div class="escalation-list">
+							<!-- Accounts in arrears -->
+							<div class="escalation-row">
+								<div class="escalation-label">Accounts in arrears</div>
+								<div class="escalation-bar-container">
+									<div class="escalation-bar bar-blue" style="width: 100%;"></div>
+								</div>
+								<div class="escalation-metrics">
+									<span class="escalation-count"
+										th:text="${activeOverdueCount != null ? #numbers.formatInteger(activeOverdueCount, 1, 'COMMA') : '1,840'}">1,840</span>
+									<span class="escalation-pct">100%</span>
+								</div>
+							</div>
+
+							<!-- Reminder 1 sent -->
+							<div class="escalation-row">
+								<div class="escalation-label">Reminder 1 sent</div>
+								<div class="escalation-bar-container">
+									<div class="escalation-bar bar-orange"
+										th:style="'width: ' + (${rem1Percent != null ? (rem1Percent > 100 ? 100 : rem1Percent) : 82}) + '%; max-width: 100%;'"></div>
+								</div>
+								<div class="escalation-metrics">
+									<span class="escalation-count"
+										th:text="${rem1Count != null ? #numbers.formatInteger(rem1Count, 1, 'COMMA') : '1,509'}">1,509</span>
+									<span class="escalation-pct"
+										th:text="${(rem1Percent != null ? (rem1Percent > 100 ? 100 : rem1Percent) : 82) + '%'}">82%</span>
+								</div>
+							</div>
+
+							<!-- Reminder 2 sent -->
+							<div class="escalation-row">
+								<div class="escalation-label">Reminder 2 sent</div>
+								<div class="escalation-bar-container">
+									<div class="escalation-bar bar-coral"
+										th:style="'width: ' + (${rem2Percent != null ? (rem2Percent > 100 ? 100 : rem2Percent) : 55}) + '%; max-width: 100%;'"></div>
+								</div>
+								<div class="escalation-metrics">
+									<span class="escalation-count"
+										th:text="${rem2Count != null ? #numbers.formatInteger(rem2Count, 1, 'COMMA') : '1,012'}">1,012</span>
+									<span class="escalation-pct"
+										th:text="${(rem2Percent != null ? (rem2Percent > 100 ? 100 : rem2Percent) : 55) + '%'}">55%</span>
+								</div>
+							</div>
+
+							<!-- Reminder 3 sent -->
+							<div class="escalation-row">
+								<div class="escalation-label">Reminder 3 sent</div>
+								<div class="escalation-bar-container">
+									<div class="escalation-bar bar-red"
+										th:style="'width: ' + (${rem3Percent != null ? (rem3Percent > 100 ? 100 : rem3Percent) : 31}) + '%; max-width: 100%;'"></div>
+								</div>
+								<div class="escalation-metrics">
+									<span class="escalation-count"
+										th:text="${rem3Count != null ? #numbers.formatInteger(rem3Count, 1, 'COMMA') : '570'}">570</span>
+									<span class="escalation-pct"
+										th:text="${(rem3Percent != null ? (rem3Percent > 100 ? 100 : rem3Percent) : 31) + '%'}">31%</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- Red Callout Box -->
+						<div class="escalation-callout">
+							<span th:text="${unsentRem1Count != null ? unsentRem1Count : 331}">331</span>
+							accounts in arrears have not received a first reminder yet. Run the reminder batch job or generate the letters from
+							<a href="./Remindergeneration" class="callout-link">Reminder generation</a>.
+						</div>
+					</div>
+				</div>
+
+				<!-- Account Status Donut Card -->
+				<div class="col-lg-4 col-12 page1-col">
+					<div class="dashboard-card">
+						<div class="card-header-clean">
+							<h5 class="card-main-title">Account status</h5>
+							<p class="card-sub-caption">Paid up compared with in arrears.</p>
+						</div>
+
+						<div class="donut-chart-container">
+							<canvas id="accountStatusChart"></canvas>
+						</div>
+
+						<div class="donut-legend">
+							<span class="legend-item">
+								<span class="legend-swatch swatch-green"></span> Paid up
+							</span>
+							<span class="legend-item">
+								<span class="legend-swatch swatch-orange"></span> In arrears
+							</span>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<!-- 2. 1st Reminders (REM1) -->
-			<div class="kpi-col">
-				<div class="kpi-card border-orange">
-					<div class="kpi-number text-kpi-orange"
-						th:text="${rem1Count != null ? #numbers.formatInteger(rem1Count, 1, 'COMMA') : '620'}">620</div>
-					<div class="kpi-label">1st Reminders (REM1)</div>
+			<!-- Row 2: Age of Arrears, Overdue by Scheme, Six-Month Trend -->
+			<div class="row page1-row-bottom">
+				<!-- Age of arrears -->
+				<div class="col-lg-4 col-12 page1-col">
+					<div class="dashboard-card">
+						<div class="card-header-clean">
+							<h5 class="card-main-title">Age of arrears</h5>
+							<p class="card-sub-caption">Accounts by months overdue.</p>
+						</div>
+						<div class="chart-canvas-wrapper">
+							<canvas id="ageArrearsChart"></canvas>
+						</div>
+					</div>
+				</div>
+
+				<!-- Overdue by scheme -->
+				<div class="col-lg-4 col-12 page1-col">
+					<div class="dashboard-card">
+						<div class="card-header-clean">
+							<h5 class="card-main-title">Overdue by scheme</h5>
+							<p class="card-sub-caption">Rs millions. Selected scheme is highlighted.</p>
+						</div>
+						<div class="chart-canvas-wrapper">
+							<canvas id="overdueSchemeChart"></canvas>
+						</div>
+					</div>
+				</div>
+
+				<!-- Six-month trend -->
+				<div class="col-lg-4 col-12 page1-col">
+					<div class="dashboard-card">
+						<div class="card-header-clean">
+							<h5 class="card-main-title">Six-month trend</h5>
+							<p class="card-sub-caption">Amount overdue, Rs millions.</p>
+						</div>
+						<div class="chart-canvas-wrapper">
+							<canvas id="sixMonthTrendChart"></canvas>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<!-- 3. 2nd Reminders (REM2) -->
-			<div class="kpi-col">
-				<div class="kpi-card border-red">
-					<div class="kpi-number text-kpi-red"
-						th:text="${rem2Count != null ? #numbers.formatInteger(rem2Count, 1, 'COMMA') : '380'}">380</div>
-					<div class="kpi-label">2nd Reminders (REM2)</div>
+			<!-- Page 1 Bottom Navigation Bar: Leads directly to Page 2 -->
+			<div class="dashboard-page-footer">
+				<div class="page-footer-info">
+					<span class="badge badge-light border text-muted px-2 py-1" style="font-size: 10.5px;">
+						<i class="fas fa-layer-group text-primary mr-1"></i> Page 1 of 2
+					</span>
+					<span class="text-muted ml-2 font-weight-bold" style="font-size: 11.5px;">
+						Executive Portfolio &amp; Arrears Escalation
+					</span>
 				</div>
-			</div>
-
-			<!-- 4. Final Reminders (REM3) -->
-			<div class="kpi-col">
-				<div class="kpi-card border-green">
-					<div class="kpi-number text-kpi-green"
-						th:text="${rem3Count != null ? #numbers.formatInteger(rem3Count, 1, 'COMMA') : '248'}">248</div>
-					<div class="kpi-label">Final Reminders (REM3)</div>
+				<div class="page-footer-actions">
+					<button type="button" class="btn btn-sm btn-primary px-3 py-1 font-weight-bold" id="btnGoToPage2" onclick="switchDashboardPage(2)"
+						style="border-radius: 4px; font-size: 11.5px; box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);">
+						Next Page: Batch Job Pipeline &amp; Execution Alerts <i class="fas fa-arrow-right ml-1"></i>
+					</button>
 				</div>
 			</div>
 		</div>
 
-		<!-- ============================================================== -->
-		<!-- ROW 2: BATCH JOB PIPELINE & ALERTS                             -->
-		<!-- ============================================================== -->
-		<fieldset class="pipeline-fieldset">
-			<legend class="pipeline-legend">Batch Job Pipeline &amp; Alerts</legend>
+		<!-- ==============================================================
+		     PAGE 2: CORE BANKING BATCH PIPELINE & EXECUTION ALERTS (FULL SCREEN)
+		     ============================================================== -->
+		<div id="dashboardPage2" class="dashboard-page-view" style="display: none;">
+			<!-- Row 3: Batch Job Pipeline & Execution Alerts -->
+			<div class="pipeline-section page2-pipeline-section">
+				<div class="pipeline-card">
+					<div class="pipeline-header">
+						<div class="d-flex align-items-center">
+							<h6 class="pipeline-title mb-0">
+								<i class="fas fa-tasks mr-1 text-primary"></i> Core Banking Batch Job Pipeline &amp; Execution Alerts
+							</h6>
+							<span class="badge badge-secondary ml-2" style="font-size: 10px; font-weight: 600;">
+								Scheduled &amp; Automated Recovery Jobs
+							</span>
+						</div>
+						<div class="d-flex align-items-center" style="gap: 6px;">
+							<span class="text-muted" style="font-size: 11px; font-weight: 600;">Per page:</span>
+							<select id="selectJobRows" class="custom-select custom-select-sm" style="width: auto; height: 26px; font-size: 10.5px; padding: 1px 20px 1px 6px; border-radius: 3px;" onchange="setJobRowsPerPage(this.value)">
+								<option value="5" selected>5 jobs</option>
+								<option value="10">10 jobs</option>
+								<option value="50">All jobs</option>
+							</select>
+						</div>
+					</div>
 
-			<div class="table-responsive">
-				<table class="pipeline-table table table-hover">
-					<thead>
-						<tr>
-							<th>Job Name</th>
-							<th>Job Type</th>
-							<th>Scheme Code</th>
-							<th>Periodicity</th>
-							<th>Last Run Date</th>
-							<th>Next Run Date</th>
-							<th class="text-center">Job Status</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- Dynamic batch jobs from DB if available -->
-						<th:block th:if="${dashboardJobs != null and !#lists.isEmpty(dashboardJobs)}">
-							<tr th:each="j : ${dashboardJobs}">
-								<td class="job-name-cell" th:text="${j.job_name}">FINACLE OVERDUE EXTRACTION</td>
-								<td th:text="${j.job_type != null ? j.job_type : 'FINACLE'}">FINACLE</td>
-								<td th:text="${j.schm_code != null ? j.schm_code : 'ALL'}">ALL</td>
-								<td th:text="${j.periodicity != null ? j.periodicity : 'DAILY'}">DAILY</td>
-								<td th:text="${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}">05-10-2026</td>
-								<td th:text="${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}">06-10-2026</td>
-								<td class="text-center">
-									<th:block th:with="st=${j.job_status != null ? #strings.toUpperCase(#strings.trim(j.job_status)) : 'READY'}">
-										<button type="button" th:if="${st == 'COMPLETED'}" class="status-pill status-completed status-btn"
-											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='COMPLETED'"
-											onclick="openJobStatusModal(this)">COMPLETED</button>
-										<button type="button" th:if="${st == 'SCHEDULED'}" class="status-pill status-scheduled status-btn"
-											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='SCHEDULED'"
-											onclick="openJobStatusModal(this)">SCHEDULED</button>
-										<button type="button" th:if="${st == 'READY' or st == ''}" class="status-pill status-ready status-btn"
-											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='READY'"
-											onclick="openJobStatusModal(this)">READY</button>
-										<button type="button" th:if="${st == 'STARTED' or st == 'RUNNING'}" class="status-pill status-started status-btn"
-											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='STARTED'"
-											onclick="openJobStatusModal(this)">STARTED</button>
-										<button type="button" th:if="${st == 'FAILED'}" class="status-pill status-failed status-btn"
-											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='FAILED'"
-											onclick="openJobStatusModal(this)">FAILED</button>
-										<button type="button" th:if="${st != 'COMPLETED' and st != 'SCHEDULED' and st != 'READY' and st != '' and st != 'STARTED' and st != 'RUNNING' and st != 'FAILED'}"
-											class="status-pill status-ready status-btn"
-											th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status=${st}"
-											onclick="openJobStatusModal(this)" th:text="${st}">READY</button>
+					<div class="pipeline-body">
+						<div class="table-responsive">
+							<table class="pipeline-table table table-hover">
+								<thead>
+									<tr>
+										<th>Job Name</th>
+										<th>Job Type</th>
+										<th>Scheme Code</th>
+										<th>Periodicity</th>
+										<th>Last Run Date</th>
+										<th>Next Run Date</th>
+										<th class="text-center">Job Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<th:block th:if="${dashboardJobs != null and !#lists.isEmpty(dashboardJobs)}">
+										<tr th:each="j : ${dashboardJobs}">
+											<td class="job-name-cell" th:text="${j.job_name}">FINACLE OVERDUE EXTRACTION</td>
+											<td th:text="${j.job_type != null ? j.job_type : 'FINACLE'}">FINACLE</td>
+											<td th:text="${j.schm_code != null ? j.schm_code : 'ALL'}">ALL</td>
+											<td th:text="${j.periodicity != null ? j.periodicity : 'DAILY'}">DAILY</td>
+											<td th:text="${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}">05-10-2026</td>
+											<td th:text="${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}">06-10-2026</td>
+											<td class="text-center">
+												<th:block th:with="st=${j.job_status != null ? #strings.toUpperCase(#strings.trim(j.job_status)) : 'READY'}">
+													<button type="button" th:if="${st == 'COMPLETED'}" class="status-pill status-completed"
+														th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='COMPLETED'"
+														onclick="openJobStatusModal(this)">COMPLETED</button>
+													<button type="button" th:if="${st == 'SCHEDULED'}" class="status-pill status-scheduled"
+														th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='SCHEDULED'"
+														onclick="openJobStatusModal(this)">SCHEDULED</button>
+													<button type="button" th:if="${st == 'READY' or st == ''}" class="status-pill status-ready"
+														th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='READY'"
+														onclick="openJobStatusModal(this)">READY</button>
+													<button type="button" th:if="${st == 'STARTED' or st == 'RUNNING'}" class="status-pill status-started"
+														th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='STARTED'"
+														onclick="openJobStatusModal(this)">STARTED</button>
+													<button type="button" th:if="${st == 'FAILED'}" class="status-pill status-failed"
+														th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status='FAILED'"
+														onclick="openJobStatusModal(this)">FAILED</button>
+													<button type="button" th:if="${st != 'COMPLETED' and st != 'SCHEDULED' and st != 'READY' and st != '' and st != 'STARTED' and st != 'RUNNING' and st != 'FAILED'}"
+														class="status-pill status-ready"
+														th:attr="data-job=${j.job_name}, data-type=${j.job_type != null ? j.job_type : 'FINACLE'}, data-scheme=${j.schm_code != null ? j.schm_code : 'ALL'}, data-period=${j.periodicity != null ? j.periodicity : 'DAILY'}, data-last=${j.last_run_date != null ? #dates.format(j.last_run_date, 'dd-MM-yyyy') : '-'}, data-next=${j.next_run_date != null ? #dates.format(j.next_run_date, 'dd-MM-yyyy') : '-'}, data-status=${st}"
+														onclick="openJobStatusModal(this)" th:text="${st}">READY</button>
+												</th:block>
+											</td>
+										</tr>
 									</th:block>
-								</td>
-							</tr>
-						</th:block>
 
-						<!-- Default Reference Rows (matching user's uploaded image exactly) -->
-						<th:block th:if="${dashboardJobs == null or #lists.isEmpty(dashboardJobs)}">
-							<tr>
-								<td class="job-name-cell">FINACLE OVERDUE EXTRACTION</td>
-								<td>FINACLE</td>
-								<td>ALL</td>
-								<td>DAILY</td>
-								<td>05-10-2026</td>
-								<td>06-10-2026</td>
-								<td class="text-center">
-									<button type="button" class="status-pill status-completed status-btn"
-										data-job="FINACLE OVERDUE EXTRACTION" data-type="FINACLE" data-scheme="ALL" data-period="DAILY"
-										data-last="05-10-2026" data-next="06-10-2026" data-status="COMPLETED"
-										onclick="openJobStatusModal(this)">COMPLETED</button>
-								</td>
-							</tr>
-							<tr>
-								<td class="job-name-cell">REMINDER LEVEL 1 GENERATOR</td>
-								<td>REMINDER</td>
-								<td>PERSONAL</td>
-								<td>MONTHLY</td>
-								<td>01-10-2026</td>
-								<td>01-11-2026</td>
-								<td class="text-center">
-									<button type="button" class="status-pill status-completed status-btn"
-										data-job="REMINDER LEVEL 1 GENERATOR" data-type="REMINDER" data-scheme="PERSONAL" data-period="MONTHLY"
-										data-last="01-10-2026" data-next="01-11-2026" data-status="COMPLETED"
-										onclick="openJobStatusModal(this)">COMPLETED</button>
-								</td>
-							</tr>
-							<tr>
-								<td class="job-name-cell">REMINDER LEVEL 2 GENERATOR</td>
-								<td>REMINDER</td>
-								<td>HOUSING</td>
-								<td>MONTHLY</td>
-								<td>01-10-2026</td>
-								<td>01-11-2026</td>
-								<td class="text-center">
-									<button type="button" class="status-pill status-scheduled status-btn"
-										data-job="REMINDER LEVEL 2 GENERATOR" data-type="REMINDER" data-scheme="HOUSING" data-period="MONTHLY"
-										data-last="01-10-2026" data-next="01-11-2026" data-status="SCHEDULED"
-										onclick="openJobStatusModal(this)">SCHEDULED</button>
-								</td>
-							</tr>
-							<tr>
-								<td class="job-name-cell">LEGAL RECOVERY NOTICE EXTRACTION</td>
-								<td>RECOVERY</td>
-								<td>ALL</td>
-								<td>MONTHLY</td>
-								<td>30-09-2026</td>
-								<td>31-10-2026</td>
-								<td class="text-center">
-									<button type="button" class="status-pill status-ready status-btn"
-										data-job="LEGAL RECOVERY NOTICE EXTRACTION" data-type="RECOVERY" data-scheme="ALL" data-period="MONTHLY"
-										data-last="30-09-2026" data-next="31-10-2026" data-status="READY"
-										onclick="openJobStatusModal(this)">READY</button>
-								</td>
-							</tr>
-						</th:block>
-					</tbody>
-				</table>
+									<th:block th:if="${dashboardJobs == null or #lists.isEmpty(dashboardJobs)}">
+										<tr>
+											<td class="job-name-cell">FINACLE OVERDUE EXTRACTION</td>
+											<td>FINACLE</td>
+											<td>ALL</td>
+											<td>DAILY</td>
+											<td>05-10-2026</td>
+											<td>06-10-2026</td>
+											<td class="text-center">
+												<button type="button" class="status-pill status-completed"
+													data-job="FINACLE OVERDUE EXTRACTION" data-type="FINACLE" data-scheme="ALL" data-period="DAILY"
+													data-last="05-10-2026" data-next="06-10-2026" data-status="COMPLETED"
+													onclick="openJobStatusModal(this)">COMPLETED</button>
+											</td>
+										</tr>
+										<tr>
+											<td class="job-name-cell">REMINDER LEVEL 1 GENERATOR</td>
+											<td>REMINDER</td>
+											<td>PERSONAL</td>
+											<td>MONTHLY</td>
+											<td>01-10-2026</td>
+											<td>01-11-2026</td>
+											<td class="text-center">
+												<button type="button" class="status-pill status-completed"
+													data-job="REMINDER LEVEL 1 GENERATOR" data-type="REMINDER" data-scheme="PERSONAL" data-period="MONTHLY"
+													data-last="01-10-2026" data-next="01-11-2026" data-status="COMPLETED"
+													onclick="openJobStatusModal(this)">COMPLETED</button>
+											</td>
+										</tr>
+										<tr>
+											<td class="job-name-cell">REMINDER LEVEL 2 GENERATOR</td>
+											<td>REMINDER</td>
+											<td>HOUSING</td>
+											<td>MONTHLY</td>
+											<td>01-10-2026</td>
+											<td>01-11-2026</td>
+											<td class="text-center">
+												<button type="button" class="status-pill status-scheduled"
+													data-job="REMINDER LEVEL 2 GENERATOR" data-type="REMINDER" data-scheme="HOUSING" data-period="MONTHLY"
+													data-last="01-10-2026" data-next="01-11-2026" data-status="SCHEDULED"
+													onclick="openJobStatusModal(this)">SCHEDULED</button>
+											</td>
+										</tr>
+										<tr>
+											<td class="job-name-cell">LEGAL RECOVERY NOTICE EXTRACTION</td>
+											<td>RECOVERY</td>
+											<td>ALL</td>
+											<td>MONTHLY</td>
+											<td>30-09-2026</td>
+											<td>31-10-2026</td>
+											<td class="text-center">
+												<button type="button" class="status-pill status-ready"
+													data-job="LEGAL RECOVERY NOTICE EXTRACTION" data-type="RECOVERY" data-scheme="ALL" data-period="MONTHLY"
+													data-last="30-09-2026" data-next="31-10-2026" data-status="READY"
+													onclick="openJobStatusModal(this)">READY</button>
+											</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+
+						<div class="pipeline-pagination-bar" id="pipelinePagination" style="display: none;">
+							<div class="pipeline-info-text" id="pipelineInfo">
+								Showing 1 to 5 of entries
+							</div>
+							<div class="pagination-nav-btns">
+								<button type="button" class="btn-page-nav" id="btnJobPrev" onclick="changeJobPage(-1)" disabled>
+									<i class="fas fa-chevron-left" style="font-size: 9px;"></i> Prev
+								</button>
+								<div id="pageNumberButtons" class="d-inline-flex" style="gap: 3px;"></div>
+								<button type="button" class="btn-page-nav btn-nav-primary" id="btnJobNext" onclick="changeJobPage(1)">
+									Next <i class="fas fa-chevron-right" style="font-size: 9px;"></i>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 
-			<!-- Pipeline Pagination Controls: Only show 5 rows at a time, Next appears when more rows exist -->
-			<div class="pipeline-pagination-bar" id="pipelinePagination" style="display: none;">
-				<div class="pipeline-info-text" id="pipelineInfo">
-					Showing 1 to 5 of entries
+			<!-- Row 4: Recent Activities & System Compliance -->
+			<div class="row page2-bottom-row">
+				<div class="col-md-6 col-12 page2-col">
+					<div class="bottom-info-card">
+						<div class="bottom-info-header">
+							<i class="fas fa-history text-primary"></i> Recent Loan Recovery Activities
+						</div>
+						<div class="bottom-info-body">
+							<ul class="activity-list">
+								<li>Automated SMS Dispatch executed for 428 overdue borrowers.</li>
+								<li>Batch file generation completed for Postal Notice Dispatch.</li>
+								<li>Monthly Overdue Accounts synchronized from Finacle CBS.</li>
+								<li>Guarantor reminder notices generated for 380 active accounts.</li>
+							</ul>
+						</div>
+					</div>
 				</div>
-				<div class="pagination-nav-btns">
-					<button type="button" class="btn-page-nav" id="btnJobPrev" onclick="changeJobPage(-1)" disabled>
-						<i class="fas fa-chevron-left" style="font-size: 10px;"></i> Previous
+
+				<div class="col-md-6 col-12 page2-col">
+					<div class="bottom-info-card">
+						<div class="bottom-info-header">
+							<i class="fas fa-shield-alt text-success"></i> System Status &amp; Compliance
+						</div>
+						<div class="bottom-info-body">
+							<table class="compliance-table">
+								<tr>
+									<td class="compliance-label">Audit Inquiries:</td>
+									<td><span class="compliance-val-green"><i class="fas fa-check-circle"></i> ACTIVE (All logs captured)</span></td>
+								</tr>
+								<tr>
+									<td class="compliance-label">Maker-Checker Auth:</td>
+									<td><span class="compliance-val-green"><i class="fas fa-lock"></i> ENFORCED</span></td>
+								</tr>
+								<tr>
+									<td class="compliance-label">Active CBS Connector:</td>
+									<td class="compliance-val-dark">Finacle Core Banking System v11.2</td>
+								</tr>
+								<tr>
+									<td class="compliance-label">Database Mode:</td>
+									<td class="compliance-val-dark">PostgreSQL Production Cluster</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Page 2 Bottom Navigation Bar: Leads back to Page 1 -->
+			<div class="dashboard-page-footer">
+				<div class="page-footer-actions">
+					<button type="button" class="btn btn-sm btn-outline-primary px-3 py-1 font-weight-bold" id="btnGoToPage1" onclick="switchDashboardPage(1)"
+						style="border-radius: 4px; font-size: 11.5px; background: #ffffff;">
+						<i class="fas fa-arrow-left mr-1"></i> Previous Page: Arrears &amp; Recovery Overview
 					</button>
-					<div id="pageNumberButtons" class="d-inline-flex" style="gap: 4px;"></div>
-					<button type="button" class="btn-page-nav btn-nav-primary" id="btnJobNext" onclick="changeJobPage(1)">
-						Next <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
-					</button>
 				</div>
-			</div>
-		</fieldset>
-
-		<!-- ============================================================== -->
-		<!-- ROW 3: TWO-COLUMN SECTION                                      -->
-		<!-- Col 1: Recent Activities | Col 2: System Status & Compliance   -->
-		<!-- ============================================================== -->
-		<div class="bottom-row">
-			<!-- Column 1: Recent Loan Recovery Activities -->
-			<div class="bottom-col">
-				<div class="bottom-card">
-					<div class="bottom-card-header">
-						Recent Loan Recovery Activities
-					</div>
-					<div class="bottom-card-body">
-						<ul class="activity-list">
-							<li>Automated SMS Dispatch executed for 428 borrowers.</li>
-							<li>Batch file generation completed for Postal Dispatch.</li>
-							<li>Monthly Overdue Accounts report synchronized from Finacle.</li>
-							<li>Guarantor notification batch generated for 380 loan accounts.</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-
-			<!-- Column 2: System Status & Compliance -->
-			<div class="bottom-col">
-				<div class="bottom-card">
-					<div class="bottom-card-header">
-						System Status &amp; Compliance
-					</div>
-					<div class="bottom-card-body">
-						<table class="compliance-table">
-							<tr>
-								<td class="compliance-label">Audit Inquiries:</td>
-								<td class="compliance-val-green">ACTIVE (All logs captured)</td>
-							</tr>
-							<tr>
-								<td class="compliance-label">Maker-Checker Auth:</td>
-								<td class="compliance-val-green">ENFORCED</td>
-							</tr>
-							<tr>
-								<td class="compliance-label">Active CBS Connector:</td>
-								<td class="compliance-val-dark">Finacle Core Banking System</td>
-							</tr>
-							<tr>
-								<td class="compliance-label">Database Mode:</td>
-								<td class="compliance-val-dark">PostgreSQL Production</td>
-							</tr>
-						</table>
-					</div>
+				<div class="page-footer-info">
+					<span class="badge badge-light border text-muted px-2 py-1" style="font-size: 10.5px;">
+						<i class="fas fa-layer-group text-primary mr-1"></i> Page 2 of 2
+					</span>
+					<span class="text-muted ml-2 font-weight-bold" style="font-size: 11.5px;">
+						Core Banking Batch Pipeline &amp; System Logs
+					</span>
 				</div>
 			</div>
 		</div>
 
-	</div>
+	</main>
 
-	<!-- Password Expiration Modals -->
-	<div class="modal fade" id="alert1">
-		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-			<div class="modal-content"
-				style="border-radius: 8px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
-				<div class="modal-header border-bottom-0 bg-light p-3"
-					style="border-top-left-radius: 8px; border-top-right-radius: 8px;">
-					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 0.95rem;">BORNFIRE MANAGER</h5>
+	<!-- Modals: Password Expiration Warnings -->
+	<div class="modal fade" id="alert1" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content" style="border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+				<div class="modal-header border-bottom-0 bg-light p-3" style="border-top-left-radius: 6px; border-top-right-radius: 6px;">
+					<h6 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 13.5px;">BORNFIRE MANAGER</h6>
 				</div>
 				<div class="modal-body text-center p-3">
-					<p id="alertmsg1" style="font-size: 0.88rem; color: #475569;">Your password is expiring soon. Do you want to change it now?</p>
+					<p id="alertmsg1" style="font-size: 12.5px; color: #475569;">Your password is expiring soon. Do you want to change it now?</p>
 					<div class="mt-3">
-						<button type="button" class="btn btn-primary px-3 py-1 mr-2" style="border-radius: 4px; font-size: 0.82rem;"
+						<button type="button" class="btn btn-primary px-3 py-1 mr-2" style="border-radius: 4px; font-size: 12px;"
 							data-dismiss="modal" onclick="Yes();">Yes</button>
-						<button type="button" class="btn btn-light px-3 py-1 border" style="border-radius: 4px; font-size: 0.82rem;"
+						<button type="button" class="btn btn-light px-3 py-1 border" style="border-radius: 4px; font-size: 12px;"
 							data-dismiss="modal">No</button>
 					</div>
 				</div>
@@ -881,94 +1884,88 @@
 		</div>
 	</div>
 
-	<div class="modal fade" id="alert2">
-		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-			<div class="modal-content"
-				style="border-radius: 8px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
-				<div class="modal-header border-bottom-0 bg-light p-3"
-					style="border-top-left-radius: 8px; border-top-right-radius: 8px;">
-					<h5 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 0.95rem;">BORNFIRE MANAGER</h5>
+	<div class="modal fade" id="alert2" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content" style="border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 10px 25px rgba(0,0,0,0.15);">
+				<div class="modal-header border-bottom-0 bg-light p-3" style="border-top-left-radius: 6px; border-top-right-radius: 6px;">
+					<h6 class="modal-title font-weight-bold text-center w-100" style="color: #1e293b; font-size: 13.5px;">BORNFIRE MANAGER</h6>
 				</div>
 				<div class="modal-body text-center p-3">
-					<p id="alertmsg2" style="font-size: 0.88rem; color: #475569;">Your password has expired. You must change your password to continue.</p>
+					<p id="alertmsg2" style="font-size: 12.5px; color: #475569;">Your password has expired. You must change your password to continue.</p>
 					<div class="mt-3">
-						<button type="button" class="btn btn-primary px-3 py-1" style="border-radius: 4px; font-size: 0.82rem;"
+						<button type="button" class="btn btn-primary px-3 py-1" style="border-radius: 4px; font-size: 12px;"
 							data-dismiss="modal" onclick="Yes();">OK</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!-- Job Status & Log Details Modal -->
+
+	<!-- Batch Job Execution Details & Status Log Modal -->
 	<div class="modal fade" id="jobStatusModal" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 			<div class="modal-content" style="border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
-				<!-- Modal Header -->
-				<div class="modal-header" style="background: linear-gradient(180deg, #b8c7d4 0%, #a4b7c6 100%); border-bottom: 1px solid #94a7b7; padding: 10px 16px;">
-					<h6 class="modal-title font-weight-bold" style="color: #1e293b; font-size: 13.5px;">
-						<i class="fas fa-tasks mr-1"></i> Batch Job Execution Details &amp; Status Log
+				<div class="modal-header" style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%); border-bottom: 1px solid #e2e8f0; padding: 8px 14px;">
+					<h6 class="modal-title font-weight-bold" style="color: #1e293b; font-size: 13px;">
+						<i class="fas fa-tasks mr-1 text-primary"></i> Batch Job Execution Details &amp; Status Log
 					</h6>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: #1e293b; opacity: 0.8;">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 
-				<!-- Modal Body -->
 				<div class="modal-body p-3" style="background-color: #f8fafc;">
-					<!-- Top Grid -->
 					<div class="card p-3 mb-3" style="border: 1px solid #e2e8f0; border-radius: 4px; background: #ffffff;">
 						<div class="row">
 							<div class="col-md-6 mb-2">
-								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Job Name</div>
-								<div class="font-weight-bold" id="modalJobName" style="color: #1e293b; font-size: 13px;">-</div>
+								<div class="text-muted" style="font-size: 10.5px; font-weight: 600; text-transform: uppercase;">Job Name</div>
+								<div class="font-weight-bold" id="modalJobName" style="color: #1e293b; font-size: 12.5px;">-</div>
 							</div>
 							<div class="col-md-3 col-6 mb-2">
-								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Job Status</div>
+								<div class="text-muted" style="font-size: 10.5px; font-weight: 600; text-transform: uppercase;">Job Status</div>
 								<div id="modalJobStatus">-</div>
 							</div>
 							<div class="col-md-3 col-6 mb-2">
-								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Job Type</div>
-								<div class="font-weight-bold" id="modalJobType" style="color: #334155; font-size: 12px;">-</div>
+								<div class="text-muted" style="font-size: 10.5px; font-weight: 600; text-transform: uppercase;">Job Type</div>
+								<div class="font-weight-bold" id="modalJobType" style="color: #334155; font-size: 11.5px;">-</div>
 							</div>
 							<div class="col-md-6 mb-2">
-								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Scheme Code</div>
-								<div class="font-weight-bold" id="modalSchemeCode" style="color: #334155; font-size: 12px; word-break: break-all;">-</div>
+								<div class="text-muted" style="font-size: 10.5px; font-weight: 600; text-transform: uppercase;">Scheme Code</div>
+								<div class="font-weight-bold" id="modalSchemeCode" style="color: #334155; font-size: 11.5px; word-break: break-all;">-</div>
 							</div>
 							<div class="col-md-3 col-6 mb-2">
-								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Periodicity</div>
-								<div class="font-weight-bold" id="modalPeriodicity" style="color: #334155; font-size: 12px;">-</div>
+								<div class="text-muted" style="font-size: 10.5px; font-weight: 600; text-transform: uppercase;">Periodicity</div>
+								<div class="font-weight-bold" id="modalPeriodicity" style="color: #334155; font-size: 11.5px;">-</div>
 							</div>
 							<div class="col-md-3 col-6 mb-2">
-								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Last Run Date</div>
-								<div class="font-weight-bold" id="modalLastRun" style="color: #334155; font-size: 12px;">-</div>
+								<div class="text-muted" style="font-size: 10.5px; font-weight: 600; text-transform: uppercase;">Last Run Date</div>
+								<div class="font-weight-bold" id="modalLastRun" style="color: #334155; font-size: 11.5px;">-</div>
 							</div>
 							<div class="col-md-3 col-6 mb-2">
-								<div class="text-muted" style="font-size: 11px; font-weight: 600; text-transform: uppercase;">Next Run Date</div>
-								<div class="font-weight-bold" id="modalNextRun" style="color: #334155; font-size: 12px;">-</div>
+								<div class="text-muted" style="font-size: 10.5px; font-weight: 600; text-transform: uppercase;">Next Run Date</div>
+								<div class="font-weight-bold" id="modalNextRun" style="color: #334155; font-size: 11.5px;">-</div>
 							</div>
 						</div>
 					</div>
 
-					<!-- Execution Log Console Box -->
 					<div class="card" style="border: 1px solid #1e293b; border-radius: 4px; overflow: hidden;">
 						<div class="d-flex justify-content-between align-items-center px-3 py-1" style="background-color: #0f172a; border-bottom: 1px solid #334155;">
-							<span style="font-size: 11px; color: #94a3b8; font-family: monospace; font-weight: 600;">
+							<span style="font-size: 10.5px; color: #94a3b8; font-family: monospace; font-weight: 600;">
 								<i class="fas fa-terminal mr-1"></i> System Execution Log
 							</span>
-							<span class="badge badge-success" style="font-size: 10px; font-weight: 700;" id="modalLogBadge">ACTIVE</span>
+							<span class="badge badge-success" style="font-size: 9.5px; font-weight: 700;" id="modalLogBadge">ACTIVE</span>
 						</div>
-						<div class="p-3" style="background-color: #020617; max-height: 180px; overflow-y: auto;">
-							<pre id="modalLogOutput" style="color: #38bdf8; font-family: 'Courier New', Courier, monospace; font-size: 11.5px; margin: 0; white-space: pre-wrap; line-height: 1.5;"></pre>
+						<div class="p-3" style="background-color: #020617; max-height: 160px; overflow-y: auto;">
+							<pre id="modalLogOutput" style="color: #38bdf8; font-family: 'Courier New', Courier, monospace; font-size: 11px; margin: 0; white-space: pre-wrap; line-height: 1.45;"></pre>
 						</div>
 					</div>
 				</div>
 
-				<!-- Modal Footer -->
 				<div class="modal-footer py-2 px-3" style="background-color: #f1f5f9; border-top: 1px solid #e2e8f0;">
-					<a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-1 px-3" style="font-size: 12px; font-weight: 600;">
+					<a href="./Batchjobexecution" class="btn btn-sm btn-outline-primary py-1 px-3" style="font-size: 11.5px; font-weight: 600;">
 						<i class="fas fa-play mr-1"></i> Go to Execution Screen
 					</a>
-					<button type="button" class="btn btn-sm btn-secondary py-1 px-3" data-dismiss="modal" style="font-size: 12px;">
+					<button type="button" class="btn btn-sm btn-secondary py-1 px-3" data-dismiss="modal" style="font-size: 11.5px;">
 						Close
 					</button>
 				</div>

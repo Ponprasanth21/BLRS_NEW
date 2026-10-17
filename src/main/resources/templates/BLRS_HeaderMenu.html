@@ -338,7 +338,6 @@
 		       width: 100% !important;
 		       margin: 0 !important;
 		       overflow-x: hidden !important;
-		       overflow-y: hidden !important;
 		   }
 		   
 
@@ -349,13 +348,13 @@
 
             width: 100%;
 
-            max-width: 100px;
+            max-width: 1540px;
 
             min-height: calc(100vh - 70px);
 
             margin: 0 auto;
 
-            padding: 28px 24px 40px;
+            padding: 6px 20px 30px;
 
             box-sizing: border-box;
 
@@ -582,8 +581,7 @@
 
 		body {
 		    margin: 0;
-		    padding-top: 78px;
-		    min-height: 100vh;
+		    padding-top: 70px;
 		    background: #f5f7fa;
 		    overflow-x: hidden;
 		    font-size: 0.8rem;
@@ -592,14 +590,10 @@
 		}
 		#blrsPageContent {
 			width: 100% !important;
-			max-width: 1500px !important;
-			min-height: calc(100vh - 100px) !important;
+			max-width: 1540px !important;
 			margin-left: auto !important;
 			margin-right: auto !important;			
-			padding: 0px 0px 0px !important;
-
-			padding-left: 100px;
-			padding-right: 0px;
+			padding: 0px 16px !important;
 			box-sizing: border-box !important;
 			position: relative !important;
 			left: auto !important;
@@ -829,9 +823,9 @@
 
 	<input type="hidden" id="activemenu" th:value="${menu}" />
 
-	<nav class="navbar fixed-top navbar-expand-md navbar-dark mb-3"
+	<nav class="navbar fixed-top navbar-expand-md navbar-dark mb-0"
 
-		style="box-shadow: 6px 6px 12px #888888; height: 70px">
+		style="box-shadow: 0 2px 8px rgba(0,0,0,0.18); height: 70px">
 
 		<input type="text" name="userphoto" id="userphoto" th:value="${session.USERID}" hidden />
 
