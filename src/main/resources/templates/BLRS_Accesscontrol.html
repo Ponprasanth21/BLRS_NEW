@@ -154,8 +154,8 @@
             max-width: 100%;
             margin: 20px auto 30px auto;
             box-sizing: border-box;
-			padding-left: 2.9%;
-			padding-right: 2.9%;
+			padding-left: 2%;
+			padding-right: 2%;
 			padding-top:-5px;
 			
         }
@@ -354,6 +354,8 @@
             color: #1e293b !important;
 
             margin: 0;
+			
+			font-size: 1.2rem;
 
         }
 
@@ -1779,7 +1781,7 @@
 			
             <div class="card-header"
 
-                 style="height: 48px;">
+                 style="height: 48px; padding-left: 10px;">
 
                 <div class="float-left">
 
@@ -1787,13 +1789,15 @@
 
                         font-size: 1.2rem;
 
+						margin-left: 2%;
+						
                         color: #1e293b;
 
                         margin: 0;
 
                     ">
 
-                        Access and Role - LIST
+                        Access and Role - List
 
                     </h6>
 
@@ -2078,7 +2082,7 @@
                             align-items-center"
 
                      style="
-
+					 
                          min-height: 50px;
 
                          padding: 10px 15px;
@@ -2089,37 +2093,37 @@
 
                         <h6 th:if="${formmode}=='edit'">
 
-                            Access and Role - EDIT
+                            Access and Role - Edit
 
                         </h6>
 
                         <h6 th:if="${formmode}=='add'">
 
-                            Access and Role - ADD
+                            Access and Role - Add
 
                         </h6>
 
                         <h6 th:if="${formmode}=='verify'">
 
-                            Access and Role - VERIFY
+                            Access and Role - Verify
 
                         </h6>
 
                         <h6 th:if="${formmode}=='cancel'">
 
-                            Access and Role - CANCEL
+                            Access and Role - Cancel
 
                         </h6>
 
                         <h6 th:if="${formmode}=='view'">
 
-                            Access and Role - VIEW
+                            Access and Role - View
 
                         </h6>
 
                         <h6 th:if="${formmode}=='delete'">
 
-                            Access and Role - DELETE
+                            Access and Role - Delete
 
                         </h6>
 

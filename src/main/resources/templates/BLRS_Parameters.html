@@ -39,8 +39,8 @@
 		.container-manager {
 			width: 100%;
 			max-width: 100%;
-			padding-right: 1.9%;
-			padding-left: 1.9%;
+			padding-right: 0.8%;
+			padding-left: 0.8%;
 			margin-right: auto;
 			margin-left: auto;
 			margin-top: 10px;
@@ -144,6 +144,8 @@
 		    justify-content: center;
 		    align-items: center;
 		}
+		
+		
 	</style>
 	<script th:inline="javascript">
 		/*<![CDATA[*/
@@ -263,9 +265,21 @@
 							<div class="card-footer text-center" style="padding: 6px 10px; gap: 4px;">
 								<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
 								<button type="button" class="btn btn-sm btn-primary" id="btnSubmit" onclick="submitForm();">Submit</button>
-								<button type="button" class="btn btn-sm btn-info" id="btnTestEmail" onclick="testEmail();">Test Email</button>
-								<button type="button" class="btn btn-sm btn-info" id="btnTestSms" onclick="testSms();">Test SMS</button>
-								<button type="button" class="btn btn-sm btn-secondary" id="btnBack" onclick="Back();">Back</button>
+								<button type="button" class="btn btn-sm btn-info" id="btnTestEmail" 
+								style=" color: #fff;
+								background-color: #007bff;
+								border-color: #007bff;"
+ 								onclick="testEmail();">Test Email</button>
+								<button type="button" class="btn btn-sm btn-info" id="btnTestSms"
+								style=" color: #fff;
+								background-color: #007bff;
+							    border-color: #007bff;"
+								onclick="testSms();">Test SMS</button>
+								<button type="button" class="btn btn-sm btn-secondary" id="btnBack"
+								style=" color: #fff;
+							    background-color: #007bff;
+								border-color: #007bff;"
+								onclick="Back();">Back</button>
 							</div> 
 						</div>
 					</div>

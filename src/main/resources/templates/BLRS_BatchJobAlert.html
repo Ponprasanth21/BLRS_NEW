@@ -33,8 +33,8 @@
 				.container-manager {
 					width: 100%;
 					max-width: 100%;
-					padding-right: 2%;
-					padding-left: 2%;
+					padding-right: 0.8%;
+					padding-left: 0.8%;
 					margin-right: auto;
 					margin-left: auto;
 					margin-top: 10px;
@@ -177,11 +177,11 @@
 														<td th:text="${job.next_run_date != null} ? ${#dates.format(job.next_run_date, 'dd-MM-yyyy')} : ''"></td>
 														<td>
 														    <span th:if="${job.job_status == 'COMPLETED'}"
-														          class="status-badge status-success">COMPLETED</span>
+														          class="status-badge status-success">Completed</span>
 														    <span th:if="${job.job_status == 'FAILED'}"
-														          class="status-badge status-danger">FAILED</span>
+														          class="status-badge status-danger">Failed</span>
 														    <span th:if="${job.job_status == 'STARTED'}"
-														          class="status-badge status-warning">RUNNING</span>
+														          class="status-badge status-warning">Running</span>
 
 														    <button type="button"
 														            class="btn btn-sm btn-primary btnRun"

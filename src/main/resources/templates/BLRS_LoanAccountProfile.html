@@ -49,8 +49,8 @@
         .container-manager {
             width: 100% !important;
             max-width: 100%;
-            padding-left: 1.9%;
-            padding-right: 1.9%;
+            padding-left: 0.8%;
+            padding-right: 0.8%;
             margin-left: auto !important;
             margin-right: auto !important;
             margin-top: 10px;
@@ -169,6 +169,13 @@
             }
         }
 		
+		
+		/* Reduce row height in Overdue Accounts table */
+		#overdueAccountsTable th,
+		#overdueAccountsTable td {
+		    padding: 8px 15px !important;
+		    line-height: 1.2 !important;
+		}
 
 		/* Make field names narrow and values wider */
 		.custom-table {
@@ -348,7 +355,7 @@
                                     </div>
                                     <div class="d-flex align-items-center" style="font-size: 0.85rem;">
                                         <label class="mb-0 mr-2">Search:</label>
-                                        <input type="search" class="form-control form-control-sm" style="width: 200px;">
+                                        <input type="search" class="form-control form-control-sm" style="width: 120px;">
                                     </div>
                                 </div>
 
