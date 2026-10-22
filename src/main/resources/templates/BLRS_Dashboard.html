@@ -56,23 +56,18 @@
 		}
 
 		/* Zero-height header wrapper to eliminate duplicate document flow spacing */
-		#blrsHeaderWrapper,
+	/*	#blrsHeaderWrapper,
 		#blrsHeaderWrapper html,
 		#blrsHeaderWrapper head,
-		#blrsHeaderWrapper body,
-		.dashboard-body > div:first-of-type {
-			height: 0 !important;
-			max-height: 0 !important;
-			min-height: 0 !important;
-			margin: 0 !important;
-			padding: 0 !important;
-			padding-top: 0 !important;
-			padding-bottom: 0 !important;
-			border: 0 !important;
-			line-height: 0 !important;
-			font-size: 0 !important;
-			overflow: visible !important;
-			display: block !important;
+		#blrsHeaderWrapper body,*/
+		/* Keep the header dropdown above the dashboard */
+		#blrsHeaderWrapper {
+		    position: relative;
+		    z-index: 1050 !important;
+		}
+
+		#blrsHeaderWrapper .dropdown-menu {
+		    z-index: 1060 !important;
 		}
 
 		/* =====================================================================
@@ -114,41 +109,41 @@
 		#blrsPageContent,
 		.dashboard-shell,
 		html body.dashboard-body #blrsPageContent.dashboard-shell {
-			width: 100% !important;
-			max-width: 1540px !important;
-			height: calc(100vh - 70px) !important;
-			max-height: calc(100vh - 70px) !important;
-			min-height: unset !important;
-			margin-left: auto !important;
-			margin-right: auto !important;
-			margin-top: 0 !important;
-			margin-bottom: 0 !important;
-			padding: 4px 18px 6px 18px !important;
-			box-sizing: border-box !important;
-			overflow: hidden !important;
-			overflow-x: hidden !important;
-			overflow-y: hidden !important;
-			display: flex !important;
-			flex-direction: column !important;
-			justify-content: space-between !important;
-		}
+		    width: calc(100% - 36px) !important;
+		    height: calc(100vh - 82px) !important;
+		    max-height: calc(100vh - 82px) !important;
+		    min-height: unset !important;
 
+		    margin: 3px auto 9px auto !important;
+		    padding: 8px 18px !important;
+
+		    border: 1px solid #ced4da !important;
+		    border-radius: 4px !important;
+		    background: #ffffff !important;
+
+		    overflow: hidden !important;
+		    display: flex !important;
+		    flex-direction: column !important;
+		    justify-content: space-between !important;
+		    box-sizing: border-box !important;
+		}
 		/* Topbar View Switcher Tabs (Page 1 vs Page 2) */
 		.topbar-page-tabs {
 			display: inline-flex;
 			align-items: center;
 			background: #f1f5f9;
-			padding: 2px 4px;
+			padding: 1px 1px;
 			border-radius: 4px;
 			border: 1px solid var(--blrs-slate-200);
-			gap: 4px;
+			gap: 1.1px;
+			flex-shrink: 0;
 		}
 
 		.topbar-tab-btn {
 			border: none;
 			background: transparent;
-			padding: 4px 12px;
-			font-size: 11.5px;
+			padding: 4px 8px;
+			font-size: 10.5px;
 			font-weight: 600;
 			color: var(--blrs-slate-600);
 			border-radius: 3px;
@@ -287,7 +282,7 @@
 			background: #ffffff;
 			border: 1px solid var(--blrs-slate-200);
 			border-radius: var(--blrs-border-radius);
-			padding: 4px 14px;
+			padding: 6px 16px;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
@@ -296,20 +291,21 @@
 			box-shadow: var(--blrs-card-shadow);
 			flex-wrap: nowrap;
 			gap: 8px;
-			flex: 0 0 38px;
-			height: 38px;
+			height: 46px;
 			box-sizing: border-box;
 		}
 
 		.topbar-left {
 			display: flex;
 			align-items: center;
-			gap: 10px;
+			gap: 25px;
+			flex: 1 1 auto;
+			min-width: 0;
 			flex-wrap: nowrap;
 		}
 
 		.topbar-title {
-			font-size: 13px;
+			font-size: 14px;
 			font-weight: 700;
 			color: var(--blrs-slate-900);
 			margin: 0;
@@ -332,9 +328,9 @@
 			background-color: #ecfdf5;
 			color: #065f46;
 			border: 1px solid #a7f3d0;
-			padding: 2px 9px;
+			padding: 4px 11px;
 			border-radius: 9999px;
-			font-size: 11px;
+			font-size: 9px;
 			font-weight: 600;
 			letter-spacing: 0.2px;
 		}
@@ -356,7 +352,8 @@
 		.topbar-actions {
 			display: flex;
 			align-items: center;
-			gap: 8px;
+			gap: 6px;
+			flex-shrink: 0;
 			flex-wrap: nowrap;
 		}
 
@@ -364,7 +361,7 @@
 			background-color: #1e3a8a;
 			color: #ffffff !important;
 			border: 1px solid #172554;
-			padding: 5px 14px;
+			padding: 4px 10px;
 			font-size: 12px;
 			font-weight: 600;
 			border-radius: 4px;
@@ -387,7 +384,7 @@
 			background-color: #ffffff;
 			color: var(--blrs-slate-700) !important;
 			border: 1px solid var(--blrs-slate-300, #cbd5e1);
-			padding: 5px 12px;
+			padding: 4px 10px;
 			font-size: 12px;
 			font-weight: 600;
 			border-radius: 4px;
@@ -494,11 +491,12 @@
 		}
 
 		.bar-blue {
-			background-color: #1f77b4;
+			background-color: #6FA8D6;
 		}
 
 		.bar-orange {
-			background: linear-gradient(90deg, #f59e0b 0%, #ea580c 100%);
+			background-color: #80C5C9;
+
 		}
 
 		.bar-coral {
@@ -506,7 +504,8 @@
 		}
 
 		.bar-red {
-			background-color: #dc2626;
+			background-color: #7FC8A4;
+
 		}
 
 		.escalation-metrics {
@@ -595,11 +594,11 @@
 		}
 
 		.swatch-green {
-			background-color: #16a34a;
+			background-color: #86C8A5;
 		}
 
 		.swatch-orange {
-			background-color: #ea580c;
+			background-color: #5794CC;
 		}
 
 		/* =====================================================================
@@ -1160,11 +1159,11 @@
 						labels: ['Paid up', 'In arrears'],
 						datasets: [{
 							data: [paidUpCount, inArrearsCount],
-							backgroundColor: ['#16a34a', '#ea580c'],
-							hoverBackgroundColor: ['#15803d', '#c2410c'],
+							backgroundColor: ['#86C8A5', '#5794CC'],
+							hoverBackgroundColor: ['#62B58A', '#347DBA'],
 							borderWidth: 0
 						}]
-					},
+					}, 
 					options: {
 						responsive: true,
 						maintainAspectRatio: false,
@@ -1199,7 +1198,7 @@
 						labels: ['0-3 mo', '4-6 mo', '7-12 mo', '13-24 mo', '24+ mo'],
 						datasets: [{
 							data: [age0_3, age4_6, age7_12, age13_24, age24p],
-							backgroundColor: ['#0284c7', '#0d9488', '#f59e0b', '#ea580c', '#dc2626'],
+							backgroundColor: ['#B7D5F2', '#9FC5EB', '#86B6E3', '#6FA6D9', '#5794CC'],
 							borderWidth: 0,
 							barPercentage: 0.72,
 							categoryPercentage: 0.82
@@ -1256,14 +1255,14 @@
 						datasets: [{
 							data: [52.0, 22.0, 14.0, 4.0, 1.2, 1.5, 0.6, 0.5],
 							backgroundColor: [
-								'#ea580c',
-								'#f97316',
-								'#f97316',
-								'#f97316',
-								'#f97316',
-								'#f97316',
-								'#f97316',
-								'#f97316'
+							    '#5794CC',
+							    '#86B6E3',
+							    '#86B6E3',
+							    '#86B6E3',
+							    '#86B6E3',
+							    '#86B6E3',
+							    '#86B6E3',
+							    '#86B6E3'
 							],
 							borderWidth: 0,
 							barThickness: 12
@@ -1400,41 +1399,48 @@
 
 	<!-- Strict Single Screen (No-Scroll) Viewport Lock
 	     FIX: <html> gets NO padding-top. Only <body> keeps the 70px navbar offset. -->
-	<style>
-		html {
-			height: 100vh !important;
-			max-height: 100vh !important;
-			margin: 0 !important;
-			padding: 0 !important;            /* html ku padding VENDAAM */
-			overflow: hidden !important;
-			box-sizing: border-box !important;
-		}
-		html body.dashboard-body {
-			height: 100vh !important;
-			max-height: 100vh !important;
-			overflow: hidden !important;
-			overflow-y: hidden !important;
-			overflow-x: hidden !important;
-			padding-top: 70px !important;     /* body mattum */
-			margin: 0 !important;
-			box-sizing: border-box !important;
-		}
-		html body.dashboard-body #blrsPageContent.dashboard-shell {
-			height: calc(100vh - 70px) !important;
-			max-height: calc(100vh - 70px) !important;
-			min-height: unset !important;
-			overflow: hidden !important;
-			overflow-y: hidden !important;
-			overflow-x: hidden !important;
-			padding: 8px 18px 8px 18px !important;
-			margin-top: 0 !important;
-			margin-bottom: 0 !important;
-			display: flex !important;
-			flex-direction: column !important;
-			justify-content: space-between !important;
-			box-sizing: border-box !important;
-		}
-	</style>
+
+			<style>
+			    html {
+			        height: 100% !important;
+			        margin: 0 !important;
+			        padding: 0 !important;
+			        overflow: hidden !important;
+			        box-sizing: border-box !important;
+			    }
+
+			    html body.dashboard-body {
+			        height: 100vh !important;
+			        max-height: 100vh !important;
+			        margin: 0 !important;
+			        padding: 70px 0 0 0 !important;
+			        overflow: hidden !important;
+			        box-sizing: border-box !important;
+			    }
+
+			    html body.dashboard-body #blrsPageContent.dashboard-shell {
+			        width: calc(100% - 66px) !important;
+
+			        /* Space below header and above bottom edge */
+			        height: calc(100vh - 108px) !important;
+			        max-height: calc(100vh - 108px) !important;
+
+					margin: 23px auto 23px auto !important;
+			        padding: 8px 18px !important;
+			        min-height: 0 !important;
+
+			        display: flex !important;
+			        flex-direction: column !important;
+			        justify-content: space-between !important;
+
+			        overflow: hidden !important;
+			        box-sizing: border-box !important;
+			    }
+				
+			
+				
+			</style>
+
 
 	<!-- Main Content: Starts immediately below navbar -->
 	<main id="blrsPageContent" class="dashboard-shell">
@@ -1443,7 +1449,7 @@
 		<div class="dashboard-topbar">
 			<div class="topbar-left">
 				<h4 class="topbar-title">
-					<i class="fas fa-chart-line"></i> LOAN RECOVERY &amp; REMINDER ESCALATION DASHBOARD
+					LOAN RECOVERY &amp; REMINDER ESCALATION DASHBOARD
 				</h4>
 				<span class="live-badge">
 					<span class="live-dot"></span> LIVE &bull; FINACLE CBS CONNECTOR
@@ -1453,16 +1459,16 @@
 			<!-- Page Tab Switcher (Page 1 vs Page 2) -->
 			<div class="topbar-page-tabs">
 				<button type="button" class="topbar-tab-btn active" id="tabBtnPage1" onclick="switchDashboardPage(1)" title="View Arrears & Escalation Analytics">
-					<i class="fas fa-chart-pie mr-1"></i> Arrears Overview <span class="tab-page-badge">1</span>
+				Arrears Overview <span class="tab-page-badge">1</span>
 				</button>
 				<button type="button" class="topbar-tab-btn" id="tabBtnPage2" onclick="switchDashboardPage(2)" title="View Batch Job Pipeline & Execution Alerts">
-					<i class="fas fa-tasks mr-1"></i> Batch Pipeline <span class="tab-page-badge" th:text="${dashboardJobs != null ? #lists.size(dashboardJobs) : '11'}">11</span>
+				Batch Pipeline <span class="tab-page-badge" th:text="${dashboardJobs != null ? #lists.size(dashboardJobs) : '11'}">11</span>
 				</button>
 			</div>
 
 			<div class="topbar-actions">
 				<a href="./Remindergeneration" class="btn-action-primary">
-					<i class="fas fa-paper-plane"></i> Trigger Reminders
+					Trigger Reminders
 				</a>
 				<a href="./Loanaccountprofileinquiry" class="btn-action-secondary">
 					<i class="fas fa-search"></i> Overdue Inquiries
@@ -1548,11 +1554,11 @@
 						</div>
 
 						<!-- Red Callout Box -->
-						<div class="escalation-callout">
+						<!--/<div class="escalation-callout">
 							<span th:text="${unsentRem1Count != null ? unsentRem1Count : 331}">331</span>
 							accounts in arrears have not received a first reminder yet. Run the reminder batch job or generate the letters from
 							<a href="./Remindergeneration" class="callout-link">Reminder generation</a>.
-						</div>
+						</div>-->
 					</div>
 				</div>
 
@@ -1651,7 +1657,7 @@
 					<div class="pipeline-header">
 						<div class="d-flex align-items-center">
 							<h6 class="pipeline-title mb-0">
-								<i class="fas fa-tasks mr-1 text-primary"></i> Core Banking Batch Job Pipeline &amp; Execution Alerts
+								 Core Banking Batch Job Pipeline &amp; Execution Alerts
 							</h6>
 							<span class="badge badge-secondary ml-2" style="font-size: 10px; font-weight: 600;">
 								Scheduled &amp; Automated Recovery Jobs
@@ -1801,7 +1807,7 @@
 				<div class="col-md-6 col-12 page2-col">
 					<div class="bottom-info-card">
 						<div class="bottom-info-header">
-							<i class="fas fa-history text-primary"></i> Recent Loan Recovery Activities
+							Recent Loan Recovery Activities
 						</div>
 						<div class="bottom-info-body">
 							<ul class="activity-list">
@@ -1817,17 +1823,17 @@
 				<div class="col-md-6 col-12 page2-col">
 					<div class="bottom-info-card">
 						<div class="bottom-info-header">
-							<i class="fas fa-shield-alt text-success"></i> System Status &amp; Compliance
+							System Status &amp; Compliance
 						</div>
 						<div class="bottom-info-body">
 							<table class="compliance-table">
 								<tr>
 									<td class="compliance-label">Audit Inquiries:</td>
-									<td><span class="compliance-val-green"><i class="fas fa-check-circle"></i> ACTIVE (All logs captured)</span></td>
+									<td><span class="compliance-val-green">ACTIVE (All logs captured)</span></td>
 								</tr>
 								<tr>
 									<td class="compliance-label">Maker-Checker Auth:</td>
-									<td><span class="compliance-val-green"><i class="fas fa-lock"></i> ENFORCED</span></td>
+									<td><span class="compliance-val-green"> ENFORCED</span></td>
 								</tr>
 								<tr>
 									<td class="compliance-label">Active CBS Connector:</td>
