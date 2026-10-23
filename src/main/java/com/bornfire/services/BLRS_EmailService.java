@@ -26,9 +26,9 @@ public class BLRS_EmailService {
 
     private static final Logger log = LoggerFactory.getLogger(BLRS_EmailService.class);
 
-    @Value("${notification.mail.connect.timeout:8000}") private String connectTimeout;
-    @Value("${notification.mail.read.timeout:8000}")    private String readTimeout;
-    @Value("${notification.mail.write.timeout:8000}")   private String writeTimeout;
+    @Value("${notification.mail.connect.timeout:8000}") private String connectTimeout = "8000";
+    @Value("${notification.mail.read.timeout:8000}")    private String readTimeout = "8000";
+    @Value("${notification.mail.write.timeout:8000}")   private String writeTimeout = "8000";
 
     public JavaMailSenderImpl buildSender(BLRS_EmailSmsParam_Entity p) {
         JavaMailSenderImpl s = new JavaMailSenderImpl();
@@ -45,9 +45,20 @@ public class BLRS_EmailService {
 
         boolean hasAuth = StringUtils.hasText(p.getEmail_pwd());
         if (hasAuth) {
-            String authUser = StringUtils.hasText(p.getAuth_id()) ? p.getAuth_id().trim() : p.getSender_email().trim();
+            // For Gmail and standard mail servers, username must be the email address.
+            // Only fallback to auth_id if sender_email is empty or auth_id explicitly contains '@'.
+            String authUser = StringUtils.hasText(p.getSender_email()) ? p.getSender_email().trim() : "";
+            if (!StringUtils.hasText(authUser) && StringUtils.hasText(p.getAuth_id())) {
+                authUser = p.getAuth_id().trim();
+            }
             s.setUsername(authUser);
-            s.setPassword(p.getEmail_pwd().trim());
+
+            String pwd = p.getEmail_pwd() != null ? p.getEmail_pwd().trim() : "";
+            // Google app passwords are 16 letters and may contain spaces (e.g. "xuip njfg bjkg fzhj")
+            if (host.toLowerCase().contains("gmail.com") || pwd.contains(" ")) {
+                pwd = pwd.replaceAll("\\s+", "");
+            }
+            s.setPassword(pwd);
         } else if (StringUtils.hasText(p.getSender_email())) {
             s.setUsername(p.getSender_email().trim());
         }
@@ -66,22 +77,25 @@ public class BLRS_EmailService {
             props.put("mail.smtp.socketFactory.fallback", "false");
             props.put("mail.smtp.starttls.enable", "false");
             props.put("mail.smtp.starttls.required", "false");
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
         } else if (port == 587) {
             // STARTTLS explicit
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.starttls.required", "true");
             props.put("mail.smtp.ssl.enable", "false");
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
         } else {
             // Standard port 25 or custom internal relay
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.starttls.required", "false");
             props.put("mail.smtp.ssl.enable", "false");
+            props.put("mail.smtp.ssl.protocols", "TLSv1.2");
         }
 
         props.put("mail.smtp.ssl.trust", "*");
-        props.put("mail.smtp.connectiontimeout", connectTimeout);
-        props.put("mail.smtp.timeout", readTimeout);
-        props.put("mail.smtp.writetimeout", writeTimeout);
+        props.put("mail.smtp.connectiontimeout", connectTimeout != null ? connectTimeout : "8000");
+        props.put("mail.smtp.timeout", readTimeout != null ? readTimeout : "8000");
+        props.put("mail.smtp.writetimeout", writeTimeout != null ? writeTimeout : "8000");
         return s;
     }
 
@@ -159,17 +173,29 @@ public class BLRS_EmailService {
         if (!StringUtils.hasText(to)) {
             return "Test recipient email is required.";
         }
+
+        BLRS_EmailSmsParam_Entity testP = new BLRS_EmailSmsParam_Entity();
+        testP.setParam_id(p.getParam_id());
+        testP.setEmail_host(p.getEmail_host());
+        testP.setEmail_port(p.getEmail_port());
+        testP.setSender_email(p.getSender_email());
+        testP.setEmail_pwd(p.getEmail_pwd());
+        testP.setAuth_id(p.getAuth_id());
+        testP.setEmail_flg("Y"); // Always enable for test
+        testP.setSignature_img(p.getSignature_img());
+
         String subject = "BLRS Notification System - Test Email";
         String body = "<div style=\"font-family:Arial,sans-serif;padding:15px;\">"
                 + "<h3 style=\"color:#2563eb;\">Email Notification Test Successful</h3>"
                 + "<p>This is a test notification from the <b>Bank Loan Recovery System (BLRS)</b>.</p>"
-                + "<p>SMTP Host: <b>" + p.getEmail_host() + "</b> (Port: <b>" + p.getEmail_port() + "</b>)</p>"
-                + "<p>Sender: <b>" + p.getSender_email() + "</b></p>"
-                + "<p style=\"color:#64748b;font-size:12px;\">If you received this email, your email notifications are working correctly end-to-end.</p>"
+                + "<p>SMTP Host: <b>" + testP.getEmail_host() + "</b> (Port: <b>" + testP.getEmail_port() + "</b>)</p>"
+                + "<p>Sender: <b>" + testP.getSender_email() + "</b></p>"
+                + "<p>Recipient: <b>" + to + "</b></p>"
+                + "<p style=\"color:#16a34a;font-weight:bold;\">If you received this email, your email notifications are working correctly end-to-end.</p>"
                 + "</div>";
 
-        byte[] sig = (p.getSignature_img() != null && p.getSignature_img().length > 0) ? p.getSignature_img() : null;
-        return send(p, to, subject, body, sig, "lrs_signature", null, null);
+        byte[] sig = (testP.getSignature_img() != null && testP.getSignature_img().length > 0) ? testP.getSignature_img() : null;
+        return send(testP, to, subject, body, sig, "lrs_signature", null, null);
     }
 
     private String getRootMessage(Throwable t) {

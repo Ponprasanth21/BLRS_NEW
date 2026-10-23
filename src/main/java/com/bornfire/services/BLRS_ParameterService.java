@@ -66,7 +66,11 @@ public class BLRS_ParameterService {
 
             // blank password = keep the saved one
             if (form.getEmail_pwd() != null && !form.getEmail_pwd().trim().isEmpty()) {
-                db.setEmail_pwd(form.getEmail_pwd().trim());
+                String pwd = form.getEmail_pwd().trim();
+                if (db.getEmail_host() != null && db.getEmail_host().toLowerCase().contains("gmail.com")) {
+                    pwd = pwd.replaceAll("\\s+", "");
+                }
+                db.setEmail_pwd(pwd);
             }
             if (form.getSms_pwd() != null && !form.getSms_pwd().trim().isEmpty()) {
                 db.setSms_pwd(form.getSms_pwd().trim());
@@ -86,14 +90,40 @@ public class BLRS_ParameterService {
         }
     }
 
-    public String testEmail(String testRecipient) {
+    public String testEmail(BLRS_EmailSmsParam_Entity form, String testRecipient) {
         BLRS_EmailSmsParam_Entity p = getEmailSms();
-        String err = emailService.testConnection(p, testRecipient);
+        if (form != null) {
+            if (form.getEmail_host() != null && !form.getEmail_host().trim().isEmpty()) {
+                p.setEmail_host(form.getEmail_host().trim());
+            }
+            if (form.getEmail_port() != null && !form.getEmail_port().trim().isEmpty()) {
+                p.setEmail_port(form.getEmail_port().trim());
+            }
+            if (form.getSender_email() != null && !form.getSender_email().trim().isEmpty()) {
+                p.setSender_email(form.getSender_email().trim());
+            }
+            if (form.getAuth_id() != null && !form.getAuth_id().trim().isEmpty()) {
+                p.setAuth_id(form.getAuth_id().trim());
+            }
+            if (form.getEmail_pwd() != null && !form.getEmail_pwd().trim().isEmpty()) {
+                String pwd = form.getEmail_pwd().trim();
+                if (p.getEmail_host() != null && p.getEmail_host().toLowerCase().contains("gmail.com")) {
+                    pwd = pwd.replaceAll("\\s+", "");
+                }
+                p.setEmail_pwd(pwd);
+            }
+        }
+        String recipient = (testRecipient != null && !testRecipient.trim().isEmpty()) ? testRecipient.trim() : p.getSender_email();
+        String err = emailService.testConnection(p, recipient);
         if (err == null) {
-            return "SUCCESS: Test email sent successfully to " + (testRecipient != null ? testRecipient : p.getSender_email());
+            return "SUCCESS: Test email sent successfully to " + recipient;
         } else {
             return "FAILED: " + err;
         }
+    }
+
+    public String testEmail(String testRecipient) {
+        return testEmail(null, testRecipient);
     }
 
     public String testSms(String testMobile) {

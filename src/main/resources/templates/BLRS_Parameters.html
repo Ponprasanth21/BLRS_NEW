@@ -316,12 +316,18 @@
 			var btn = $("#btnTestEmail");
 			var old = btn.text();
 			btn.prop("disabled", true).text("Testing...");
+
+			var formData = new FormData(document.getElementById("parameterForm"));
+			formData.append("toEmail", to.trim());
+
 			$.ajax({
 				url: "testEmail",
 				type: "POST",
-				data: { toEmail: to.trim() },
+				data: formData,
+				processData: false,
+				contentType: false,
 				success: function (res) { alert(res); },
-				error: function () { alert("Failed to communicate with test email endpoint."); },
+				error: function (xhr) { alert("Failed to communicate with test email endpoint: " + (xhr.responseText || "Server error")); },
 				complete: function () { btn.prop("disabled", false).text(old); }
 			});
 		}

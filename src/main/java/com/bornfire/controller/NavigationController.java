@@ -864,8 +864,9 @@ public class NavigationController {
 
 		@RequestMapping(value = "testEmail", method = RequestMethod.POST)
 		@ResponseBody
-		public String testEmail(@RequestParam(value = "toEmail", required = false) String toEmail) {
-			return parameterService.testEmail(toEmail);
+		public String testEmail(@ModelAttribute BLRS_EmailSmsParam_Entity emailSms,
+				@RequestParam(value = "toEmail", required = false) String toEmail) {
+			return parameterService.testEmail(emailSms, toEmail);
 		}
 
 		@RequestMapping(value = "testSms", method = RequestMethod.POST)
