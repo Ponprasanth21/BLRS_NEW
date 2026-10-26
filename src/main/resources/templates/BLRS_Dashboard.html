@@ -129,40 +129,46 @@
 		}
 		/* Topbar View Switcher Tabs (Page 1 vs Page 2) */
 		.topbar-page-tabs {
-			display: inline-flex;
-			align-items: center;
-			background: #f1f5f9;
-			padding: 1px 1px;
-			border-radius: 4px;
-			border: 1px solid var(--blrs-slate-200);
-			gap: 1.1px;
-			flex-shrink: 0;
+		    display: inline-flex;
+		    align-items: center;
+		    background: transparent;
+		    padding: 0;
+		    border: none;
+		    border-radius: 0;
+		    gap: 6px;
+		    flex-shrink: 0;
 		}
 
 		.topbar-tab-btn {
 			border: none;
-			background: transparent;
+			background-color: #ffffff;
+			color: var(--blrs-slate-700) !important;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
 			padding: 4px 8px;
-			font-size: 10.5px;
+			font-size: 12px;
 			font-weight: 600;
-			color: var(--blrs-slate-600);
-			border-radius: 3px;
 			cursor: pointer;
 			display: inline-flex;
 			align-items: center;
+			border-radius: 4px;
 			transition: all 0.15s ease-in-out;
 		}
 
 		.topbar-tab-btn:hover {
-			color: var(--blrs-slate-900);
-			background: rgba(255, 255, 255, 0.7);
+			background-color: #f1f5f9  !important;
+			border-color: #94a3b8 !important;
+			color: var(--blrs-slate-900) !important;
+			
 		}
 
 		.topbar-tab-btn.active {
-			background: #ffffff;
-			color: #1e3a8a;
-			font-weight: 700;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			background-color: #ffffff !important;
+			color: var(--blrs-slate-700) !important;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
+			font-size: 12px;
+			font-weight: 600;
+			border-radius: 4px;
+			box-shadow: none !important;
 		}
 
 		.tab-page-badge {
@@ -176,8 +182,46 @@
 		}
 
 		.topbar-tab-btn.active .tab-page-badge {
-			background: #1e3a8a;
-			color: #ffffff;
+			background-color: #e2e8f0 !important;
+				border-color: transparent !important;
+			  color: var(--blrs-slate-900) !important;
+			
+		}
+		
+		/* Default state */
+		.topbar-tab-btn {
+		    background-color: #ffffff;
+		    border: 1px solid var(--blrs-slate-300, #cbd5e1);
+		}
+
+		
+		.topbar-tab-btn:focus,
+		.topbar-tab-btn:active,
+		.topbar-tab-btn:focus-visible,
+		.topbar-tab-btn.active:focus {
+		    outline: none !important;
+		    box-shadow: none !important;
+		    border-color: var(--blrs-slate-300, #cbd5e1) !important;
+		}
+		
+		/* Default and selected tab should remain white */
+		.topbar-tab-btn,
+		.topbar-tab-btn.active {
+		    background: #ffffff !important;
+		    color: var(--blrs-slate-700) !important;
+		    box-shadow: none !important;
+		}
+
+		/* Grey background only when mouse hovers */
+		.topbar-tab-btn:hover {
+		    background: #f1f5f9 !important;
+		    border-color: #94a3b8 !important;
+		    color: var(--blrs-slate-900) !important;
+		}
+
+		/* Keep badge background unchanged */
+		.topbar-tab-btn .tab-page-badge {
+		    background: #e2e8f0 !important;
 		}
 
 		/* Page View Transitions (Stretches to 100% of remaining height) */
@@ -332,7 +376,8 @@
 			border-radius: 9999px;
 			font-size: 9px;
 			font-weight: 600;
-			letter-spacing: 0.2px;
+/*/			font-family: inherit;
+*/			letter-spacing: 0.2px;
 		}
 
 		.live-dot {
@@ -358,9 +403,9 @@
 		}
 
 		.btn-action-primary {
-			background-color: #1e3a8a;
-			color: #ffffff !important;
-			border: 1px solid #172554;
+			background-color: #ffffff;
+			color: var(--blrs-slate-700) !important;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
 			padding: 4px 10px;
 			font-size: 12px;
 			font-weight: 600;
@@ -374,10 +419,9 @@
 		}
 
 		.btn-action-primary:hover {
-			background-color: #1d4ed8;
-			color: #ffffff !important;
-			transform: translateY(-1px);
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+			background-color: #f8fafc;
+			border-color: #94a3b8;
+			color: var(--blrs-slate-900) !important;
 		}
 
 		.btn-action-secondary {
@@ -1474,7 +1518,7 @@
 					<i class="fas fa-search"></i> Overdue Inquiries
 				</a>
 				<a href="./Batchjobexecution" class="btn-action-secondary">
-					<i class="fas fa-cogs"></i> Batch Jobs
+					 Batch Jobs
 				</a>
 			</div>
 		</div>
