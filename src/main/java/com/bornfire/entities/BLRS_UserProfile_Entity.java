@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "BLRS_USER_PROFILE", schema = "blrs")
-public class BLRS_UserProfile_Entity {
+public class BLRS_UserProfile_Entity extends BaseAuditEntity {
 	private static final long serialVersionUID = 1L;
 	private String bank_code;
 	private String bank_name;
@@ -69,7 +69,8 @@ public class BLRS_UserProfile_Entity {
 	private String role_desc;
 	private String permissions;
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
-	private String per_effctive_date;
+	@javax.persistence.Temporal(javax.persistence.TemporalType.DATE)
+	private Date per_effctive_date;
 	private String admin;
 	private String xbrl_configuration;
 	private String xbrl_report;
@@ -81,13 +82,6 @@ public class BLRS_UserProfile_Entity {
 	private String general_inq;
 	private String audit_inq;
 	private String channel;
-	private String entry_user;
-	private Date entry_time;
-	private String auth_user;
-	private Date auth_time;
-	private String modify_user;
-	private Date modify_time;
-	private String entity_flg;
 	private String auth_flg;
 	private String modify_flg;
 	private String del_flg;
@@ -313,11 +307,11 @@ public class BLRS_UserProfile_Entity {
 		this.permissions = permissions;
 	}
 
-	public String getPer_effctive_date() {
+	public Date getPer_effctive_date() {
 		return per_effctive_date;
 	}
 
-	public void setPer_effctive_date(String per_effctive_date) {
+	public void setPer_effctive_date(Date per_effctive_date) {
 		this.per_effctive_date = per_effctive_date;
 	}
 
@@ -578,7 +572,7 @@ public class BLRS_UserProfile_Entity {
 			String login_low, String login_high, Date disable_start_date, Date disable_end_date, String password,
 			Date pass_exp_date, String user_status, String login_status, String virtual_flg, String work_class,
 			String mob_number, String email_id, String role_id, String role_desc, String permissions,
-			String per_effctive_date, String admin, String xbrl_configuration, String xbrl_report, String scheduler,
+			Date per_effctive_date, String admin, String xbrl_configuration, String xbrl_report, String scheduler,
 			String execution, String mis_reports, String xml_reports, String archivel, String general_inq,
 			String audit_inq, String channel, String entry_user, Date entry_time, String auth_user, Date auth_time,
 			String modify_user, Date modify_time, String entity_flg, String auth_flg, String modify_flg, String del_flg,
@@ -652,36 +646,67 @@ public class BLRS_UserProfile_Entity {
 	}
 
 	public boolean isAccountNonExpired() {
-		if (this.getAcc_exp_date().after(new Date())) {
+		// Guard: if no expiry date set, treat account as non-expired
+		if (this.getAcc_exp_date() == null) {
 			return true;
-		} else {
-			return false;
 		}
-
+		return this.getAcc_exp_date().after(new Date());
 	}
 
 	public boolean isAccountNonLocked() {
-		boolean status = true;
-		if (this.getUser_locked_flg().equals("Y")) {
-			status = false;
-		} else {
-			status = true;
+		// Guard against null
+		if (this.getUser_locked_flg() == null) {
+			return true;
 		}
-
-		return status;
+		return !"Y".equalsIgnoreCase(this.getUser_locked_flg());
 	}
 
 	public boolean isCredentialsNonExpired() {
-		return true;
+		// Credentials are expired when pass_exp_date is before today
+		if (this.getPass_exp_date() == null) {
+			return true; // No expiry set -> treat as non-expired
+		}
+		return this.getPass_exp_date().after(new Date());
+	}
+
+	public boolean isPasswordExpiringWithinDays(int days) {
+		if (this.getPass_exp_date() == null) {
+			return false;
+		}
+		long now = System.currentTimeMillis();
+		long exp = this.getPass_exp_date().getTime();
+		if (exp <= now) {
+			return false; // already expired
+		}
+		long diffDays = (exp - now) / (1000L * 60 * 60 * 24);
+		return diffDays <= days;
+	}
+
+	public long getDaysUntilPasswordExpiry() {
+		if (this.getPass_exp_date() == null) {
+			return -1;
+		}
+		long diff = this.getPass_exp_date().getTime() - System.currentTimeMillis();
+		return Math.max(0, diff / (1000L * 60 * 60 * 24));
 	}
 
 	public boolean isEnabled() {
-
-		if (this.getDisable_flg().equals("Y") || this.entity_flg.equals("N")) {
-			return true;
-		} else {
-			return true;
+		// Disabled flag: Y = account is disabled
+		if ("Y".equalsIgnoreCase(this.getDisable_flg())) {
+			return false;
 		}
+		// user_status Inactive also disables login
+		if ("Inactive".equalsIgnoreCase(this.getUser_status())) {
+			return false;
+		}
+		// Check date-range disable: blocked between disable_start_date and disable_end_date
+		Date now = new Date();
+		if (this.getDisable_start_date() != null && this.getDisable_end_date() != null) {
+			if (!now.before(this.getDisable_start_date()) && !now.after(this.getDisable_end_date())) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/*
@@ -712,10 +737,21 @@ public class BLRS_UserProfile_Entity {
 	 */
 
 	public boolean isLoginAllowed() {
-
-		if (this.getLogin_flg().equals("Y")) {
-			return false;
-		} else {
+		// If no time-window is configured, allow login at any time
+		if (this.getLogin_low() == null || this.getLogin_low().trim().isEmpty()
+				|| this.getLogin_high() == null || this.getLogin_high().trim().isEmpty()) {
+			return true;
+		}
+		try {
+			java.text.DateFormat fmt = new java.text.SimpleDateFormat("HH:mm");
+			Date loginLow  = fmt.parse(this.getLogin_low().trim());
+			Date loginHigh = fmt.parse(this.getLogin_high().trim());
+			// Compare only time portion
+			String nowStr = new java.text.SimpleDateFormat("HH:mm").format(new Date());
+			Date now = fmt.parse(nowStr);
+			return (!now.before(loginLow)) && (!now.after(loginHigh));
+		} catch (java.text.ParseException e) {
+			// If parsing fails, allow login (do not block users due to config error)
 			return true;
 		}
 	}

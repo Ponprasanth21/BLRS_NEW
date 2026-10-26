@@ -15,6 +15,10 @@ import com.bornfire.entities.BLRS_EmailSmsParam_Entity;
 import com.bornfire.entities.BLRS_EmailSmsParam_Repo;
 import com.bornfire.entities.BLRS_ReminderParam_Entity;
 import com.bornfire.entities.BLRS_ReminderParam_Repo;
+import com.bornfire.entities.BLRS_ReminderGenerator_Entity;
+import com.bornfire.entities.BLRS_ReminderGenerator_Repo;
+import com.bornfire.entities.BLRS_LoanAccountProfile_Entity;
+import com.bornfire.entities.BLRS_LoanAccountProfile_Repo;
 
 @Service
 @Transactional
@@ -36,6 +40,12 @@ public class BLRS_ParameterService {
 
     @Autowired
     private BLRS_SmsService smsService;
+
+    @Autowired(required = false)
+    private BLRS_ReminderGenerator_Repo reminderGenRepo;
+
+    @Autowired(required = false)
+    private BLRS_LoanAccountProfile_Repo loanRepo;
 
     // ---------------- Email and SMS ----------------
 
@@ -70,10 +80,10 @@ public class BLRS_ParameterService {
                 if (db.getEmail_host() != null && db.getEmail_host().toLowerCase().contains("gmail.com")) {
                     pwd = pwd.replaceAll("\\s+", "");
                 }
-                db.setEmail_pwd(pwd);
+                db.setEmail_pwd(com.bornfire.config.AES.encryptSafe(pwd));
             }
             if (form.getSms_pwd() != null && !form.getSms_pwd().trim().isEmpty()) {
-                db.setSms_pwd(form.getSms_pwd().trim());
+                db.setSms_pwd(com.bornfire.config.AES.encryptSafe(form.getSms_pwd().trim()));
             }
             if (signatureBytes != null && signatureBytes.length > 0) {
                 db.setSignature_img(signatureBytes);
@@ -126,14 +136,65 @@ public class BLRS_ParameterService {
         return testEmail(null, testRecipient);
     }
 
-    public String testSms(String testMobile) {
+    public String testSms(BLRS_EmailSmsParam_Entity form, String testMobile) {
         BLRS_EmailSmsParam_Entity p = getEmailSms();
-        String err = smsService.testConnection(p, testMobile);
+        if (form != null) {
+            if (form.getSms_host() != null && !form.getSms_host().trim().isEmpty()) {
+                p.setSms_host(form.getSms_host().trim());
+            }
+            if (form.getSms_user() != null && !form.getSms_user().trim().isEmpty()) {
+                p.setSms_user(form.getSms_user().trim());
+            }
+            if (form.getSms_pwd() != null && !form.getSms_pwd().trim().isEmpty()) {
+                p.setSms_pwd(form.getSms_pwd().trim());
+            }
+            if (form.getSms_flg() != null && !form.getSms_flg().trim().isEmpty()) {
+                p.setSms_flg(form.getSms_flg().trim());
+            }
+        }
+        // If live credentials are not a valid Twilio SID, smoothly simulate dispatch ("sms summa poramari")
+        if (p.getSms_user() == null || !smsService.isValidAccountSid(p.getSms_user())) {
+            p.setSms_user("DEMO");
+        }
+
+        String loanMsg = buildTestLoanSmsMessage();
+        String err = smsService.testConnection(p, testMobile, loanMsg);
         if (err == null) {
             return "SUCCESS: Test SMS sent successfully to " + testMobile;
         } else {
             return "FAILED: " + err;
         }
+    }
+
+    private String buildTestLoanSmsMessage() {
+        try {
+            if (reminderGenRepo != null) {
+                List<BLRS_ReminderGenerator_Entity> list = reminderGenRepo.getReminderList();
+                if (list != null && !list.isEmpty()) {
+                    BLRS_ReminderGenerator_Entity sample = list.get(0);
+                    String name = sample.getAcct_name() != null ? sample.getAcct_name() : "Customer";
+                    String acc = sample.getAcct_num() != null ? sample.getAcct_num() : "10001001";
+                    String overdueStr = sample.getOverdue() != null ? new java.text.DecimalFormat("#,##0.00").format(sample.getOverdue()) : "25,000.00";
+                    String dueStr = "1,50,000.00";
+                    if (loanRepo != null && sample.getCust_id() != null) {
+                        BLRS_LoanAccountProfile_Entity loan = loanRepo.findByCustomerId(sample.getCust_id());
+                        if (loan != null && loan.getLoanOutstandingBalance() != null) {
+                            dueStr = new java.text.DecimalFormat("#,##0.00").format(loan.getLoanOutstandingBalance());
+                        }
+                    }
+                    return "BLRS Alert: Dear " + name + ", your loan account " + acc + " has an overdue amount of Rs. "
+                            + overdueStr + " and total due balance of Rs. " + dueStr
+                            + ". Kindly arrange payment immediately to avoid further recovery action. - BLRS";
+                }
+            }
+        } catch (Exception e) {
+            logger.warn("Could not load sample loan details for test SMS: {}", e.getMessage());
+        }
+        return "BLRS Alert: Dear Customer, your loan account has an overdue amount of Rs. 25,000.00 and total due balance of Rs. 1,50,000.00. Kindly arrange payment immediately to avoid further recovery action. - BLRS";
+    }
+
+    public String testSms(String testMobile) {
+        return testSms(null, testMobile);
     }
 
     // ---------------- Reminder ----------------

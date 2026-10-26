@@ -230,7 +230,16 @@
         }
 
         function back() {
-            window.history.back();
+            var detailSec = document.getElementById("detailSection");
+            if (detailSec && detailSec.style.display !== "none") {
+                goBackToList();
+            } else {
+                window.history.back();
+            }
+        }
+
+        function Back() {
+            back();
         }
 		
 
@@ -374,66 +383,72 @@
                                     </thead>
 
 									<tbody>
-									    <tr th:each="acct : ${loanDetails}"
-									        th:attr="
-									            data-customer-id=${acct.customerId},
-									            data-account-number=${acct.accountNumber},
-									            data-borrower-name=${acct.borrowerName},
-									            data-mailing-address=${acct.mailingAddress},
-									            data-email-id=${acct.emailId},
-									            data-mobile-no=${acct.mobileNo},
-									            data-loanee-reminder=${acct.loaneeReminder},
-									            data-scheme=${acct.scheme},
-									            data-loan-disbursement-date=${acct.loanDisbursementDate},
-									            data-loan-amount-applied=${acct.loanAmountApplied},
-									            data-loan-outstanding-balance=${acct.loanOutstandingBalance},
-									            data-loan-capital-arrears=${acct.loanCapitalArrears},
-									            data-loan-interest-arrears=${acct.loanInterestArrears},
-									            data-number-of-guarantors=${acct.numberOfGuarantors},
-									            data-actual-interest-rate=${acct.actualInterestRate},
-									            data-number-of-months-in-arrears=${acct.numberOfMonthsInArrears},
-									            data-payments-received=${acct.paymentsReceived},
-									            data-overdue-department=${acct.overdueDepartment},
-									            data-overdue-record-date=${acct.overdueRecordDate},
-									            data-overdue-disbursement-date=${acct.overdueDisbursementDate},
-									            data-overdue-loan-amount=${acct.overdueLoanAmount},
-									            data-overdue-outstanding-balance=${acct.overdueOutstandingBalance},
-									            data-overdue-interest-rate=${acct.overdueInterestRate},
-									            data-total-arrears=${acct.totalArrears},
-									            data-overdue-capital-arrears=${acct.overdueCapitalArrears},
-									            data-overdue-interest-arrears=${acct.overdueInterestArrears},
-									            data-overdue-month-arrears=${acct.overdueMonthArrears},
-									            data-reminder-sl-no=${acct.reminderSlNo},
-									            data-reminder-overdues=${acct.reminderOverdues},
-									            data-reminder-age=${acct.reminderAge},
-									            data-reminder-number=${acct.reminderNumber},
-									            data-reminder-date=${acct.reminderDate},
-									            data-courier-postal-reference=${acct.courierPostalReference},
-									            data-courier-postal-acknowledgement=${acct.courierPostalAcknowledgement},
-									            data-reminder-loanee=${acct.reminderLoanee},
-									            data-reminder-guarantor=${acct.reminderGuarantor},
-									            data-recovery-record-date=${acct.recoveryRecordDate},
-									            data-recovery-loan-outstanding=${acct.recoveryLoanOutstanding},
-									            data-recovery-principal=${acct.recoveryPrincipal},
-									            data-recovery-interest=${acct.recoveryInterest},
-									            data-recovery-total=${acct.recoveryTotal},
-									            data-recovery-reminder-date=${acct.recoveryReminderDate},
-									            data-recovery-date=${acct.recoveryDate},
-									            data-recovery-amount=${acct.recoveryAmount},
-									            data-recovery-overdues=${acct.recoveryOverdues},
-									            data-recovery-age=${acct.recoveryAge},
-									            data-recovery-status=${acct.recoveryStatus}"
-									        onclick="openDetail(this)"
-									        style="cursor: pointer;">
+									    <th:block th:if="${loanDetails != null and !#lists.isEmpty(loanDetails)}">
+									        <tr th:each="acct : ${loanDetails}"
+									            th:if="${acct != null}"
+									            th:attr="
+									                data-customer-id=${acct?.customerId},
+									                data-account-number=${acct?.accountNumber},
+									                data-borrower-name=${acct?.borrowerName},
+									                data-mailing-address=${acct?.mailingAddress},
+									                data-email-id=${acct?.emailId},
+									                data-mobile-no=${acct?.mobileNo},
+									                data-loanee-reminder=${acct?.loaneeReminder},
+									                data-scheme=${acct?.scheme},
+									                data-loan-disbursement-date=${acct?.loanDisbursementDate},
+									                data-loan-amount-applied=${acct?.loanAmountApplied},
+									                data-loan-outstanding-balance=${acct?.loanOutstandingBalance},
+									                data-loan-capital-arrears=${acct?.loanCapitalArrears},
+									                data-loan-interest-arrears=${acct?.loanInterestArrears},
+									                data-number-of-guarantors=${acct?.numberOfGuarantors},
+									                data-actual-interest-rate=${acct?.actualInterestRate},
+									                data-number-of-months-in-arrears=${acct?.numberOfMonthsInArrears},
+									                data-payments-received=${acct?.paymentsReceived},
+									                data-overdue-department=${acct?.overdueDepartment},
+									                data-overdue-record-date=${acct?.overdueRecordDate},
+									                data-overdue-disbursement-date=${acct?.overdueDisbursementDate},
+									                data-overdue-loan-amount=${acct?.overdueLoanAmount},
+									                data-overdue-outstanding-balance=${acct?.overdueOutstandingBalance},
+									                data-overdue-interest-rate=${acct?.overdueInterestRate},
+									                data-total-arrears=${acct?.totalArrears},
+									                data-overdue-capital-arrears=${acct?.overdueCapitalArrears},
+									                data-overdue-interest-arrears=${acct?.overdueInterestArrears},
+									                data-overdue-month-arrears=${acct?.overdueMonthArrears},
+									                data-reminder-sl-no=${acct?.reminderSlNo},
+									                data-reminder-overdues=${acct?.reminderOverdues},
+									                data-reminder-age=${acct?.reminderAge},
+									                data-reminder-number=${acct?.reminderNumber},
+									                data-reminder-date=${acct?.reminderDate},
+									                data-courier-postal-reference=${acct?.courierPostalReference},
+									                data-courier-postal-acknowledgement=${acct?.courierPostalAcknowledgement},
+									                data-reminder-loanee=${acct?.reminderLoanee},
+									                data-reminder-guarantor=${acct?.reminderGuarantor},
+									                data-recovery-record-date=${acct?.recoveryRecordDate},
+									                data-recovery-loan-outstanding=${acct?.recoveryLoanOutstanding},
+									                data-recovery-principal=${acct?.recoveryPrincipal},
+									                data-recovery-interest=${acct?.recoveryInterest},
+									                data-recovery-total=${acct?.recoveryTotal},
+									                data-recovery-reminder-date=${acct?.recoveryReminderDate},
+									                data-recovery-date=${acct?.recoveryDate},
+									                data-recovery-amount=${acct?.recoveryAmount},
+									                data-recovery-overdues=${acct?.recoveryOverdues},
+									                data-recovery-age=${acct?.recoveryAge},
+									                data-recovery-status=${acct?.recoveryStatus}"
+									            onclick="openDetail(this)"
+									            style="cursor: pointer;">
 
-									        <td th:text="${acct.scheme != null ? acct.scheme : '-'}">-</td>
-									        <td th:text="${acct.customerId != null ? acct.customerId : '-'}">-</td>
-									        <td th:text="${acct.accountNumber != null ? acct.accountNumber : '-'}">-</td>
-									        <td th:text="${acct.borrowerName != null ? acct.borrowerName : '-'}">-</td>
-									        <td class="text-right"
-									            th:text="${acct.totalArrears != null ? acct.totalArrears : 0}">0</td>
-									        <td th:text="${acct.recoveryAge != null ? acct.recoveryAge : 0}">0</td>
-									        <td th:text="${acct.recoveryStatus != null ? acct.recoveryStatus : '-'}">-</td>
+									            <td th:text="${acct?.scheme != null ? acct.scheme : '-'}">-</td>
+									            <td th:text="${acct?.customerId != null ? acct.customerId : '-'}">-</td>
+									            <td th:text="${acct?.accountNumber != null ? acct.accountNumber : '-'}">-</td>
+									            <td th:text="${acct?.borrowerName != null ? acct.borrowerName : '-'}">-</td>
+									            <td class="text-right"
+									                th:text="${acct?.totalArrears != null ? acct.totalArrears : 0}">0</td>
+									            <td th:text="${acct?.recoveryAge != null ? acct.recoveryAge : 0}">0</td>
+									            <td th:text="${acct?.recoveryStatus != null ? acct.recoveryStatus : '-'}">-</td>
+									        </tr>
+									    </th:block>
+									    <tr th:if="${loanDetails == null or #lists.isEmpty(loanDetails)}">
+									        <td colspan="7" class="text-center text-muted" style="padding: 20px;">No loan accounts available</td>
 									    </tr>
 									</tbody>
 
@@ -441,7 +456,7 @@
 
                                 <!-- Pagination / Info Bar -->
                                 <div class="d-flex justify-content-between align-items-center mt-3" style="font-size: 0.85rem;">
-                                    <div>Showing 1 to 10 of 3,015 entries</div>
+                                    <div th:text="${loanDetails != null ? 'Total Records: ' + #lists.size(loanDetails) : 'Showing 0 entries'}">Showing 0 entries</div>
                                     <nav>
                                         <ul class="pagination pagination-sm mb-0">
                                             <li class="page-item"><a class="page-link" href="#">Previous</a></li>

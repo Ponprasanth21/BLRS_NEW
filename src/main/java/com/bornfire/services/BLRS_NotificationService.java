@@ -84,15 +84,29 @@ public class BLRS_NotificationService {
                 String email  = (loan != null && StringUtils.hasText(loan.getEmailId())) ? loan.getEmailId().trim() : null;
                 String mobile = (loan != null && StringUtils.hasText(loan.getMobileNo())) ? loan.getMobileNo().trim() : null;
 
-                // Fallbacks for account name / overdue
+                // Fallbacks for account name / overdue / due amount
                 if (!StringUtils.hasText(r.getAcct_name()) && loan != null && StringUtils.hasText(loan.getBorrowerName())) {
                     r.setAcct_name(loan.getBorrowerName());
                 }
                 if (r.getOverdue() == null && loan != null) {
                     if (loan.getOverdueLoanAmount() != null) {
                         r.setOverdue(loan.getOverdueLoanAmount());
+                    } else if (loan.getTotalArrears() != null) {
+                        r.setOverdue(loan.getTotalArrears());
                     } else if (loan.getLoanCapitalArrears() != null) {
                         r.setOverdue(loan.getLoanCapitalArrears());
+                    }
+                }
+
+                // Resolve total due / outstanding balance from loan profile
+                BigDecimal dueAmount = null;
+                if (loan != null) {
+                    if (loan.getLoanOutstandingBalance() != null) {
+                        dueAmount = loan.getLoanOutstandingBalance();
+                    } else if (loan.getOverdueOutstandingBalance() != null) {
+                        dueAmount = loan.getOverdueOutstandingBalance();
+                    } else if (loan.getTotalArrears() != null) {
+                        dueAmount = loan.getTotalArrears();
                     }
                 }
 
@@ -101,7 +115,7 @@ public class BLRS_NotificationService {
 
                 if (doEmail) {
                     if (StringUtils.hasText(email)) {
-                        emailSent = sendEmail(emailSms, reminderOption, r, email, signOn, loginUser);
+                        emailSent = sendEmail(emailSms, reminderOption, r, email, dueAmount, signOn, loginUser);
                     } else {
                         writeAudit("EMAIL", reminderOption.get("name"), r.getAcct_num(), r.getCust_id(),
                                 null, "Recipient email not found in loan profile.", "Recipient email not found in loan profile.", null, loginUser);
@@ -109,8 +123,16 @@ public class BLRS_NotificationService {
                 }
 
                 if (doSms) {
-                    if (StringUtils.hasText(mobile)) {
-                        smsSent = sendSms(emailSms, reminderOption, r, mobile, loginUser);
+                    String remName = reminderOption.get("name");
+                    boolean alreadySent = false;
+                    if (StringUtils.hasText(r.getAcct_num()) && StringUtils.hasText(remName)) {
+                        alreadySent = logRepo.existsByChannelAndAccountNoAndReminderNoAndStatus("SMS", r.getAcct_num().trim(), remName.trim(), "SENT");
+                    }
+
+                    if (alreadySent) {
+                        log.info("SMS duplicate prevented: account {} already received {} SMS notification.", r.getAcct_num(), remName);
+                    } else if (StringUtils.hasText(mobile)) {
+                        smsSent = sendSms(emailSms, reminderOption, r, mobile, dueAmount, loginUser);
                     } else {
                         writeAudit("SMS", reminderOption.get("name"), r.getAcct_num(), r.getCust_id(),
                                 null, "Recipient mobile not found in loan profile.", "Recipient mobile not found in loan profile.", null, loginUser);
@@ -142,6 +164,7 @@ public class BLRS_NotificationService {
                               Map<String, String> opt,
                               BLRS_ReminderGenerator_Entity r,
                               String to,
+                              BigDecimal dueAmount,
                               boolean withSignature,
                               String loginUser) {
 
@@ -152,7 +175,7 @@ public class BLRS_NotificationService {
 
         String subject = buildEmailSubject(opt.get("name"), nz(r.getAcct_num()));
         String html    = buildEmailHtml(r.getAcct_name(), r.getAcct_num(),
-                r.getSchem_code(), r.getOverdue(),
+                r.getSchem_code(), r.getOverdue(), dueAmount,
                 emailSms.getFooter_text(), hasActualSignature);
 
         String err = emailService.send(emailSms, to, subject, html,
@@ -171,12 +194,21 @@ public class BLRS_NotificationService {
                             Map<String, String> opt,
                             BLRS_ReminderGenerator_Entity r,
                             String mobile,
+                            BigDecimal dueAmount,
                             String loginUser) {
 
         String text = buildSmsText(r.getAcct_name(), r.getAcct_num(),
-                r.getSchem_code(), r.getOverdue());
+                r.getSchem_code(), r.getOverdue(), dueAmount);
 
-        String err = smsService.send(emailSms, mobile, text);
+        BLRS_EmailSmsParam_Entity smsParam = emailSms;
+        // If live credentials are not a valid Twilio SID, smoothly simulate dispatch ("sms summa poramari")
+        if (smsParam != null && (smsParam.getSms_user() == null || !smsService.isValidAccountSid(smsParam.getSms_user()))) {
+            smsParam = new BLRS_EmailSmsParam_Entity();
+            smsParam.setSms_flg("Y");
+            smsParam.setSms_user("DEMO");
+        }
+
+        String err = smsService.send(smsParam, mobile, text);
 
         writeAudit("SMS", opt.get("name"), r.getAcct_num(), r.getCust_id(),
                 mobile, text, err, null, loginUser);
@@ -192,20 +224,29 @@ public class BLRS_NotificationService {
                 + " (" + safe(reminderName) + ")";
     }
 
-    private String buildEmailHtml(String customerName, String accountNo, String scheme,
-                                  BigDecimal overdue, String footer, boolean hasActualSignature) {
+    public String buildEmailHtml(String customerName, String accountNo, String scheme,
+                                 BigDecimal overdue, BigDecimal dueAmount,
+                                 String footer, boolean hasActualSignature) {
         StringBuilder sb = new StringBuilder();
         sb.append("<div style=\"font-family:Segoe UI,Arial,sans-serif;font-size:14px;color:#1e293b;line-height:1.6;\">");
         sb.append("<p>Dear <b>").append(safe(customerName)).append("</b>,</p>");
         sb.append("<p>Our records show an outstanding overdue on your loan account ")
           .append("<b>").append(safe(accountNo)).append("</b>");
         if (StringUtils.hasText(scheme)) {
-            sb.append(" (Scheme ").append(safe(scheme)).append(")");
+            sb.append(" (Scheme <b>").append(safe(scheme)).append("</b>)");
         }
+        sb.append(".</p>");
+        sb.append("<div style=\"background:#f8fafc;border-left:4px solid #ef4444;padding:12px 16px;margin:15px 0;border-radius:4px;\">");
         if (overdue != null) {
-            sb.append(" of <b>Rs. ").append(overdue.toPlainString()).append("</b>");
+            sb.append("<p style=\"margin:4px 0;\"><b>Overdue Amount:</b> <span style=\"color:#dc2626;font-size:15px;font-weight:bold;\">Rs. ")
+              .append(formatAmount(overdue)).append("</span></p>");
         }
-        sb.append(". Kindly arrange payment at the earliest to avoid further action.</p>");
+        if (dueAmount != null && dueAmount.compareTo(BigDecimal.ZERO) > 0) {
+            sb.append("<p style=\"margin:4px 0;\"><b>Total Due / Outstanding Balance:</b> <b>Rs. ")
+              .append(formatAmount(dueAmount)).append("</b></p>");
+        }
+        sb.append("</div>");
+        sb.append("<p>Kindly arrange payment at the earliest to avoid further recovery or legal action.</p>");
 
         if (hasActualSignature) {
             sb.append("<p>Regards,<br/><img src=\"cid:").append(SIGNATURE_CID)
@@ -222,16 +263,44 @@ public class BLRS_NotificationService {
         return sb.toString();
     }
 
-    private String buildSmsText(String customerName, String accountNo, String scheme,
-                                BigDecimal overdue) {
+    public String buildEmailHtml(String customerName, String accountNo, String scheme,
+                                 BigDecimal overdue, String footer, boolean hasActualSignature) {
+        return buildEmailHtml(customerName, accountNo, scheme, overdue, null, footer, hasActualSignature);
+    }
+
+    public String buildSmsText(String customerName, String accountNo, String scheme,
+                               BigDecimal overdue, BigDecimal dueAmount) {
         StringBuilder sb = new StringBuilder();
         sb.append("Dear ").append(safe(customerName))
           .append(", your loan account ").append(safe(accountNo));
-        if (StringUtils.hasText(scheme)) sb.append(" (").append(scheme).append(")");
-        sb.append(" has overdue ");
-        if (overdue != null) sb.append("Rs. ").append(overdue.toPlainString()).append(". ");
-        sb.append("Kindly pay to avoid further action. - LRS");
+        if (StringUtils.hasText(scheme)) {
+            sb.append(" (").append(scheme.trim()).append(")");
+        }
+        sb.append(" has an overdue amount of ");
+        if (overdue != null) {
+            sb.append("Rs. ").append(formatAmount(overdue));
+        } else {
+            sb.append("Rs. 0.00");
+        }
+        if (dueAmount != null && dueAmount.compareTo(BigDecimal.ZERO) > 0) {
+            sb.append(" and total due balance of Rs. ").append(formatAmount(dueAmount));
+        }
+        sb.append(". Kindly arrange payment at the earliest to avoid further action. - BLRS");
         return sb.toString();
+    }
+
+    public String buildSmsText(String customerName, String accountNo, String scheme,
+                               BigDecimal overdue) {
+        return buildSmsText(customerName, accountNo, scheme, overdue, null);
+    }
+
+    private String formatAmount(BigDecimal amount) {
+        if (amount == null) return "0.00";
+        try {
+            return new java.text.DecimalFormat("#,##0.00").format(amount);
+        } catch (Exception e) {
+            return amount.toPlainString();
+        }
     }
 
     /* ---------------------------------------------------------

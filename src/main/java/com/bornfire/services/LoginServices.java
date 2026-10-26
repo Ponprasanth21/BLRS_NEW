@@ -63,6 +63,9 @@ public class LoginServices {
 	BLRS_UserProfile_Repo userProfileRep;
 
 	@Autowired
+	com.bornfire.config.BLRS_PasswordPolicyValidator passwordPolicyValidator;
+
+	@Autowired
 	SessionFactory sessionFactory;
 
 	@Autowired
@@ -117,17 +120,21 @@ public class LoginServices {
 
 		if (formmode.equals("add")) {
 
-			BLRS_UserProfile_Entity up = new BLRS_UserProfile_Entity();
+			BLRS_UserProfile_Entity up = userProfile != null ? userProfile : new BLRS_UserProfile_Entity();
 
-			String encryptedPassword = PasswordEncryption.getEncryptedPassword(up.getPassword());
+			String rawPass = (up.getPassword() != null && !up.getPassword().trim().isEmpty())
+					? up.getPassword()
+					: (this.password != null ? this.password : "Bornfire@123");
 
-			if (up.getLogin_status().equals("Active")) {
+			String encryptedPassword = passwordPolicyValidator.encode(rawPass);
+
+			if ("Active".equalsIgnoreCase(up.getLogin_status())) {
 				up.setUser_locked_flg("N");
 			} else {
 				up.setUser_locked_flg("Y");
 			}
 
-			if (up.getUser_status().equals("Active")) {
+			if ("Active".equalsIgnoreCase(up.getUser_status())) {
 				up.setDisable_flg("N");
 			} else {
 				up.setDisable_flg("Y");
@@ -186,17 +193,23 @@ public class LoginServices {
 
 			BLRS_UserProfile_Entity original = userProfileRep.getRole(userProfile.getUserid());
 
-			BLRS_UserProfile_Entity up = new BLRS_UserProfile_Entity();
+			BLRS_UserProfile_Entity up = userProfile != null ? userProfile : original;
 
-			String encryptedPassword = PasswordEncryption.getEncryptedPassword(up.getPassword());
+			String rawPass = up.getPassword();
+			String encryptedPassword;
+			if (rawPass != null && !rawPass.trim().isEmpty() && (original == null || !rawPass.equals(original.getPassword()))) {
+				encryptedPassword = passwordPolicyValidator.encode(rawPass);
+			} else {
+				encryptedPassword = original != null ? original.getPassword() : passwordPolicyValidator.encode("Bornfire@123");
+			}
 
-			if (up.getLogin_status().equals("Active")) {
+			if ("Active".equalsIgnoreCase(up.getLogin_status())) {
 				up.setUser_locked_flg("N");
 			} else {
 				up.setUser_locked_flg("Y");
 			}
 
-			if (up.getUser_status().equals("Active")) {
+			if ("Active".equalsIgnoreCase(up.getUser_status())) {
 				up.setDisable_flg("N");
 			} else {
 				up.setDisable_flg("Y");
@@ -208,10 +221,12 @@ public class LoginServices {
 			up.setDel_flg("N");
 			up.setLogin_flg("N");
 			up.setNo_of_attmp(0);
-			up.setEntry_user(original.getEntry_user());
-			up.setEntry_time(original.getEntry_time());
-			up.setAuth_user(original.getAuth_user());
-			up.setAuth_time(original.getAuth_time());
+			if (original != null) {
+				up.setEntry_user(original.getEntry_user());
+				up.setEntry_time(original.getEntry_time());
+				up.setAuth_user(original.getAuth_user());
+				up.setAuth_time(original.getAuth_time());
+			}
 			up.setEntity_flg("N");
 			up.setPassword(encryptedPassword);
 
@@ -231,6 +246,10 @@ public class LoginServices {
 		BLRS_UserProfile_Entity userProfile = userProfileRep.getRole(userId);
 		BLRS_Access_Role_Entity accessRole = access_Role_Repo.getRole(userId);
 		if (userProfile != null && Objects.nonNull(userProfile.getUserid())) {
+			if (inputUser != null && (inputUser.trim().equalsIgnoreCase(String.valueOf(userProfile.getEntry_user()).trim())
+					|| inputUser.trim().equalsIgnoreCase(String.valueOf(userProfile.getModify_user()).trim()))) {
+				return "Maker and Checker cannot be the same user";
+			}
 			userProfile.setEntity_flg("Y");
 			userProfile.setAuth_user(inputUser);
 			userProfile.setAuth_time(new Date());
@@ -449,7 +468,8 @@ public class LoginServices {
 		String msg = "";
 
 		try {
-			String encryptedPassword = PasswordEncryption.getEncryptedPassword(this.password);
+			String defaultPass = (this.password != null && !this.password.trim().isEmpty()) ? this.password : "Bornfire@123";
+			String encryptedPassword = passwordPolicyValidator.encode(defaultPass);
 
 			Optional<BLRS_UserProfile_Entity> up = userProfileRep.findById(userprofile.getUserid());
 
@@ -467,7 +487,7 @@ public class LoginServices {
 
 			msg = "Password Resetted Successfully";
 
-		} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+		} catch (Exception e) {
 
 			e.printStackTrace();
 
@@ -623,54 +643,30 @@ public class LoginServices {
 
 		String msg = "";
 		Optional<BLRS_UserProfile_Entity> up = userProfileRep.findById(userid);
-		String encrypted_password = null;
-		try {
-			encrypted_password = AES.encrypt(oldpass);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (!up.isPresent()) {
+			return "User Not Found";
 		}
 		BLRS_UserProfile_Entity user = up.get();
-		System.out.println(encrypted_password + " old pas : " + oldpass + " new pas : " + newpass + " pas : "
-				+ user.getPassword());
 
-		if (encrypted_password.equals(user.getPassword())) {
-			if (up.isPresent()) {
-
-				// if (PasswordEncryption.validatePassword(encrypted_password,
-				// user.getPassword())) {
-
-				// if (!PasswordEncryption.validatePassword(newpass, user.getPassword())) {
-
-				String encryptedPassword = null;
-				try {
-					encryptedPassword = AES.encrypt(newpass);
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				System.out.println(encryptedPassword + "new one");
-				if (encryptedPassword.equals(user.getPassword())) {
-					return msg = "New password cannot be Same as Old password";
-				}
-
-				user.setPassword(encryptedPassword);
-				// user.setDel_flg("Y");
-
-//						final Calendar cal = Calendar.getInstance();
-//						cal.add(Calendar.MONTH,1);
-//						System.out.println(cal.getTime());
-//						user.setPw_expy_date(cal.getTime());
-
-				userProfileRep.save(user);
-
-				msg = "Password Changed Successfully";
-
-			} else {
-
-				msg = "User Not Found";
+		if (passwordPolicyValidator.matches(oldpass, user.getPassword())) {
+			String policyErr = passwordPolicyValidator.validatePolicy(newpass);
+			if (policyErr != null) {
+				return policyErr;
+			}
+			if (passwordPolicyValidator.matches(newpass, user.getPassword())) {
+				return "New password cannot be Same as Old password";
 			}
 
+			String encryptedPassword = passwordPolicyValidator.encode(newpass);
+			user.setPassword(encryptedPassword);
+			user.setLogin_flg("Y");
+
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_MONTH, 90);
+			user.setPass_exp_date(cal.getTime());
+
+			userProfileRep.save(user);
+			msg = "Password Changed Successfully";
 		} else {
 			msg = "Incorrect Old Password!";
 		}

@@ -30,7 +30,8 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Entity
 @Table(name = "BLRS_BATCH_JOB_SCHEDULER_TAB")
-public class BLRS_BatchJobScheduler_Entity {
+@javax.persistence.AttributeOverride(name = "entry_user", column = @Column(name = "USER_CRE"))
+public class BLRS_BatchJobScheduler_Entity extends BaseAuditEntity {
 
 	@Id
 	@Column(name = "JOB_ID")
@@ -98,33 +99,9 @@ public class BLRS_BatchJobScheduler_Entity {
 	@Column(name = "EMAIL_FOOTER")
 	private String email_footer;
 
-	@Column(name = "ENTITY_FLG")
-	private String entity_flg;
-
 	@Column(name = "DEL_FLG")
 	private String del_flg;
 
-	@Column(name = "USER_CRE")
-	private String entry_user;
-
-	@Column(name = "ENTRY_TIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date entry_time;
-
-	@Column(name = "MODIFY_USER")
-	private String modify_user;
-
-	@Column(name = "MODIFY_TIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date modify_time;
-
-	@Column(name = "AUTH_USER")
-	private String auth_user;
-
-	@Column(name = "AUTH_TIME")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date auth_time;
-	
 	@Column(name = "JOB_STATUS")
 	private String job_status; // STARTED / COMPLETED / FAILED
  

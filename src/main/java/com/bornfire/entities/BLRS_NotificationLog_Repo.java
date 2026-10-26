@@ -10,4 +10,5 @@ public interface BLRS_NotificationLog_Repo
 
     List<BLRS_NotificationLog_Entity> findByAccountNoOrderBySentTimeDesc(String accountNo);
     List<BLRS_NotificationLog_Entity> findByReminderNoAndStatus(String reminderNo, String status);
+    boolean existsByChannelAndAccountNoAndReminderNoAndStatus(String channel, String accountNo, String reminderNo, String status);
 }

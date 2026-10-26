@@ -41,6 +41,36 @@ public class AES {
 
 	}
 
+	public static String encryptSafe(String plainText) {
+		if (plainText == null || plainText.trim().isEmpty()) {
+			return plainText;
+		}
+		try {
+			// Check if already encrypted
+			try {
+				decrypt(plainText.trim());
+				return plainText.trim(); // already valid cipher
+			} catch (Exception ignore) {
+				// not encrypted, proceed
+			}
+			return encrypt(plainText.trim());
+		} catch (Exception e) {
+			return plainText;
+		}
+	}
+
+	public static String decryptSafe(String encryptedText) {
+		if (encryptedText == null || encryptedText.trim().isEmpty()) {
+			return encryptedText;
+		}
+		try {
+			return decrypt(encryptedText.trim());
+		} catch (Exception e) {
+			// Fallback: If not encrypted or corrupted, return as is
+			return encryptedText.trim();
+		}
+	}
+
 //generateKey() is used to generate a secret key for AES algorithm
 	private static Key generateKey() throws Exception {
 		Key key = new SecretKeySpec(keyValue, algorithm);

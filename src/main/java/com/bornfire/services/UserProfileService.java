@@ -28,6 +28,9 @@ public class UserProfileService {
 	@Autowired
 	private BLRS_UserProfile_Repo userProfileRep;
 
+	@Autowired
+	private com.bornfire.config.BLRS_PasswordPolicyValidator passwordPolicyValidator;
+
 	@Value("${default.password:Bornfire@123}")
 	private String defaultPassword;
 
@@ -69,7 +72,12 @@ public class UserProfileService {
 						? userProfile.getPassword()
 						: this.defaultPassword;
 
-				String encryptedPassword = AES.encrypt(rawPassword);
+				String policyErr = passwordPolicyValidator.validatePolicy(rawPassword);
+				if (policyErr != null) {
+					return policyErr;
+				}
+
+				String encryptedPassword = passwordPolicyValidator.encode(rawPassword);
 				userProfile.setPassword(encryptedPassword);
 
 			if ("Active".equalsIgnoreCase(userProfile.getLogin_status())) {
@@ -94,7 +102,7 @@ public class UserProfileService {
 			userProfile.setEntry_user(inputUser);
 
 			userProfileRep.save(userProfile);
-			msg = "User Created Successfully";
+			msg = "User Id : " + userProfile.getUserid() + " has been generated successfully";
 
 		} else if ("edit".equalsIgnoreCase(formmode) || "modify".equalsIgnoreCase(formmode)) {
 			Optional<BLRS_UserProfile_Entity> opt = userProfileRep.findById(userProfile.getUserid());
@@ -155,14 +163,9 @@ public class UserProfileService {
 			String modifyUser = userProfile.getModify_user();
 			String entryUser = userProfile.getEntry_user();
 
-			if (modifyUser != null && !modifyUser.trim().isEmpty()) {
-				if (inputUser != null && modifyUser.trim().equalsIgnoreCase(inputUser.trim())) {
-					return "Same user cannot verify";
-				}
-			} else if (entryUser != null && !entryUser.trim().isEmpty()) {
-				if (inputUser != null && entryUser.trim().equalsIgnoreCase(inputUser.trim())) {
-					return "Same user cannot verify";
-				}
+			if (inputUser != null && (inputUser.trim().equalsIgnoreCase(String.valueOf(entryUser).trim())
+					|| inputUser.trim().equalsIgnoreCase(String.valueOf(modifyUser).trim()))) {
+				return "Maker and Checker cannot be the same user";
 			}
 
 			userProfile.setEntity_flg("Y");
@@ -233,7 +236,7 @@ public class UserProfileService {
 			}
 
 			String rawPass = (newPass != null && !newPass.trim().isEmpty()) ? newPass : this.defaultPassword;
-			String encryptedPassword = AES.encrypt(rawPass);
+			String encryptedPassword = passwordPolicyValidator.encode(rawPass);
 
 			Optional<BLRS_UserProfile_Entity> opt = userProfileRep.findById(targetUserId.trim());
 			if (opt.isPresent()) {
@@ -270,11 +273,20 @@ public class UserProfileService {
 			}
 			BLRS_UserProfile_Entity user = opt.get();
 
-			if (!AES.validatePassword(old_password, user.getPassword())) {
+			if (!passwordPolicyValidator.matches(old_password, user.getPassword())) {
 				return "Current password does not match!";
 			}
 
-			String encNewPass = AES.encrypt(new_password);
+			String policyErr = passwordPolicyValidator.validatePolicy(new_password);
+			if (policyErr != null) {
+				return policyErr;
+			}
+
+			if (passwordPolicyValidator.matches(new_password, user.getPassword())) {
+				return "New password cannot be the same as old password!";
+			}
+
+			String encNewPass = passwordPolicyValidator.encode(new_password);
 			user.setPassword(encNewPass);
 			user.setModify_user(userid.trim());
 			user.setModify_time(new Date());
