@@ -53,8 +53,7 @@ public class BLRS_EmailService {
             }
             s.setUsername(authUser);
 
-            String rawPwd = p.getEmail_pwd() != null ? p.getEmail_pwd().trim() : "";
-            String pwd = com.bornfire.config.AES.decryptSafe(rawPwd);
+            String pwd = p.getEmail_pwd() != null ? p.getEmail_pwd().trim() : "";
             // Google app passwords are 16 letters and may contain spaces (e.g. "xuip njfg bjkg fzhj")
             if (host.toLowerCase().contains("gmail.com") || pwd.contains(" ")) {
                 pwd = pwd.replaceAll("\\s+", "");

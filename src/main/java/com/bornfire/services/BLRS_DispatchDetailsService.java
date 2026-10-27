@@ -22,9 +22,6 @@ public class BLRS_DispatchDetailsService {
 	@Autowired
 	private BLRS_DispatchDetails_Repo dispatchRepo;
 
-	@Autowired
-	private com.bornfire.entities.BLRS_LoanAccountProfile_Repo loanRepo;
-
 	public List<BLRS_DispatchDetails_Entity> getDispatchList(String reminderType, Date reminderDate) {
 		Date cleanDate = truncateTime(reminderDate);
 		String altType = getAlternateType(reminderType);
@@ -37,22 +34,6 @@ public class BLRS_DispatchDetailsService {
 		Date cleanDate = truncateTime(reminderDate);
 		String altType = getAlternateType(reminderType);
 		int rows = dispatchRepo.updateDispatch(reminderType, altType, cleanDate, accNum, trim(postalRef), trim(postalAck));
-		if (rows > 0 && accNum != null && !accNum.trim().isEmpty() && loanRepo != null) {
-			try {
-				com.bornfire.entities.BLRS_LoanAccountProfile_Entity loan = loanRepo.findByAccountNumber(accNum.trim());
-				if (loan == null) {
-					loan = loanRepo.findById(accNum.trim()).orElse(null);
-				}
-				if (loan != null) {
-					if (postalRef != null) loan.setCourierPostalReference(trim(postalRef));
-					if (postalAck != null) loan.setCourierPostalAcknowledgement(trim(postalAck));
-					loanRepo.save(loan);
-					logger.info("Synced postal details to loan account profile for account {}", accNum);
-				}
-			} catch (Exception e) {
-				logger.warn("Could not sync postal details to loan account profile for account {}: {}", accNum, e.getMessage());
-			}
-		}
 		logger.info("Dispatch details updated by {} for account {} ({} row)", user, accNum, rows);
 		return rows > 0 ? "Data Saved Successfully" : "Record not found. Please search again.";
 	}

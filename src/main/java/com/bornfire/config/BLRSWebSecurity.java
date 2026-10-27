@@ -82,9 +82,6 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 	PasswordEncryption passwordEncryption;
 
 	@Autowired
-	BLRS_PasswordPolicyValidator passwordPolicyValidator;
-
-	@Autowired
 	Environment env;
 
 	@Autowired
@@ -152,31 +149,27 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 
 							throw new DisabledException("Account Disabled");
 
-						} else if (!usr.isLoginAllowed()) {
-
-							throw new LockedException("Login not allowed at this time (outside permitted login hours)");
-
 						}
-						boolean passwordValid = passwordPolicyValidator.matches(password, usr.getPassword());
+						/*
+						 * else if (!usr.isLoginAllowed()) {
+						 * 
+						 * throw new LockedException("Login Not Allowed");
+						 * 
+						 * }
+						 */
+						boolean passwordValid = AES.validatePassword(password, usr.getPassword());
 
 						if (!passwordValid) {
+
 						    int updated = userProfileRep.updateFailedLogin(userid);
+
 						    System.out.println("FAILED LOGIN UPDATE COUNT = " + updated);
+
 						    throw new BadCredentialsException("Authentication failed");
 						} else {
-							// Successful login: reset failed-attempt counter and unlock if previously locked
-							if ((usr.getNo_of_attmp() != null && usr.getNo_of_attmp() > 0)
-									|| "Y".equalsIgnoreCase(usr.getUser_locked_flg())) {
-								usr.setNo_of_attmp(0);
-								usr.setUser_locked_flg("N");
-								userProfileRep.save(usr);
-							}
-							// Transparently upgrade legacy password to BCrypt
-							if (passwordPolicyValidator.needsRehash(usr.getPassword())) {
-								usr.setPassword(passwordPolicyValidator.encode(password));
-								userProfileRep.save(usr);
-							}
+
 							return new UsernamePasswordAuthenticationToken(userid, password, Collections.emptyList());
+
 						}
 
 					} else {
@@ -185,7 +178,7 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 						throw new UsernameNotFoundException("Invalid User Name");
 					}
 
-				} catch (Exception e) {
+				} catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
 					e.printStackTrace();
 					authentication.setAuthenticated(false);
 				}
@@ -249,12 +242,6 @@ public class BLRSWebSecurity extends WebSecurityConfigurerAdapter {
 					if (up.isPresent()) {
 						BLRS_UserProfile_Entity user = up.get();
 						userProfileRep.save(user);
-
-						if (user.isPasswordExpiringWithinDays(6)) {
-							long daysLeft = user.getDaysUntilPasswordExpiry();
-							request.getSession().setAttribute("PASSWORD_EXPIRY_WARNING",
-									"Warning: Your password will expire in " + (daysLeft == 0 ? "today" : daysLeft + " days") + ". Please update your password promptly.");
-						}
 
 						request.getSession().setAttribute("TRANDATE", up1 != null ? up1.getTran_date() : new Date());
 						request.getSession().setAttribute("USERID", user.getUserid());

@@ -129,40 +129,46 @@
 		}
 		/* Topbar View Switcher Tabs (Page 1 vs Page 2) */
 		.topbar-page-tabs {
-			display: inline-flex;
-			align-items: center;
-			background: #f1f5f9;
-			padding: 1px 1px;
-			border-radius: 4px;
-			border: 1px solid var(--blrs-slate-200);
-			gap: 1.1px;
-			flex-shrink: 0;
+		    display: inline-flex;
+		    align-items: center;
+		    background: transparent;
+		    padding: 0;
+		    border: none;
+		    border-radius: 0;
+		    gap: 6px;
+		    flex-shrink: 0;
 		}
 
 		.topbar-tab-btn {
 			border: none;
-			background: transparent;
+			background-color: #ffffff;
+			color: var(--blrs-slate-700) !important;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
 			padding: 4px 8px;
-			font-size: 10.5px;
+			font-size: 12px;
 			font-weight: 600;
-			color: var(--blrs-slate-600);
-			border-radius: 3px;
 			cursor: pointer;
 			display: inline-flex;
 			align-items: center;
+			border-radius: 4px;
 			transition: all 0.15s ease-in-out;
 		}
 
 		.topbar-tab-btn:hover {
-			color: var(--blrs-slate-900);
-			background: rgba(255, 255, 255, 0.7);
+			background-color: #f1f5f9  !important;
+			border-color: #94a3b8 !important;
+			color: var(--blrs-slate-900) !important;
+			
 		}
 
 		.topbar-tab-btn.active {
-			background: #ffffff;
-			color: #1e3a8a;
-			font-weight: 700;
-			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+			background-color: #ffffff !important;
+			color: var(--blrs-slate-700) !important;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
+			font-size: 12px;
+			font-weight: 600;
+			border-radius: 4px;
+			box-shadow: none !important;
 		}
 
 		.tab-page-badge {
@@ -176,8 +182,46 @@
 		}
 
 		.topbar-tab-btn.active .tab-page-badge {
-			background: #1e3a8a;
-			color: #ffffff;
+			background-color: #e2e8f0 !important;
+				border-color: transparent !important;
+			  color: var(--blrs-slate-900) !important;
+			
+		}
+		
+		/* Default state */
+		.topbar-tab-btn {
+		    background-color: #ffffff;
+		    border: 1px solid var(--blrs-slate-300, #cbd5e1);
+		}
+
+		
+		.topbar-tab-btn:focus,
+		.topbar-tab-btn:active,
+		.topbar-tab-btn:focus-visible,
+		.topbar-tab-btn.active:focus {
+		    outline: none !important;
+		    box-shadow: none !important;
+		    border-color: var(--blrs-slate-300, #cbd5e1) !important;
+		}
+		
+		/* Default and selected tab should remain white */
+		.topbar-tab-btn,
+		.topbar-tab-btn.active {
+		    background: #ffffff !important;
+		    color: var(--blrs-slate-700) !important;
+		    box-shadow: none !important;
+		}
+
+		/* Grey background only when mouse hovers */
+		.topbar-tab-btn:hover {
+		    background: #f1f5f9 !important;
+		    border-color: #94a3b8 !important;
+		    color: var(--blrs-slate-900) !important;
+		}
+
+		/* Keep badge background unchanged */
+		.topbar-tab-btn .tab-page-badge {
+		    background: #e2e8f0 !important;
 		}
 
 		/* Page View Transitions (Stretches to 100% of remaining height) */
@@ -332,7 +376,8 @@
 			border-radius: 9999px;
 			font-size: 9px;
 			font-weight: 600;
-			letter-spacing: 0.2px;
+/*/			font-family: inherit;
+*/			letter-spacing: 0.2px;
 		}
 
 		.live-dot {
@@ -358,9 +403,9 @@
 		}
 
 		.btn-action-primary {
-			background-color: #1e3a8a;
-			color: #ffffff !important;
-			border: 1px solid #172554;
+			background-color: #ffffff;
+			color: var(--blrs-slate-700) !important;
+			border: 1px solid var(--blrs-slate-300, #cbd5e1);
 			padding: 4px 10px;
 			font-size: 12px;
 			font-weight: 600;
@@ -374,10 +419,9 @@
 		}
 
 		.btn-action-primary:hover {
-			background-color: #1d4ed8;
-			color: #ffffff !important;
-			transform: translateY(-1px);
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+			background-color: #f8fafc;
+			border-color: #94a3b8;
+			color: var(--blrs-slate-900) !important;
 		}
 
 		.btn-action-secondary {
@@ -1388,35 +1432,6 @@
 					$('#alert2').modal({ backdrop: 'static', keyboard: false }, 'show');
 				}
 			}
-
-			// Batch Jobs Due Today Alert Check (Step 6D)
-			$.ajax({
-				url: './api/batchJobsAlert',
-				type: 'GET',
-				dataType: 'json',
-				success: function (data) {
-					if (data && data.length > 0) {
-						var tbody = $('#dueJobsTableBody');
-						tbody.empty();
-						$.each(data, function (i, job) {
-							var row = '<tr>' +
-								'<td class="font-weight-bold" style="color:#1e3a8a;">' + (job.jobId || '') + '</td>' +
-								'<td>' + (job.jobName || '') + '</td>' +
-								'<td><span class="badge badge-info">' + (job.jobType || '') + '</span></td>' +
-								'<td>' + (job.periodicity || '') + '</td>' +
-								'<td>' + (job.nextRunDate || '') + '</td>' +
-								'<td><span class="badge badge-warning text-dark">' + (job.jobStatus || 'DUE') + '</span></td>' +
-								'</tr>';
-							tbody.append(row);
-						});
-						$('#dueJobsCountBadge').text(data.length);
-						$('#batchJobAlertModal').modal('show');
-					}
-				},
-				error: function (err) {
-					console.warn('Could not fetch batch jobs alert:', err);
-				}
-			});
 		});
 		/*]]>*/
 	</script>
@@ -1503,22 +1518,8 @@
 					<i class="fas fa-search"></i> Overdue Inquiries
 				</a>
 				<a href="./Batchjobexecution" class="btn-action-secondary">
-					<i class="fas fa-cogs"></i> Batch Jobs
+					 Batch Jobs
 				</a>
-			</div>
-		</div>
-
-		<!-- Password Expiry Warning Notification Banner (Step 2 / Security) -->
-		<div th:if="${session.PASSWORD_EXPIRY_WARNING != null}" class="alert alert-warning alert-dismissible fade show mb-2 py-1 px-3 d-flex align-items-center justify-content-between" role="alert" style="font-size: 11.5px; border-left: 4px solid #f59e0b; background-color: #fffbeb; color: #92400e; border-radius: 4px;">
-			<div>
-				<i class="fas fa-exclamation-triangle mr-2 text-warning"></i>
-				<span th:text="${session.PASSWORD_EXPIRY_WARNING}">Password expiration warning</span>
-			</div>
-			<div>
-				<a href="./UserProfile?formmode=edit" class="btn btn-xs btn-outline-warning py-0 px-2 ml-2 font-weight-bold" style="font-size: 11px;">Change Password</a>
-				<button type="button" class="close py-1 px-2" data-dismiss="alert" aria-label="Close" style="position: static;">
-					<span aria-hidden="true">&times;</span>
-				</button>
 			</div>
 		</div>
 
@@ -1945,53 +1946,6 @@
 						<button type="button" class="btn btn-primary px-3 py-1" style="border-radius: 4px; font-size: 12px;"
 							data-dismiss="modal" onclick="Yes();">OK</button>
 					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Batch Jobs Due Today Alert Modal (Step 6D) -->
-	<div class="modal fade" id="batchJobAlertModal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-			<div class="modal-content" style="border-radius: 6px; border: 1px solid #cbd5e1; box-shadow: 0 15px 35px rgba(0,0,0,0.2);">
-				<div class="modal-header" style="background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); color: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 10px 16px;">
-					<h6 class="modal-title font-weight-bold mb-0" style="font-size: 13.5px; color: #ffffff;">
-						<i class="fas fa-bell mr-2 text-warning"></i> Scheduled Batch Jobs Due Today
-						<span class="badge badge-warning text-dark ml-2" id="dueJobsCountBadge" style="font-size: 11px;">0</span>
-					</h6>
-					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" style="opacity: 0.9;">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body p-3" style="background-color: #f8fafc;">
-					<div class="alert alert-info py-2 px-3 mb-3" style="font-size: 12px; border-left: 4px solid #0284c7; background-color: #f0f9ff; color: #0369a1;">
-						<i class="fas fa-info-circle mr-1"></i>
-						The following batch job(s) are verified, active, and scheduled for execution today. Automatic cron dispatch will execute them when due, or you may run them manually.
-					</div>
-					<div class="table-responsive" style="max-height: 240px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 4px; background: #ffffff;">
-						<table class="table table-sm table-hover mb-0" style="font-size: 12px;">
-							<thead style="background: #f1f5f9; color: #475569; position: sticky; top: 0; z-index: 1;">
-								<tr>
-									<th>Job ID</th>
-									<th>Job Name</th>
-									<th>Job Type</th>
-									<th>Periodicity</th>
-									<th>Next Run Date</th>
-									<th>Status</th>
-								</tr>
-							</thead>
-							<tbody id="dueJobsTableBody">
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="modal-footer py-2 px-3" style="background-color: #f1f5f9; border-top: 1px solid #e2e8f0;">
-					<a href="./Batchjobexecution" class="btn btn-sm btn-primary py-1 px-3" style="font-size: 11.5px; font-weight: 600;">
-						<i class="fas fa-play mr-1"></i> Go to Execution Screen
-					</a>
-					<button type="button" class="btn btn-sm btn-secondary py-1 px-3" data-dismiss="modal" style="font-size: 11.5px;">
-						Dismiss
-					</button>
 				</div>
 			</div>
 		</div>

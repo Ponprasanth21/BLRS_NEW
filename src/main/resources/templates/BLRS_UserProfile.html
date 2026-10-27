@@ -1507,18 +1507,13 @@
 											</div>
 
 											<div th:if="${formmode}=='add'" class="col-sm-3">
-												<div class="input-group">
-													<input type="text" id="userId" name="userid"
-														class="form-control form-control-sm" style="border-radius:6px 0 0 6px;"
-														autocomplete="off" required />
-													<div class="input-group-append">
-														<button type="button" class="btn btn-sm btn-primary" id="btnFinacleSearch"
-															style="border-radius:0 6px 6px 0;" title="Search Finacle User Extraction"
-															onclick="openFinacleModal()">
-															<i class="fa fa-search"></i> Finacle
-														</button>
-													</div>
-												</div>
+
+												<input type="text" id="userId" name="userid"
+
+													class="form-control form-control-sm" style="border-radius:6px;"
+
+													autocomplete="off" required />
+
 											</div>
 
 											<div th:if="${formmode}!='add'" class="col-sm-3">
@@ -2552,110 +2547,6 @@
 		</div>
 
 	</div>
-
-	<!-- Finacle Extract Modal -->
-	<div class="modal fade" id="finacleModal" tabindex="-1" role="dialog" aria-labelledby="finacleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header" style="background-color: #2B506F; color: white;">
-					<h5 class="modal-title" id="finacleModalLabel" style="font-size: 15px;">
-						<i class="fa fa-university mr-2"></i>Finacle User Extraction - Select Employee
-					</h5>
-					<button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="input-group mb-3">
-						<input type="text" id="finacleSearchInput" class="form-control form-control-sm"
-							placeholder="Search by User ID, Name, or Emp ID..." autocomplete="off" onkeyup="filterFinacleUsers()" />
-						<div class="input-group-append">
-							<button class="btn btn-sm btn-outline-secondary" type="button" onclick="loadFinacleUsers()">
-								<i class="fa fa-sync-alt"></i> Refresh
-							</button>
-						</div>
-					</div>
-					<div class="table-responsive" style="max-height: 350px; overflow-y: auto;">
-						<table class="table table-bordered table-hover table-sm text-center" id="finacleTable">
-							<thead style="background-color: #f1f5f9; font-size: 12px;">
-								<tr>
-									<th>User ID</th>
-									<th>Name</th>
-									<th>Emp ID</th>
-									<th>Department</th>
-									<th>Branch</th>
-									<th>Action</th>
-								</tr>
-							</thead>
-							<tbody id="finacleTableBody" style="font-size: 12px;">
-								<tr><td colspan="6">Loading Finacle users...</td></tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<script th:inline="javascript">
-		function openFinacleModal() {
-			$('#finacleModal').modal('show');
-			loadFinacleUsers();
-		}
-
-		function loadFinacleUsers() {
-			var term = $('#finacleSearchInput').val() || '';
-			$.ajax({
-				url: '/BLRS/finacleUserSearch',
-				type: 'GET',
-				data: { term: term },
-				success: function(data) {
-					var tbody = $('#finacleTableBody');
-					tbody.empty();
-					if (!data || data.length === 0) {
-						tbody.append('<tr><td colspan="6" class="text-muted">No Finacle records found</td></tr>');
-						return;
-					}
-					data.forEach(function(u) {
-						var row = $('<tr>');
-						row.append('<td><strong>' + (u.user_id || '') + '</strong></td>');
-						row.append('<td>' + (u.user_name || '') + '</td>');
-						row.append('<td>' + (u.emp_id || '') + '</td>');
-						row.append('<td>' + (u.department || '') + '</td>');
-						row.append('<td>' + (u.branch_code || '') + '</td>');
-						var btn = $('<button type="button" class="btn btn-primary btn-sm py-0 px-2">Select</button>');
-						btn.click(function() {
-							selectFinacleUser(u);
-						});
-						row.append($('<td>').append(btn));
-						tbody.append(row);
-					});
-				},
-				error: function(err) {
-					$('#finacleTableBody').html('<tr><td colspan="6" class="text-danger">Failed to load Finacle users</td></tr>');
-				}
-			});
-		}
-
-		function filterFinacleUsers() {
-			loadFinacleUsers();
-		}
-
-		function selectFinacleUser(u) {
-			if (!u) return;
-			$('#userId').val(u.user_id || '').attr('readonly', true);
-			$('#userName').val(u.user_name || '').attr('readonly', true);
-			$('#empId').val(u.emp_id || '').attr('readonly', true);
-			if (u.email_id) $('#emailId').val(u.email_id);
-			if (u.mobile_no) $('#mobNo').val(u.mobile_no);
-			if (u.branch_code) $('#branchCode').val(u.branch_code);
-			if (u.branch_name) $('#branchName').val(u.branch_name);
-			$('#finacleModal').modal('hide');
-		}
-	</script>
 
 </body>
 

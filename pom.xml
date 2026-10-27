@@ -87,6 +87,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Optional: only keep if some other code still needs Oracle types.
+             If nothing references oracle.jdbc.*, delete this block. -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>19.3.0.0</version>
+        </dependency>
 
         <!-- Required by Hibernate 5.4 with JDK 11+ (harmless on JDK 8).
              Fixes: "class file for javax.interceptor.InterceptorBinding not found" -->
@@ -223,13 +230,6 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk15on</artifactId>
             <version>1.70</version>
-        </dependency>
-
-        <!-- ==================== Twilio SMS SDK ==================== -->
-        <dependency>
-            <groupId>com.twilio.sdk</groupId>
-            <artifactId>twilio</artifactId>
-            <version>9.14.0</version>
         </dependency>
     </dependencies>
 

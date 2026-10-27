@@ -8,12 +8,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -40,6 +37,7 @@ import com.bornfire.services.ListofDataService;
 import com.bornfire.services.LoginServices;
 import com.bornfire.services.UserProfileService;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import com.bornfire.entities.BLRS_ReminderGenerator_Entity;
 import com.bornfire.entities.BLRS_EmailSmsParam_Repo;
 import java.nio.charset.StandardCharsets;
@@ -115,13 +113,9 @@ public class NavigationController {
 
 		@Autowired
 		private BLRS_LoanAccountProfileService loanAccountService;
-
-		@Autowired(required = false)
-		private com.bornfire.services.FinacleExtractionService finacleExtractionService;
 		
 		@Autowired private com.bornfire.services.BLRS_NotificationService notificationService;
 		@Autowired private com.bornfire.entities.BLRS_EmailSmsParam_Repo emailSmsRepo;
-		@Autowired private com.bornfire.entities.BLRS_FinacleExtract_Repo finacleExtractRepo;
 		
 	// ---------------------------------------------------------------------------------------------------------------
 	// Login & Password Reset
@@ -224,7 +218,6 @@ public class NavigationController {
 					int paid = 0, arrears = 0;
 					int a0_3 = 0, a4_6 = 0, a7_12 = 0, a13_24 = 0, a24p = 0;
 					for (BLRS_LoanAccountProfile_Entity l : loans) {
-						if (l == null) continue;
 						boolean inArrears = (l.getTotalArrears() != null && l.getTotalArrears().doubleValue() > 0)
 								|| (l.getNumberOfMonthsInArrears() != null && l.getNumberOfMonthsInArrears() > 0)
 								|| (l.getOverdueMonthArrears() != null && l.getOverdueMonthArrears() > 0);
@@ -497,19 +490,6 @@ public class NavigationController {
 		}
 
 		return "BLRS_UserProfile";
-	}
-
-	@RequestMapping(value = "finacleUserSearch", method = { RequestMethod.GET, RequestMethod.POST })
-	@ResponseBody
-	public List<com.bornfire.entities.BLRS_FinacleExtract_Entity> finacleUserSearch(
-			@RequestParam(value = "term", required = false) String term) {
-		if (finacleExtractRepo == null) {
-			return java.util.Collections.emptyList();
-		}
-		if (term != null && !term.trim().isEmpty()) {
-			return finacleExtractRepo.searchUsers(term.trim());
-		}
-		return finacleExtractRepo.findAllActive();
 	}
 
 	@RequestMapping(value = { "createUser", "editUser" }, method = RequestMethod.POST)
@@ -826,6 +806,15 @@ public class NavigationController {
 			return "BLRS_BatchJobAlert";
 		}
 
+		@RequestMapping(value = "runBatchJob", method = RequestMethod.POST)
+		@ResponseBody
+		public String runBatchJob(@RequestParam("job_id") String jobId, HttpServletRequest rq) {
+			String loginUser = (String) rq.getSession().getAttribute("USERID");
+			if (loginUser == null)
+				loginUser = "SYSTEM";
+			return batchJobService.runJob(jobId, loginUser);
+		}
+
 		// =====================================================================
 		// NavigationController.java  -  PARAMETERS (Email and SMS + Reminder)
 		// 4 small steps. Everything else in your controller stays as it is.
@@ -882,9 +871,8 @@ public class NavigationController {
 
 		@RequestMapping(value = "testSms", method = RequestMethod.POST)
 		@ResponseBody
-		public String testSms(@ModelAttribute BLRS_EmailSmsParam_Entity emailSms,
-				@RequestParam(value = "toMobile", required = false) String toMobile) {
-			return parameterService.testSms(emailSms, toMobile);
+		public String testSms(@RequestParam(value = "toMobile", required = false) String toMobile) {
+			return parameterService.testSms(toMobile);
 		}
 
 		// ----- Reminder -----
@@ -911,7 +899,7 @@ public class NavigationController {
 		// ---------- STEP 4 : optional clean up ----------
 		// "import java.text.SimpleDateFormat;" is in your file twice. Delete one (harmless, just a warning).
 
-	@RequestMapping(value = { "Loanaccountprofile", "LoanAccountProfile" }, method = {
+	@RequestMapping(value = "Loanaccountprofile", method = {
 	        RequestMethod.GET, RequestMethod.POST
 	})
 	public String Loanaccountprofile(
@@ -919,27 +907,11 @@ public class NavigationController {
 	        Model md,
 	        HttpServletRequest rq) {
 
-	    if (rq != null && rq.getSession() != null) {
-	        String roleId = (String) rq.getSession().getAttribute("ROLEID");
-	        if (roleId != null && accessRoleService != null) {
-	            md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
-	        }
-	    }
-
 	    md.addAttribute("formmode",
 	            formmode != null ? formmode : "list");
 
-	    List<BLRS_LoanAccountProfile_Entity> loanDetails = Collections.emptyList();
-	    try {
-	        if (loanAccountService != null) {
-	            List<BLRS_LoanAccountProfile_Entity> all = loanAccountService.getAllLoanDetails();
-	            if (all != null) {
-	                loanDetails = all.stream().filter(Objects::nonNull).collect(Collectors.toList());
-	            }
-	        }
-	    } catch (Exception e) {
-	        logger.error("Error retrieving loan account details", e);
-	    }
+	    List<BLRS_LoanAccountProfile_Entity> loanDetails =
+	            blrsLoanAccountProfileService.getAllLoanDetails();
 
 	    md.addAttribute("loanDetails", loanDetails);
 
@@ -1241,103 +1213,21 @@ public class NavigationController {
 		md.addAttribute("IPSRoleMenu", accessRoleService.getRole(roleId));
 		md.addAttribute("formmode", "list");
 		md.addAttribute("batchExecutions", batchJobService.getJobList());
-		try {
-			md.addAttribute("recentExecutions", batchJobService.getAllRecentExecutions());
-		} catch (Exception e) {
-			logger.warn("Could not load recent executions", e);
-		}
 		return "BLRS_Batchjobexecution";
 	}
 	
-	@RequestMapping(value = { "Loanaccountprofileinquiry", "LoanAccountProfileInquiry" }, method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value = "Loanaccountprofileinquiry", method = { RequestMethod.GET, RequestMethod.POST })
 	public String Loanaccountprofileinquiry(@RequestParam(required = false) String formmode, Model md,
+
 			HttpServletRequest rq) {
-		return Loanaccountprofile(formmode, md, rq);
-	}
+		md.addAttribute("formmode", formmode != null ? formmode : "list");
+		   List<BLRS_LoanAccountProfile_Entity> loanDetails =
+		            blrsLoanAccountProfileService.getAllLoanDetails();
 
-	// ---------------------------------------------------------------------------------------------------------------
-	// Batch Job – Run (manual trigger via UI Run button)
-	// ---------------------------------------------------------------------------------------------------------------
-	@RequestMapping(value = "runBatchJob", method = { RequestMethod.GET, RequestMethod.POST })
-	@ResponseBody
-	public String runBatchJob(@RequestParam(value = "jobId", required = false) String jobId,
-			@RequestParam(value = "job_id", required = false) String job_id,
-			HttpServletRequest rq) {
-		String id = jobId != null && !jobId.trim().isEmpty() ? jobId : job_id;
-		String loginUser = (String) rq.getSession().getAttribute("USERID");
-		if (loginUser == null || loginUser.trim().isEmpty()) loginUser = "SYSTEM";
-		if (id == null || id.trim().isEmpty()) {
-			return "Error: Job ID is required.";
-		}
-		logger.info("Manual run request: job={}, user={}", id, loginUser);
-		return batchJobService.runJob(id.trim(), loginUser);
-	}
+		    md.addAttribute("loanDetails", loanDetails);
 
-	// ---------------------------------------------------------------------------------------------------------------
-	// Batch Job Execution – Download status Excel file
-	// ---------------------------------------------------------------------------------------------------------------
-	@RequestMapping(value = "downloadJobStatusExcel", method = { RequestMethod.GET, RequestMethod.POST })
-	public ResponseEntity<byte[]> downloadJobStatusExcel(
-			@RequestParam("executionId") String executionId, HttpServletRequest rq) {
-		try {
-			String filePath = batchJobService.getStatusFilePath(executionId);
-			if (filePath == null || filePath.trim().isEmpty()) {
-				return ResponseEntity.status(404)
-						.contentType(org.springframework.http.MediaType.TEXT_PLAIN)
-						.body("Status file not found for execution: ".concat(executionId)
-								.getBytes(StandardCharsets.UTF_8));
-			}
-			java.io.File file = new java.io.File(filePath);
-			if (!file.exists()) {
-				return ResponseEntity.status(404)
-						.contentType(org.springframework.http.MediaType.TEXT_PLAIN)
-						.body(("File not found on disk: " + filePath).getBytes(StandardCharsets.UTF_8));
-			}
-			byte[] data = java.nio.file.Files.readAllBytes(file.toPath());
-			return ResponseEntity.ok()
-					.header(HttpHeaders.CONTENT_DISPOSITION,
-							"attachment; filename=\"" + file.getName() + "\"")
-					.contentType(org.springframework.http.MediaType
-							.parseMediaType("application/vnd.ms-excel"))
-					.body(data);
-		} catch (Exception e) {
-			logger.error("downloadJobStatusExcel failed for executionId={}", executionId, e);
-			return ResponseEntity.status(500)
-					.contentType(org.springframework.http.MediaType.TEXT_PLAIN)
-					.body(("Error: " + e.getMessage()).getBytes(StandardCharsets.UTF_8));
-		}
-	}
-
-	// ---------------------------------------------------------------------------------------------------------------
-	// Dashboard modal – REST endpoint: batch jobs due today (JSON)
-	// ---------------------------------------------------------------------------------------------------------------
-	@RequestMapping(value = "api/batchJobsAlert", method = { RequestMethod.GET, RequestMethod.POST })
-	@ResponseBody
-	public List<java.util.Map<String, Object>> batchJobsAlert(HttpServletRequest rq) {
-		try {
-			List<BLRS_BatchJobScheduler_Entity> dueJobs = batchJobService.getAlertList();
-			List<java.util.Map<String, Object>> result = new ArrayList<>();
-			if (dueJobs != null) {
-				for (BLRS_BatchJobScheduler_Entity j : dueJobs) {
-					java.util.Map<String, Object> m = new LinkedHashMap<>();
-					m.put("jobId",        j.getJob_id());
-					m.put("jobName",      j.getJob_name());
-					m.put("jobType",      j.getJob_type());
-					m.put("periodicity",  j.getPeriodicity());
-					m.put("nextRunDate",  j.getNext_run_date() != null
-							? new java.text.SimpleDateFormat("dd-MM-yyyy HH:mm").format(j.getNext_run_date())
-							: "");
-					m.put("reminderType", j.getReminder_type());
-					m.put("schemeCode",   j.getSchm_code());
-					m.put("jobStatus",    j.getJob_status());
-					result.add(m);
-				}
-			}
-			return result;
-		} catch (Exception e) {
-			logger.error("batchJobsAlert failed", e);
-			return java.util.Collections.emptyList();
-		}
+		    return "BLRS_LoanAccountProfile";	
+		    
 	}
 
 	// ---------- STEP 3 : DELETE your 3 old methods  Overduereports / Reminderreports / Guarantorreports
@@ -1449,9 +1339,19 @@ return ResponseEntity.status(status).contentType(MediaType.TEXT_PLAIN)
 //report.company.brn=C10000071
 	
 
-	@GetMapping("/LoanAccountProfileDirect")
-	public String loanAccountProfile(Model model, HttpServletRequest rq) {
-	    return Loanaccountprofile(null, model, rq);
+	@Autowired
+	private BLRS_LoanAccountProfileService blrsLoanAccountProfileService;
+
+	@GetMapping("/LoanAccountProfile")
+	public String loanAccountProfile(Model model) {
+
+	    List<BLRS_LoanAccountProfile_Entity> loanDetails =
+	            blrsLoanAccountProfileService.getAllLoanDetails();
+
+	    model.addAttribute("loanDetails", loanDetails);
+	    model.addAttribute("formmode", "list");
+
+	    return "LoanAccountProfile";
 	}
 
 

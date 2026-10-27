@@ -18,8 +18,6 @@ public interface BLRS_LoanAccountProfile_Repo
     // Find loan details using account number fallback
     BLRS_LoanAccountProfile_Entity findFirstByAccountNumber(String accountNumber);
 
-    BLRS_LoanAccountProfile_Entity findByAccountNumber(String accountNumber);
-
     
     
     

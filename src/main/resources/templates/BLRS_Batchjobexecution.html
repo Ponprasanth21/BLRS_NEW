@@ -156,60 +156,6 @@
 						</tbody>
 					</table>
 					<div class="text-center text-muted py-4" th:if="${batchExecutions == null or #lists.isEmpty(batchExecutions)}">No batch jobs found</div>
-
-					<!-- Recent Execution Logs & Excel Status Downloads -->
-					<div th:if="${recentExecutions != null and !#lists.isEmpty(recentExecutions)}" class="mt-3 p-3" style="background: #f8fafc; border-top: 2px solid #cbd5e1;">
-						<div class="d-flex justify-content-between align-items-center mb-2">
-							<h6 class="font-weight-bold text-uppercase mb-0" style="font-size: 12px; color: #334155;">
-								<i class="fas fa-history text-primary mr-1"></i> Recent Execution Logs &amp; Status Reports
-							</h6>
-							<span class="badge badge-secondary" th:text="${#lists.size(recentExecutions) + ' executions recorded'}">0 executions</span>
-						</div>
-						<div class="table-responsive" style="max-height: 220px; overflow-y: auto;">
-							<table class="table table-sm table-bordered table-hover mb-0" style="font-size: 11.5px; background: #fff;">
-								<thead class="thead-light">
-									<tr>
-										<th>Execution ID</th>
-										<th>Job ID</th>
-										<th>Job Name</th>
-										<th>Run Date</th>
-										<th>Start Time</th>
-										<th>End Time</th>
-										<th>Status</th>
-										<th>Records</th>
-										<th>Success</th>
-										<th>Failed</th>
-										<th>Status Report</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="exec : ${recentExecutions}">
-										<td class="font-weight-bold" th:text="${exec.executionId}"></td>
-										<td th:text="${exec.jobId}"></td>
-										<td class="wrap" th:text="${exec.jobName}"></td>
-										<td th:text="${#dates.format(exec.runDate, 'dd-MM-yyyy')}"></td>
-										<td th:text="${#dates.format(exec.startTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
-										<td th:text="${exec.endTime != null ? #dates.format(exec.endTime, 'dd-MM-yyyy HH:mm:ss') : '-'}"></td>
-										<td>
-											<span th:class="${exec.status == 'COMPLETED' ? 'badge badge-success' : (exec.status == 'FAILED' ? 'badge badge-danger' : 'badge badge-warning')}"
-												th:text="${exec.status}"></span>
-										</td>
-										<td th:text="${exec.totalRecords}"></td>
-										<td class="text-success font-weight-bold" th:text="${exec.successCount}"></td>
-										<td class="text-danger font-weight-bold" th:text="${exec.failureCount}"></td>
-										<td class="text-center">
-											<a th:if="${exec.statusFilePath != null}"
-												th:href="@{./downloadJobStatusExcel(executionId=${exec.executionId})}"
-												class="btn btn-xs btn-outline-success py-0 px-2" style="font-size: 11px;" title="Download Excel Status File">
-												<i class="fas fa-file-excel mr-1"></i> Download .xls
-											</a>
-											<span th:if="${exec.statusFilePath == null}" class="text-muted">-</span>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
 				</div>
 
 					<div class="page-card-footer">

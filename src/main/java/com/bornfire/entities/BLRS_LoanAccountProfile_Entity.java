@@ -160,12 +160,6 @@ public class BLRS_LoanAccountProfile_Entity {
     @Column(name = "RECOVERY_STATUS", length = 50)
     private String recoveryStatus;
 
-    @Column(name = "STATUS", length = 50)
-    private String status;
-
-    @Column(name = "AGE")
-    private Integer age;
-
     // Constructors
     public BLRS_LoanAccountProfile_Entity() {
     }
@@ -545,30 +539,5 @@ public class BLRS_LoanAccountProfile_Entity {
 
     public void setRecoveryStatus(String recoveryStatus) {
         this.recoveryStatus = recoveryStatus;
-    }
-
-    public String getStatus() {
-        if (status != null && !status.trim().isEmpty()) {
-            return status;
-        }
-        return recoveryStatus != null && !recoveryStatus.trim().isEmpty() ? recoveryStatus : "OVERDUE";
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Integer getAge() {
-        if (age != null) {
-            return age;
-        }
-        if (recoveryAge != null) {
-            return recoveryAge;
-        }
-        return numberOfMonthsInArrears != null ? numberOfMonthsInArrears * 30 : 0;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
     }
 }
