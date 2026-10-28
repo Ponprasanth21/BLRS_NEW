@@ -544,7 +544,7 @@
 		}
 
 		.bar-coral {
-			background-color: #ea580c;
+			background-color: #538e91;
 		}
 
 		.bar-red {
@@ -1184,15 +1184,15 @@
 		}
 
 		function initBankingDashboardCharts() {
-			var activeOverdueCount = /*[[${activeOverdueCount != null ? activeOverdueCount : 1840}]]*/ 1840;
-			var paidUpCount = /*[[${paidUpCount != null ? paidUpCount : 2450}]]*/ 2450;
+			var activeOverdueCount = /*[[${activeOverdueCount != null ? activeOverdueCount : 1840}]]*/ 0;
+			var paidUpCount = /*[[${paidUpCount != null ? paidUpCount : 2450}]]*/ 0;
 			var inArrearsCount = /*[[${inArrearsCount != null ? inArrearsCount : 1840}]]*/ 1840;
 
-			var age0_3 = /*[[${aging_0_3 != null ? aging_0_3 : 620}]]*/ 620;
-			var age4_6 = /*[[${aging_4_6 != null ? aging_4_6 : 400}]]*/ 400;
-			var age7_12 = /*[[${aging_7_12 != null ? aging_7_12 : 360}]]*/ 360;
-			var age13_24 = /*[[${aging_13_24 != null ? aging_13_24 : 260}]]*/ 260;
-			var age24p = /*[[${aging_24_plus != null ? aging_24_plus : 200}]]*/ 200;
+			var age0_3 = /*[[${aging_0_3 != null ? aging_0_3 : 620}]]*/ 0;
+			var age4_6 = /*[[${aging_4_6 != null ? aging_4_6 : 400}]]*/ 0;
+			var age7_12 = /*[[${aging_7_12 != null ? aging_7_12 : 360}]]*/ 0;
+			var age13_24 = /*[[${aging_13_24 != null ? aging_13_24 : 260}]]*/ 0;
+			var age24p = /*[[${aging_24_plus != null ? aging_24_plus : 200}]]*/ 0;
 
 			// 1. Account Status Donut Chart
 			var statusCtx = document.getElementById('accountStatusChart');
@@ -1255,11 +1255,12 @@
 						scales: {
 							yAxes: [{
 								ticks: {
-									beginAtZero: true,
-									max: 800,
-									stepSize: 200,
-									fontColor: '#64748b',
-									fontSize: 10.5
+								    beginAtZero: true,
+								    min: 0,
+								    max: 5,
+								    stepSize: 1,
+								    fontColor: '#64748b',
+								    fontSize: 10.5
 								},
 								gridLines: {
 									color: '#f1f5f9',
@@ -1295,9 +1296,10 @@
 				new Chart(schemeCtx, {
 					type: 'horizontalBar',
 					data: {
-						labels: ['PLN1', 'MQL1', 'PPL1', 'CLN4', 'CLN2', 'CPL1', 'SSL1', 'Others'],
+						labels: /*[[${overdueSchemeLabels}]]*/ [],
+
 						datasets: [{
-							data: [52.0, 22.0, 14.0, 4.0, 1.2, 1.5, 0.6, 0.5],
+						    data: /*[[${overdueSchemeValues}]]*/ [],
 							backgroundColor: [
 							    '#5794CC',
 							    '#86B6E3',
@@ -1320,8 +1322,8 @@
 							xAxes: [{
 								ticks: {
 									beginAtZero: true,
-									max: 60,
-									stepSize: 10,
+									max: 30000,
+									stepSize: 5000,
 									fontColor: '#64748b',
 									fontSize: 10.5
 								},
@@ -1346,10 +1348,10 @@
 							cornerRadius: 4,
 							callbacks: {
 								label: function (tooltipItem) {
-									return ' Overdue: Rs ' + tooltipItem.xLabel + ' M';
-								}
+							return ' Overdue: ₹' + Number(tooltipItem.xLabel).toLocaleString('en-IN');
 							}
 						}
+					}
 					}
 				});
 			}
@@ -1360,9 +1362,10 @@
 				new Chart(trendCtx, {
 					type: 'line',
 					data: {
-						labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+						labels: /*[[${sixMonthTrendLabels}]]*/ [],
+
 						datasets: [{
-							data: [82.0, 86.0, 89.8, 88.8, 92.8, 95.8],
+						    data: /*[[${sixMonthTrendValues}]]*/ [],
 							borderColor: '#dc2626',
 							backgroundColor: 'rgba(220, 38, 38, 0.08)',
 							fill: true,
@@ -1382,9 +1385,8 @@
 						scales: {
 							yAxes: [{
 								ticks: {
-									min: 80,
-									max: 100,
-									stepSize: 5,
+									beginAtZero: true,
+									min: 0,
 									fontColor: '#64748b',
 									fontSize: 10.5
 								},
@@ -1650,7 +1652,7 @@
 					<div class="dashboard-card">
 						<div class="card-header-clean">
 							<h5 class="card-main-title">Overdue by scheme</h5>
-							<p class="card-sub-caption">Rs millions. Selected scheme is highlighted.</p>
+							<p class="card-sub-caption">Overdue arrears by scheme (₹)</p>
 						</div>
 						<div class="chart-canvas-wrapper">
 							<canvas id="overdueSchemeChart"></canvas>

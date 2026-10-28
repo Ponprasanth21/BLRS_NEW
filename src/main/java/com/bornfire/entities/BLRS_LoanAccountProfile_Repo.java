@@ -43,4 +43,7 @@ public interface BLRS_LoanAccountProfile_Repo
 
  	@Query("SELECT DISTINCT r.overdueDepartment FROM BLRS_LoanAccountProfile_Entity r WHERE r.overdueDepartment IS NOT NULL ORDER BY r.overdueDepartment")
  	List<String> getDepartments();
+ 	
+ 	List<BLRS_LoanAccountProfile_Entity>
+ 	findByOverdueRecordDateIsNotNullOrderByOverdueRecordDateAsc();
 }

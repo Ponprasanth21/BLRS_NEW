@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -170,12 +171,12 @@ public class NavigationController {
 							rem2++;
 						} else if (upper.contains("REM3") || upper.contains("FINAL") || upper.contains("3")) {
 							rem3++;
-						} else {
-							rem1++;
+						} else if (upper.contains("REM1")
+						        || upper.contains("REMINDER-1")
+						        || upper.equals("1")) {
+						    rem1++;
 						}
-					} else {
-						rem1++;
-					}
+					} 
 				}
 				int total = remList.size();
 				int r1 = Math.min(rem1, total);
@@ -191,14 +192,14 @@ public class NavigationController {
 				md.addAttribute("rem2Percent", total > 0 ? Math.min(100, Math.round((float) r2 * 100 / total)) : 0);
 				md.addAttribute("rem3Percent", total > 0 ? Math.min(100, Math.round((float) r3 * 100 / total)) : 0);
 			} else {
-				md.addAttribute("activeOverdueCount", 1840);
-				md.addAttribute("rem1Count", 1509);
-				md.addAttribute("rem2Count", 1012);
-				md.addAttribute("rem3Count", 570);
-				md.addAttribute("unsentRem1Count", 331);
-				md.addAttribute("rem1Percent", 82);
-				md.addAttribute("rem2Percent", 55);
-				md.addAttribute("rem3Percent", 31);
+			    md.addAttribute("activeOverdueCount", 0);
+			    md.addAttribute("rem1Count", 0);
+			    md.addAttribute("rem2Count", 0);
+			    md.addAttribute("rem3Count", 0);
+			    md.addAttribute("unsentRem1Count", 0);
+			    md.addAttribute("rem1Percent", 0);
+			    md.addAttribute("rem2Percent", 0);
+			    md.addAttribute("rem3Percent", 0);
 			}
 		} catch (Exception e) {
 			md.addAttribute("activeOverdueCount", 1840);
@@ -234,21 +235,28 @@ public class NavigationController {
 							else if (m <= 12) a7_12++;
 							else if (m <= 24) a13_24++;
 							else a24p++;
-						} else {
-							paid++;
+						} else if ("PAID".equalsIgnoreCase(l.getRecoveryStatus())
+						        || "CLOSED".equalsIgnoreCase(l.getRecoveryStatus())) {
+						    paid++;
 						}
 					}
-					if (arrears > 0) {
-						md.addAttribute("paidUpCount", paid > 0 ? paid : 2450);
-						md.addAttribute("inArrearsCount", arrears);
-						md.addAttribute("aging_0_3", a0_3 > 0 ? a0_3 : 620);
-						md.addAttribute("aging_4_6", a4_6 > 0 ? a4_6 : 400);
-						md.addAttribute("aging_7_12", a7_12 > 0 ? a7_12 : 360);
-						md.addAttribute("aging_13_24", a13_24 > 0 ? a13_24 : 260);
-						md.addAttribute("aging_24_plus", a24p > 0 ? a24p : 200);
-					} else {
-						setDashboardChartDefaults(md);
-					}
+					/*
+					 * if (arrears > 0) { md.addAttribute("paidUpCount", paid);
+					 * md.addAttribute("inArrearsCount", arrears); md.addAttribute("aging_0_3",
+					 * a0_3); md.addAttribute("aging_4_6", a4_6); md.addAttribute("aging_7_12",
+					 * a7_12); md.addAttribute("aging_13_24", a13_24);
+					 * md.addAttribute("aging_24_plus", a24p); }
+					 */
+					
+					md.addAttribute("paidUpCount", paid);
+					md.addAttribute("inArrearsCount", arrears);
+					md.addAttribute("aging_0_3", a0_3);
+					md.addAttribute("aging_4_6", a4_6);
+					md.addAttribute("aging_7_12", a7_12);
+					md.addAttribute("aging_13_24", a13_24);
+					md.addAttribute("aging_24_plus", a24p);
+					
+					
 				} else {
 					setDashboardChartDefaults(md);
 				}
@@ -258,6 +266,105 @@ public class NavigationController {
 		} catch (Exception e) {
 			logger.warn("Could not calculate dynamic loan statistics", e);
 			setDashboardChartDefaults(md);
+		}
+		
+		try {
+		    List<BLRS_LoanAccountProfile_Entity> loans =
+		            loanAccountService.getAllLoanDetails();
+
+		    Map<String, Double> schemeTotals = new LinkedHashMap<>();
+
+		    if (loans != null) {
+		        for (BLRS_LoanAccountProfile_Entity loan : loans) {
+		            String scheme = loan.getScheme();
+
+		            if (scheme != null && !scheme.trim().isEmpty()) {
+		                double amount = loan.getTotalArrears() != null
+		                        ? loan.getTotalArrears().doubleValue()
+		                        : 0.0;
+
+		                schemeTotals.merge(scheme.trim(), amount, Double::sum);
+		            }
+		        }
+		    }
+
+		    md.addAttribute("overdueSchemeLabels",
+		            new ArrayList<>(schemeTotals.keySet()));
+
+		    md.addAttribute("overdueSchemeValues",
+		            new ArrayList<>(schemeTotals.values()));
+
+		} catch (Exception e) {
+		    logger.warn("Could not load overdue amounts by scheme", e);
+		    md.addAttribute("overdueSchemeLabels", new ArrayList<>());
+		    md.addAttribute("overdueSchemeValues", new ArrayList<>());
+		}
+		
+		
+		try {
+		    List<BLRS_LoanAccountProfile_Entity> loans =
+		            loanAccountService.getAllLoanDetails();
+
+		    LocalDate today = LocalDate.now();
+		    java.time.YearMonth currentMonth =
+		            java.time.YearMonth.from(today);
+
+		    java.time.YearMonth startMonth =
+		            currentMonth.minusMonths(5);
+
+		    Map<java.time.YearMonth, java.math.BigDecimal> monthlyTotals =
+		            new java.util.TreeMap<>();
+
+		    // Initialize all six months to zero
+		    for (int i = 0; i < 6; i++) {
+		        monthlyTotals.put(
+		                startMonth.plusMonths(i),
+		                java.math.BigDecimal.ZERO);
+		    }
+
+		    if (loans != null) {
+		        for (BLRS_LoanAccountProfile_Entity loan : loans) {
+		            LocalDate recordDate = loan.getOverdueRecordDate();
+
+		            if (recordDate != null
+		                    && !recordDate.isAfter(today)
+		                    && !recordDate.isBefore(startMonth.atDay(1))) {
+
+		                java.time.YearMonth month =
+		                        java.time.YearMonth.from(recordDate);
+
+		                if (monthlyTotals.containsKey(month)) {
+		                    java.math.BigDecimal amount =
+		                            loan.getTotalArrears() != null
+		                                    ? loan.getTotalArrears()
+		                                    : java.math.BigDecimal.ZERO;
+
+		                    monthlyTotals.merge(
+		                            month, amount, java.math.BigDecimal::add);
+		                }
+		            }
+		        }
+		    }
+
+		    List<String> trendLabels = new ArrayList<>();
+		    List<Double> trendValues = new ArrayList<>();
+
+		    java.time.format.DateTimeFormatter formatter =
+		            java.time.format.DateTimeFormatter.ofPattern("MMM");
+
+		    for (Map.Entry<java.time.YearMonth, java.math.BigDecimal> entry
+		            : monthlyTotals.entrySet()) {
+		        trendLabels.add(entry.getKey().format(formatter));
+		        trendValues.add(entry.getValue().doubleValue() / 1_000_000.0);
+		    }
+
+		    md.addAttribute("sixMonthTrendLabels", trendLabels);
+		    md.addAttribute("sixMonthTrendValues", trendValues);
+
+		} catch (Exception e) {
+		    logger.warn("Could not load six-month overdue trend", e);
+		    md.addAttribute("sixMonthTrendLabels", new ArrayList<>());
+		    md.addAttribute("sixMonthTrendValues", new ArrayList<>());
 		}
 
 		return "BLRS_Dashboard";
