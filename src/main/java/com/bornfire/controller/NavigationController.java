@@ -41,6 +41,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import com.bornfire.entities.BLRS_ReminderGenerator_Entity;
 import com.bornfire.entities.BLRS_EmailSmsParam_Repo;
+import com.bornfire.entities.BLRS_Guarantor_Entity;
+
 import java.nio.charset.StandardCharsets;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -1336,6 +1338,14 @@ public class NavigationController {
 		    return "BLRS_LoanAccountProfile";	
 		    
 	}
+	
+//  com.bornfire.entities.BLRS_Guarantor_Entity
+	 
+@GetMapping(value = "/getGuarantors", produces = MediaType.APPLICATION_JSON_VALUE)
+@ResponseBody
+public List<BLRS_Guarantor_Entity> getGuarantors(@RequestParam("accountNumber") String accountNumber) {
+   return blrsLoanAccountProfileService.getGuarantorsByAccountNumber(accountNumber);
+}
 
 	// ---------- STEP 3 : DELETE your 3 old methods  Overduereports / Reminderreports / Guarantorreports
 //  and paste ALL of this in the same place ----------
