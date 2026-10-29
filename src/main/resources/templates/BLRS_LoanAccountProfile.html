@@ -245,7 +245,6 @@
 		    border-bottom: 2px solid #cbd5e1; padding: 8px 10px; font-size: 0.72rem; text-transform: uppercase;
 		}
 		.guarantor-table td { padding: 8px 10px; vertical-align: middle; overflow-wrap: anywhere; }
-		.guarantor-table td.num { text-align: right; white-space: nowrap; }
     </style>
 
     <script th:inline="javascript">
@@ -332,6 +331,20 @@
 				guarantorScheme: "scheme",
 				guarantorAccountNo: "accountNumber",
 				guarantorCount: "numberOfGuarantors",
+				detailG1CustomerId: "guarantor1CustomerId",
+				detailG1Name: "guarantor1Name",
+				detailG1Nic: "guarantor1Nic",
+				detailG1MailingAddress: "guarantor1MailingAddress",
+				detailG1EmailId: "guarantor1EmailId",
+				detailG1MobileNo: "guarantor1MobileNo",
+				detailG1Reminder: "guarantor1Reminder",
+				detailG2CustomerId: "guarantor2CustomerId",
+				detailG2Name: "guarantor2Name",
+				detailG2Nic: "guarantor2Nic",
+				detailG2MailingAddress: "guarantor2MailingAddress",
+				detailG2EmailId: "guarantor2EmailId",
+				detailG2MobileNo: "guarantor2MobileNo",
+				detailG2Reminder: "guarantor2Reminder",
 		    };
 
 		    Object.entries(fields).forEach(([id, key]) => {
@@ -340,79 +353,17 @@
 		            element.textContent = data[key] || "N/A";
 		        }
 		    });
-			
-			loadGuarantors(data.accountNumber, data.reminderGuarantor);
+
+		    // if "number of guarantors" is empty in DB, count the guarantors that have a name
+		    const gCnt = document.getElementById("guarantorCount");
+		    if (gCnt && gCnt.textContent === "N/A") {
+		        gCnt.textContent = [1, 2].filter(n => data["guarantor" + n + "Name"]).length;
+		    }
 		}
 
 		function goBackToList() {
 		    document.getElementById("detailSection").style.display = "none";
 		    document.getElementById("listSection").style.display = "block";
-		}
-		
-		const GUARANTOR_URL = /*[[@{/getGuarantors}]]*/ '/getGuarantors';
-		let guarantorRequestId = 0;
-
-		function fmtAmount(v) {
-		    if (v === null || v === undefined || v === "") return "-";
-		    const n = Number(v);
-		    return isNaN(n) ? String(v)
-		                    : n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-		}
-
-		function makeCell(text, cls) {
-		    const td = document.createElement("td");
-		    td.textContent = (text === null || text === undefined || text === "") ? "-" : text;
-		    if (cls) td.className = cls;
-		    return td;
-		}
-
-		function loadGuarantors(accountNumber, fallbackName) {
-		    const body = document.getElementById("guarantorBody");
-		    const msg  = document.getElementById("guarantorMsg");
-		    const myId = ++guarantorRequestId;
-		    body.innerHTML = "";
-
-		    if (!accountNumber) { msg.textContent = "Account number not available."; return; }
-		    msg.textContent = "Loading guarantor details...";
-
-		    fetch(GUARANTOR_URL + "?accountNumber=" + encodeURIComponent(accountNumber),
-		          { headers: { "Accept": "application/json" }, credentials: "same-origin" })
-		        .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-		        .then(list => {
-		            if (myId !== guarantorRequestId) return;
-		            if (!list || list.length === 0) {
-		                if (fallbackName) {
-		                    const tr = document.createElement("tr");
-		                    [1, "-", fallbackName, "-", "-", "-", "-", "-", "-", "-", "-"]
-		                        .forEach(v => tr.appendChild(makeCell(v)));
-		                    body.appendChild(tr);
-		                    msg.textContent = "Only the guarantor name from the reminder record is available.";
-		                } else {
-		                    msg.textContent = "No guarantor records found for this loan account.";
-		                }
-		                return;
-		            }
-		            msg.textContent = "";
-		            list.forEach((g, i) => {
-		                const tr = document.createElement("tr");
-		                tr.appendChild(makeCell(g.guarantorSlNo != null ? g.guarantorSlNo : i + 1));
-		                tr.appendChild(makeCell(g.guarantorCustomerId));
-		                tr.appendChild(makeCell(g.guarantorName));
-		                tr.appendChild(makeCell(g.guarantorNic));
-		                tr.appendChild(makeCell(g.mailingAddress));
-		                tr.appendChild(makeCell(g.mobileNo));
-		                tr.appendChild(makeCell(g.emailId));
-		                tr.appendChild(makeCell(g.relationship));
-		                tr.appendChild(makeCell(fmtAmount(g.guaranteeAmount), "num"));
-		                tr.appendChild(makeCell(g.guarantorStatus));
-		                tr.appendChild(makeCell(g.guarantorReminder));
-		                body.appendChild(tr);
-		            });
-		        })
-		        .catch(err => {
-		            if (myId !== guarantorRequestId) return;
-		            msg.textContent = "Unable to load guarantor details (" + err.message + ").";
-		        });
 		}
 
         /*]]>*/
@@ -519,7 +470,21 @@
 									            data-recovery-amount=${acct.recoveryAmount},
 									            data-recovery-overdues=${acct.recoveryOverdues},
 									            data-recovery-age=${acct.recoveryAge},
-									            data-recovery-status=${acct.recoveryStatus}"
+									            data-recovery-status=${acct.recoveryStatus},
+									            data-guarantor1-customer-id=${acct.guarantor1CustomerId},
+									            data-guarantor1-name=${acct.guarantor1Name},
+									            data-guarantor1-nic=${acct.guarantor1Nic},
+									            data-guarantor1-mailing-address=${acct.guarantor1MailingAddress},
+									            data-guarantor1-email-id=${acct.guarantor1EmailId},
+									            data-guarantor1-mobile-no=${acct.guarantor1MobileNo},
+									            data-guarantor1-reminder=${acct.guarantor1Reminder},
+									            data-guarantor2-customer-id=${acct.guarantor2CustomerId},
+									            data-guarantor2-name=${acct.guarantor2Name},
+									            data-guarantor2-nic=${acct.guarantor2Nic},
+									            data-guarantor2-mailing-address=${acct.guarantor2MailingAddress},
+									            data-guarantor2-email-id=${acct.guarantor2EmailId},
+									            data-guarantor2-mobile-no=${acct.guarantor2MobileNo},
+									            data-guarantor2-reminder=${acct.guarantor2Reminder}"
 									        onclick="openDetail(this)"
 									        style="cursor: pointer;">
 
@@ -601,6 +566,7 @@
 
 	                            </table>
 	                        </div>
+
 							<div class="tab-pane fade" id="guarantor" role="tabpanel">
 							    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Guarantor details</h6>
 							    <br/>
@@ -613,27 +579,23 @@
 							        Number of guarantors in the loan: <strong id="guarantorCount">N/A</strong>
 							    </div>
 							    <div class="table-responsive">
-							        <table class="table table-bordered table-sm table-hover guarantor-table">
+							        <table class="table table-bordered table-sm guarantor-table">
 							            <thead>
-							                <tr>
-							                    <th>SL</th>
-							                    <th>Guarantor Id</th>
-							                    <th>Name of Guarantor</th>
-							                    <th>NIC</th>
-							                    <th>Mailing Address</th>
-							                    <th>Mobile No</th>
-							                    <th>E-Mail Id</th>
-							                    <th>Relationship</th>
-							                    <th class="text-right">Guarantee Amount (Rs)</th>
-							                    <th>Status</th>
-							                    <th>Reminder</th>
-							                </tr>
+							                <tr><th></th><th>Guarantor -1</th><th>Guarantor -2</th></tr>
 							            </thead>
-							            <tbody id="guarantorBody"></tbody>
+							            <tbody>
+							                <tr><th>Customer Id</th><td id="detailG1CustomerId">N/A</td><td id="detailG2CustomerId">N/A</td></tr>
+							                <tr><th>Name of the Guarantor</th><td id="detailG1Name">N/A</td><td id="detailG2Name">N/A</td></tr>
+							                <tr><th>NIC</th><td id="detailG1Nic">N/A</td><td id="detailG2Nic">N/A</td></tr>
+							                <tr><th>Mailing Address</th><td id="detailG1MailingAddress">N/A</td><td id="detailG2MailingAddress">N/A</td></tr>
+							                <tr><th>E-Mail Id</th><td id="detailG1EmailId">N/A</td><td id="detailG2EmailId">N/A</td></tr>
+							                <tr><th>Mobile No</th><td id="detailG1MobileNo">N/A</td><td id="detailG2MobileNo">N/A</td></tr>
+							                <tr><th>Reminder</th><td id="detailG1Reminder">N/A</td><td id="detailG2Reminder">N/A</td></tr>
+							            </tbody>
 							        </table>
 							    </div>
-							    <p id="guarantorMsg" class="text-muted mt-2 mb-0" style="font-size: 0.8rem;"></p>
 							</div>
+
 	                        <div class="tab-pane fade" id="loanmaster" role="tabpanel">
 							<table class="custom-table loan-master-table">
 									    <tr>
@@ -824,8 +786,8 @@
 	                    </div>
 	                </div>
 	                <div class="card-footer text-center border-top-0" style="background-color: #e9ecef;">
-						<button type="button" class="btn-primary big-btn" id="btnHome" onclick="home();">Home</button>
-						<button type="button" class="btn-primary big-btn" id="btnBack" onclick="Back();">Back</button>
+						<button type="button" class="btn-primary big-btn" id="btnHome2" onclick="home();">Home</button>
+						<button type="button" class="btn-primary big-btn" id="btnBack2" onclick="goBackToList();">Back</button>
 	                </div>
 	            </div>
 	        </div>

@@ -160,6 +160,50 @@ public class BLRS_LoanAccountProfile_Entity {
     @Column(name = "RECOVERY_STATUS", length = 50)
     private String recoveryStatus;
 
+    
+
+    // Guarantor Details (Guarantor 1 and 2)
+    @Column(name = "GUARANTOR1_CUSTOMER_ID", length = 50)
+    private String guarantor1CustomerId;
+ 
+    @Column(name = "GUARANTOR1_NAME", length = 200)
+    private String guarantor1Name;
+ 
+    @Column(name = "GUARANTOR1_NIC", length = 50)
+    private String guarantor1Nic;
+ 
+    @Column(name = "GUARANTOR1_MAILING_ADDRESS", length = 500)
+    private String guarantor1MailingAddress;
+ 
+    @Column(name = "GUARANTOR1_EMAIL_ID", length = 200)
+    private String guarantor1EmailId;
+ 
+    @Column(name = "GUARANTOR1_MOBILE_NO", length = 20)
+    private String guarantor1MobileNo;
+ 
+    @Column(name = "GUARANTOR1_REMINDER", length = 10)
+    private String guarantor1Reminder;
+ 
+    @Column(name = "GUARANTOR2_CUSTOMER_ID", length = 50)
+    private String guarantor2CustomerId;
+ 
+    @Column(name = "GUARANTOR2_NAME", length = 200)
+    private String guarantor2Name;
+ 
+    @Column(name = "GUARANTOR2_NIC", length = 50)
+    private String guarantor2Nic;
+ 
+    @Column(name = "GUARANTOR2_MAILING_ADDRESS", length = 500)
+    private String guarantor2MailingAddress;
+ 
+    @Column(name = "GUARANTOR2_EMAIL_ID", length = 200)
+    private String guarantor2EmailId;
+ 
+    @Column(name = "GUARANTOR2_MOBILE_NO", length = 20)
+    private String guarantor2MobileNo;
+ 
+    @Column(name = "GUARANTOR2_REMINDER", length = 10)
+    private String guarantor2Reminder;
     // Constructors
     public BLRS_LoanAccountProfile_Entity() {
     }
@@ -540,4 +584,117 @@ public class BLRS_LoanAccountProfile_Entity {
     public void setRecoveryStatus(String recoveryStatus) {
         this.recoveryStatus = recoveryStatus;
     }
+
+	public String getGuarantor1CustomerId() {
+		return guarantor1CustomerId;
+	}
+
+	public void setGuarantor1CustomerId(String guarantor1CustomerId) {
+		this.guarantor1CustomerId = guarantor1CustomerId;
+	}
+
+	public String getGuarantor1Name() {
+		return guarantor1Name;
+	}
+
+	public void setGuarantor1Name(String guarantor1Name) {
+		this.guarantor1Name = guarantor1Name;
+	}
+
+	public String getGuarantor1Nic() {
+		return guarantor1Nic;
+	}
+
+	public void setGuarantor1Nic(String guarantor1Nic) {
+		this.guarantor1Nic = guarantor1Nic;
+	}
+
+	public String getGuarantor1MailingAddress() {
+		return guarantor1MailingAddress;
+	}
+
+	public void setGuarantor1MailingAddress(String guarantor1MailingAddress) {
+		this.guarantor1MailingAddress = guarantor1MailingAddress;
+	}
+
+	public String getGuarantor1EmailId() {
+		return guarantor1EmailId;
+	}
+
+	public void setGuarantor1EmailId(String guarantor1EmailId) {
+		this.guarantor1EmailId = guarantor1EmailId;
+	}
+
+	public String getGuarantor1MobileNo() {
+		return guarantor1MobileNo;
+	}
+
+	public void setGuarantor1MobileNo(String guarantor1MobileNo) {
+		this.guarantor1MobileNo = guarantor1MobileNo;
+	}
+
+	public String getGuarantor1Reminder() {
+		return guarantor1Reminder;
+	}
+
+	public void setGuarantor1Reminder(String guarantor1Reminder) {
+		this.guarantor1Reminder = guarantor1Reminder;
+	}
+
+	public String getGuarantor2CustomerId() {
+		return guarantor2CustomerId;
+	}
+
+	public void setGuarantor2CustomerId(String guarantor2CustomerId) {
+		this.guarantor2CustomerId = guarantor2CustomerId;
+	}
+
+	public String getGuarantor2Name() {
+		return guarantor2Name;
+	}
+
+	public void setGuarantor2Name(String guarantor2Name) {
+		this.guarantor2Name = guarantor2Name;
+	}
+
+	public String getGuarantor2Nic() {
+		return guarantor2Nic;
+	}
+
+	public void setGuarantor2Nic(String guarantor2Nic) {
+		this.guarantor2Nic = guarantor2Nic;
+	}
+
+	public String getGuarantor2MailingAddress() {
+		return guarantor2MailingAddress;
+	}
+
+	public void setGuarantor2MailingAddress(String guarantor2MailingAddress) {
+		this.guarantor2MailingAddress = guarantor2MailingAddress;
+	}
+
+	public String getGuarantor2EmailId() {
+		return guarantor2EmailId;
+	}
+
+	public void setGuarantor2EmailId(String guarantor2EmailId) {
+		this.guarantor2EmailId = guarantor2EmailId;
+	}
+
+	public String getGuarantor2MobileNo() {
+		return guarantor2MobileNo;
+	}
+
+	public void setGuarantor2MobileNo(String guarantor2MobileNo) {
+		this.guarantor2MobileNo = guarantor2MobileNo;
+	}
+
+	public String getGuarantor2Reminder() {
+		return guarantor2Reminder;
+	}
+
+	public void setGuarantor2Reminder(String guarantor2Reminder) {
+		this.guarantor2Reminder = guarantor2Reminder;
+	}
+    
 }
