@@ -29,6 +29,8 @@
 					background-color: #f8fafc !important;
 					font-family: 'Outfit', sans-serif !important;
 					color: #1e293b;
+					margin: 0 !important;
+					 overflow: hidden !important;
 				}
 				.container-manager {
 					width: 100%;
@@ -85,9 +87,16 @@
 				.status-warning { background-color: #fef3c7; color: #92400e; }
 				.status-danger { background-color: #fee2e2; color: #991b1b; }
 				.status-info { background-color: #e0f2fe; color: #075985; }
-				.table-responsive::-webkit-scrollbar { width: 6px; height: 6px; }
-				.table-responsive::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
-				.table-responsive::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+				.table-responsive::-webkit-scrollbar { width: 8px; height: 8px; }
+				.table-responsive::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+				.table-responsive::-webkit-scrollbar-thumb { background: #999; border-radius: 4px; }
+				.table-responsive {
+				    height: 260px;
+				    overflow-y: scroll !important;
+				    overflow-x: auto;
+				}
+				
+				
 				@media (max-width: 767.98px) {
 					.container-manager {
 						width: 100%;
@@ -120,9 +129,9 @@
 				}
 				html, body {
 				    width: 100% !important;
+				    height: 100% ;
 				    margin: 0 !important;
-				    overflow-x: hidden !important;
-				    overflow-y: visible !important;
+				    overflow: hidden !important;
 				}
 			</style>
 			<script th:inline="javascript">
@@ -130,7 +139,7 @@
 				function home() {
 					location.href = './Dashboard';
 				}
-				function Back() {
+				function back() {
 					window.history.back();
 				}
 				/*]]>*/

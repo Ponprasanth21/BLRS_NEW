@@ -37,9 +37,11 @@
 		/* ===== Common layout (same on Reminder Generation and Batch Job Execution) ===== */
 		html,
 		body {
-			height: 100%;
+		    width: 100%;
+		    height: 100%;
+		    margin: 0 !important;
+		    overflow: hidden !important;
 		}
-
 		body {
 			background-color: #f8fafc !important;
 			font-family: 'Outfit', sans-serif !important;
@@ -94,6 +96,7 @@
 			flex: 1 1 auto;
 			overflow: auto;
 			padding: 0;
+			box-sizing: border-box;
 		}
 
 		.page-card-footer {

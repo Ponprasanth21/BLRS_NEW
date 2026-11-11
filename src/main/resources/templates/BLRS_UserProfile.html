@@ -84,6 +84,10 @@
 			
 
 		}
+		
+		html, body {
+		    overflow: hidden !important;
+		}
 
 		* {
 
@@ -112,7 +116,7 @@
 		}
 
 		/* Keep the card/table exactly inside the centered page area. */
-		.container-manager .card,
+	
 		.container-manager .table-responsive {
 			width: 100%;
 			max-width: 100%;
@@ -121,6 +125,13 @@
 			box-sizing: border-box;
 		}
 
+		.container-manager .card {
+		    border: 1px solid #cbd5e1 !important;
+		    border-radius: 6px !important;
+		    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+		    overflow: hidden;
+		}
+		
 		@media (max-width: 767px) {
 			.container-manager {
 				width: 100%;
@@ -140,8 +151,7 @@
 
 			overflow-y: auto;
 
-			overflow-x: auto;
-
+			overflow-x: hidden;
 			border: 1px solid #d4d7da;
 
 			scrollbar-width: thin;
@@ -204,9 +214,9 @@
 
 			color: #1e293b !important;
 
-			font-size: 13px !important;
+			font-size: 14px !important;
 
-			font-weight: 600;
+			font-weight: 610;
 
 			border: none !important;
 
@@ -214,7 +224,7 @@
 
 			padding: 4px 8px !important;
 
-			height: 30px !important;
+			height: 20px !important;
 
 			vertical-align: middle !important;
 
@@ -293,6 +303,12 @@
 		    border: 1px solid #d5d9dc;
 
 		}
+		
+		.card-header,
+		.card-footer {
+		    background-color: #e9ecef !important;
+		}
+		
 
 		/* CARD HEADER */
 

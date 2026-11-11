@@ -27,18 +27,19 @@
 		/* ===== Common layout (same on Reminder Generation and Batch Job Execution) ===== */
 		html, body { height: 100%; }
 		body { background-color: #f8fafc !important; font-family: 'Outfit', sans-serif !important; color: #1e293b;
-			overscroll-behavior: none !important; margin: 0; padding-top: 70px; overflow-x: hidden; }
+			overscroll-behavior: none !important; margin: 0; padding-top: 70px; overflow: hidden !important;
+ }
 
 		.container-manager { width: 100%; max-width: 100%; padding: 0 1.8%; margin: 12px auto 15px; box-sizing: border-box; margin-top: 20px;}
 
 		/* one card: fixed header, scrolling body, fixed footer */
 		.page-card { display: flex; flex-direction: column; width: 100%; background: #fff;
 			border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-			height: calc(100vh - 140px); min-height: 320px; overflow: hidden; }
+			height: calc(100vh - 160px); min-height: 0; overflow: hidden; }
 		.page-card-header { flex: 0 0 auto; display: flex; justify-content: space-between; align-items: center;
 			background: #e9ecef; padding: 10px 16px; border-bottom: 1px solid #cbd5e1; }
 		.page-card-header h6 { margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
-		.page-card-body { flex: 1 1 auto; overflow: auto; padding: 0; }
+		.page-card-body { flex: 1 1 auto; overflow: auto; padding: 0; min-height: 0;}
 		.page-card-footer { flex: 0 0 auto; background: #e9ecef; text-align: center; padding: 8px; margin-bottom: 30px;
 			border-top: 1px solid #cbd5e1;	margin: 0; }
 
