@@ -183,6 +183,14 @@
         }
 		
 		
+		.big-btn {
+					padding: 4px 14px;
+					font-size: 0.85rem;
+					border-radius: 4px;
+					border: 1px solid #007bff;
+					cursor: pointer;
+				}
+		
 		/* Reduce row height in Overdue Accounts table */
 		#overdueAccountsTable th,
 		#overdueAccountsTable td {
@@ -242,6 +250,13 @@
 			border-radius:.2rem;
 		}
 		
+		/* Loan Account Profile Tabs */
+		.nav-tabs .nav-link {
+		    font-family: 'Outfit', sans-serif !important;
+		    font-size: 14px !important;
+		    font-weight: 500 !important;
+		}
+		
 		.big-btn:focus,
 		.big-btn:focus-visible,
 		.big-btn:active {
@@ -251,13 +266,38 @@
 		}
 		
 		
+		#overdueAccountsTable thead th {
+		    background-color: #f1f5f9 !important;
+		    color: #334155 !important;
+		    font-weight: 450 !important;
+		    border-bottom: 2px solid #cbd5e1 !important;
+			font-size: 14px;
+		}
+		
 		/* Guarantor tab */
 		.guarantor-table { width: 100%; table-layout: auto; font-size: 0.78rem; margin-bottom: 0; }
 		.guarantor-table th {
 		    background: #f1f5f9; color: #334155; font-weight: 600; white-space: nowrap;
 		    border-bottom: 2px solid #cbd5e1; padding: 8px 10px; font-size: 0.72rem; text-transform: uppercase;
 		}
-		.guarantor-table td { padding: 8px 10px; vertical-align: middle; overflow-wrap: anywhere; }
+		
+		#guarantor {
+					    max-height: 300px;
+					    overflow-y: auto;
+					    overflow-x: hidden;
+					} 
+					
+					/* Same data font size across all 6 Loan Account Profile tabs */
+					#detailSection table tbody td {
+					    font-family: 'Outfit', sans-serif !important;
+					    font-size: 13px !important;
+					}
+					
+					
+		.guarantor-table td { padding: 8px 10px; vertical-align: middle; overflow-wrap: anywhere;
+			
+
+	 }
     </style>
 
     <script th:inline="javascript">
@@ -393,9 +433,9 @@
                     <div class="panel panel-primary filterable">
 						<div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1; height: 80vh; display: flex; flex-direction: column; overflow: hidden;">
                             <!-- Card Header -->
-                            <div class="card-header" style="background-color: #e9ecef;">
-                                <div class="float-left">
-                                    <h6 style="margin: 0; text-transform: uppercase;">LIST OF OVERDUE ACCOUNTS</h6>
+<div class="card-header" style="background-color: #e9ecef !important;">
+	                                <div class="float-left">
+									<h6 style="margin: 0; font-size: 17px;">List Of Overdue Accounts</h6>
                                 </div>
                             </div>
 
@@ -422,13 +462,13 @@
                                 <table class="table table-bordered table-hover mb-0" id="overdueAccountsTable" style="width: 100%; font-size: 0.83rem;">
                                     <thead style="background-color: #f1f5f9; color: #334155;">
                                         <tr>
-                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">SCHEME CODE</th>
-                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">CUSTOMER ID</th>
-                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">ACCOUNT NUMBER</th>
-                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">NAME OF BORROWER</th>
-                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="text-right">OVERDUE</th>
-                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">AGE</th>
-                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">STATUS</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Scheme Code</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Customer ID</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Account Number</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Name Of Borrower</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;" class="text-right">Overdue</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Age</th>
+                                            <th style="font-weight: bold; border-bottom: 2px solid #cbd5e1;">Status</th>
                                         </tr>
                                     </thead>
 
@@ -532,8 +572,7 @@
                             </div>
 
                             <!-- Card Footer -->
-							<div class="card-footer text-center" style="padding: 6px 10px; background-color: #e9ecef">
-														
+							<div class="card-footer text-center" style="padding: 6px 10px; background-color: #e9ecef !important;">														
 								<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
 
 	     						<button type="button" class="btn btn-sm btn-primary" id="btnBack" onclick="Back()">Back</button>
@@ -551,7 +590,7 @@
 	        <div class="col-sm-11 mt-2">
 	            <div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1;">
 	                <div class="card-header" style="background-color: #e9ecef;">
-	                    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Loan Account Profile Detail</h6>
+						<h6 style="margin: 0; font-size: 17px;">Loan Account Profile Detail</h6>
 	                </div>
 	                <div class="card-body p-3">
 	                    <!-- Tabs -->
@@ -579,8 +618,6 @@
 	                        </div>
 
 							<div class="tab-pane fade" id="guarantor" role="tabpanel">
-							    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Guarantor details</h6>
-							    <br/>
 							    <table class="custom-table">
 							        <tr><th>Customer Id</th><td id="guarantorLoaneeId"></td><th>Customer Name</th><td id="guarantorLoaneeName"></td></tr>
 							        <tr><th>Scheme</th><td id="guarantorScheme"></td><th>Account No</th><td id="guarantorAccountNo"></td></tr>
@@ -589,8 +626,8 @@
 							    <div class="mb-2" style="font-size: 0.85rem;">
 							        Number of guarantors in the loan: <strong id="guarantorCount">N/A</strong>
 							    </div>
-							    <div class="table-responsive">
-							        <table class="table table-bordered table-sm guarantor-table">
+									<div class="table-responsive guarantor-scroll">
+								        <table class="table table-bordered table-sm guarantor-table">
 							            <thead>
 							                <tr><th></th><th>Guarantor -1</th><th>Guarantor -2</th></tr>
 							            </thead>
@@ -713,8 +750,8 @@
 	                            </table>
 	                        </div>
 	                        <div class="tab-pane fade" id="reminders" role="tabpanel">
-	                            <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Reminder details</h6>
-	                            <br/>
+<!--	                            <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Reminder details</h6>
+-->	                            
 	                            <table class="custom-table">
 
 									<tr><th>Customer Id</th><td id="reminderCustomerId"></td><th>Customer Name</th><td id="reminderBorrowerName"></td></tr>
@@ -752,8 +789,8 @@
 	                            </table>
 	                        </div>
 	                        <div class="tab-pane fade" id="recovery" role="tabpanel">
-	    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Recovery details</h6>
-	    <br/>
+<!--	    <h6 style="font-weight: bold; margin: 0; text-transform: uppercase;">Recovery details</h6>
+-->	    
 	    <table class="custom-table">
 
 			<tr><th>Customer Id</th><td id="recoveryCustomerId"></td><th>Customer Name</th><td id="recoveryBorrowerName"></td></tr>

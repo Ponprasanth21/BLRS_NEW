@@ -64,7 +64,6 @@
 			color: #64748b;
 			font-size: 0.72rem;
 			font-weight: 600;
-			text-transform: uppercase;
 			letter-spacing: 0.05em;
 			padding: 10px 14px;
 			border-bottom: 1px solid #e2e8f0;
@@ -165,9 +164,10 @@
 				<div th:if="${formmode}=='list'">
 					<div class="panel panel-primary filterable">
 						<div class="card" style="box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 6px; border: 1px solid #cbd5e1;">
-							<div class="card-header" style="background-color: #e9ecef;">
-								<div class="float-left">
-									<h6 style="font-weight: bold; margin: 0;">EMAIL and SMS Parameter</h6>
+<div class="card-header" style="background-color: #e9ecef; padding: 10px 16px; border-bottom: 1px solid #cbd5e1;">
+									<div class="float-left">
+										<h6 style="margin: 0; font-size: 17px;">EMAIL and SMS Parameter</h6>
+
 								</div>
 							</div>
 							<div class="card-body d-flex flex-column align-items-center"
@@ -260,19 +260,18 @@
 									</fieldset>
 								</form>
 							</div>
-							<div class="card-footer text-center" style="padding: 6px 10px; gap: 4px;">
-								<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
+<div class="card-footer text-center" style="background-color: #e9ecef; padding: 8px; height: 45px; border-top: 1px solid #cbd5e1; gap: 4px;">								<button type="button" class="btn btn-sm btn-primary" id="btnHome" onclick="home();">Home</button>
 								<button type="button" class="btn btn-sm btn-primary" id="btnSubmit" onclick="submitForm();">Submit</button>
 								<button type="button" class="btn btn-sm btn-info" id="btnTestEmail" 
 								style=" color: #fff;
 								background-color: #007bff;
 								border-color: #007bff;"
- 								onclick="testEmail();">Test Email</button>
+ 								onclick="testEmail();">Send Email</button>
 								<button type="button" class="btn btn-sm btn-info" id="btnTestSms"
 								style=" color: #fff;
 								background-color: #007bff;
 							    border-color: #007bff;" 
-								onclick="testSms();">Test SMS</button>
+								onclick="testSms();">Send SMS</button>
 								<button type="button" class="btn btn-sm btn-secondary" id="btnBack"
 								style=" color: #fff;
 							    background-color: #007bff;

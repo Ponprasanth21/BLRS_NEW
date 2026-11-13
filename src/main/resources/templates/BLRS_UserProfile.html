@@ -78,10 +78,11 @@
 
 	<style>
 
+		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 		body {
 
 			background-color: lightgrey;	
-			
+			font-family: 'Outfit', sans-serif !important;
 
 		}
 		
@@ -123,6 +124,7 @@
 			margin-left: auto;
 			margin-right: auto;
 			box-sizing: border-box;
+			overflow: visible !important;
 		}
 
 		.container-manager .card {
@@ -143,20 +145,15 @@
 		}
 
 		.table-scroll-container {
-			
-
-			
 			min-height: 100px !important;
 			max-height: 52vh;
-
 			overflow-y: auto;
-
 			overflow-x: hidden;
 			border: 1px solid #d4d7da;
-
 			scrollbar-width: thin;
-
 			scrollbar-color: #386276 transparent;
+			position: relative;
+			width: 100%;
 
 		}
 
@@ -199,6 +196,8 @@
 			border-spacing: 0 !important;
 
 			border: 1px solid #d4d7da !important;
+			
+			height: 10px !important;
 
 		}
 
@@ -206,9 +205,9 @@
 
 			position: sticky !important;
 
-			top: 0 !important;
+			top: 0;
 
-			z-index: 10 !important;
+			z-index: 5;
 
 			background-color: #F1F5F9 !important;
 
@@ -216,14 +215,13 @@
 
 			font-size: 14px !important;
 
-			font-weight: 610;
+			font-weight: 450 !important;
 
 			border: none !important;
 
 			box-shadow: inset -1px 0 0 #d4d7da, inset 0 -2px 0 #d4d7da !important;
 
-			padding: 4px 8px !important;
-
+			padding: 2px 8px !important;
 			height: 20px !important;
 
 			vertical-align: middle !important;
@@ -329,6 +327,7 @@
 
 		.card-header h6 {
 
+			font-size: 17px;
 		    color: #333333 !important;
 
 		}
@@ -443,6 +442,13 @@
 
 		}
 		
+		.container-manager .card-footer {
+		    background-color: #e9ecef !important;
+		    border-top: 1px solid #cbd5e1 !important;
+		    padding: 8px 15px !important;
+		    text-align: center;
+		}
+		
 		.card-body {
 		    padding-bottom: 0;
 		}
@@ -456,6 +462,8 @@
 		    border-color: #007bff !important;
 
 		    color: #ffffff !important;
+			
+			border-radius: 3.5px !important;
 
 		}
 
@@ -550,8 +558,6 @@
 
 			font-size: 12px;
 
-			font-weight: 600;
-
 			color: #1e293b;
 
 		}
@@ -585,6 +591,16 @@
 		    padding-bottom: 1px;
 		}
 
+		/* Equal font size for field labels and field values */
+		label {
+		    font-size: 12px !important;
+		}
+
+		input,
+		select,
+		textarea {
+		    font-size: 12px !important;
+		}
 		
 
 
@@ -1353,12 +1369,11 @@
 						<div class="card-header d-flex justify-content-between align-items-center"
 
 
-						style="background-color: #2B506F; min-height: 50px; padding: 10px 15px;">
+						style="background-color: #e9ecef; min-height: 50px; padding: 10px 15px;">
 						
 							<div>
 
-								<h6 style="color: rgb(0, 0, 0); margin: 0; font-size: 1.2rem">User Profile - List</h6>
-
+								<h6 style="margin: 0; font-size: 17px;">User Profile - List</h6>
 							</div>
 
 							<div class="d-flex align-items-center" style="gap: 8px;">
@@ -1484,17 +1499,17 @@
 
 								<div>
 
-									<h6 th:if="${formmode}=='add'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - Add</h6>
+									<h6 th:if="${formmode}=='add'" style="margin: 0; font-size: 17px;">User Profile - Add</h6>
 
-									<h6 th:if="${formmode}=='edit'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - Modify</h6>
+									<h6 th:if="${formmode}=='edit'" style="margin: 0; font-size: 17px;">User Profile - Modify</h6>
 
-									<h6 th:if="${formmode}=='view'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - View</h6>
+									<h6 th:if="${formmode}=='view'" style="margin: 0; font-size: 17px;">User Profile - View</h6>
 
-									<h6 th:if="${formmode}=='verify'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - Verify</h6>
+									<h6 th:if="${formmode}=='verify'" style="margin: 0; font-size: 17px;">User Profile - Verify</h6>
 
-									<h6 th:if="${formmode}=='delete'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - Delete</h6>
+									<h6 th:if="${formmode}=='delete'" style="margin: 0; font-size: 17px;">User Profile - Delete</h6>
 
-									<h6 th:if="${formmode}=='cancel'" style="color: white; margin: 0; font-size: 1.2rem;">User Profile - Cancel</h6>
+									<h6 th:if="${formmode}=='cancel'" style="margin: 0; font-size: 17px;">User Profile - Cancel</h6>
 
 								</div>
 
@@ -2071,7 +2086,7 @@
 
 											style="background-color: #e9ecef !important; color: white; height: 44px; border-radius: .20rem; margin-bottom: 0px !important; padding: 11px 10px;">
 
-											<h4 style="color: #333333; font-size: 1.15rem; margin: 0;">Role and Rights</h4>
+											<h4 style="color: #333333; margin: 0; font-size: 17px;">Role and Rights</h4>
 
 										</div>
 

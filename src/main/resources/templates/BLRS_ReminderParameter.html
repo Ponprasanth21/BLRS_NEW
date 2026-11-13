@@ -43,6 +43,10 @@
 		.radio-option input[type="radio"] {
 			margin-right: 6px;
 		}
+		
+		html, body {
+			    overflow: hidden !important;
+			}
 	</style>
 </head>
 
@@ -58,7 +62,7 @@
 
 							<div class="card-header" style="background-color: #e9ecef;">
 								<div class="float-left">
-									<h6 style="font-weight: bold; margin: 0;">Reminder Parameter</h6>
+									<h6 style="margin: 0; font-size: 17px;">Reminder Parameter</h6>
 								</div>
 							</div>
 
@@ -145,8 +149,8 @@
 								</form>
 							</div>
 
-							<div class="card-footer text-center" style="padding: 6px 10px; gap: 4px;">
-								<button type="button" class="btn btn-sm btn-primary" id="btnHome"
+<div class="card-footer text-center" style="background-color: #e9ecef; padding: 6px 10px; gap: 4px;">
+									<button type="button" class="btn btn-sm btn-primary" id="btnHome"
 									onclick="home();">Home</button>
 								<button type="button" class="btn btn-sm btn-primary" id="btnSubmit"
 									onclick="submitReminders();">Submit</button>

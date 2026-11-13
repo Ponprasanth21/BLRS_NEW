@@ -129,8 +129,10 @@
 
            ========================================================= */
 
+		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
         body {
 
+			font-family: 'Outfit', sans-serif !important;
             background-color: lightgrey;
 
         }
@@ -155,12 +157,12 @@
         .container-manager {
             /* Center the page; do not use a fixed left offset. */
             width: 100%;
-            max-width: 100%;
-            margin: 20px auto 30px auto;
-            box-sizing: border-box;
-			padding-left: 2%;
-			padding-right: 2%;
-			padding-top:-5px;
+			max-width: 100%;
+			padding: 0 1.9%;
+		    margin: 10px auto 15px;
+			box-sizing: border-box;
+			margin-top: 20px;
+			
 			
         }
 
@@ -172,13 +174,23 @@
 
         .container-manager .card,
         .container-manager .content0 {
-            width: 100%;
-			max-width: 100%;
-			margin: 0 auto 30px auto;  /* Top margin changed from 25px to 0 */
-            box-sizing: border-box;
+			width: 100%;
+			 max-width: 100%;
+			 height: auto;
+			 min-height: 0;
+			 margin: 0 auto 15px auto;
+			 box-sizing: border-box;
+			 display: flex;
+			 flex-direction: column;
+			 overflow: hidden;
+			 background: #fff;
+			 border: 1px solid #cbd5e1;
+			 border-radius: 6px;
+			 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 		
 	
+		
         @media (max-width: 767px) {
             .container-manager {
                 width: 100%;
@@ -191,10 +203,16 @@
 
 		/* Keep the card within the browser window */
 		.container-manager .card {
-			height: calc(100vh - 140px);
+		    height: auto;
+		    min-height: 320px;
 		    display: flex;
 		    flex-direction: column;
+		    overflow: hidden;
 		    margin-bottom: 0;
+		    background: #fff;
+		    border: 1px solid #cbd5e1;
+		    border-radius: 6px;
+		    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 		}
 
 		/* Allow all details to scroll */
@@ -217,22 +235,15 @@
            TABLE SCROLL
 
            ========================================================= */
-
-        .table-scroll-container {
-
-            max-height: 60vh;
-
-            overflow-y: auto;
-
-            overflow-x: auto;
-
-            border: 1px solid #d4d7da;
-
-            scrollbar-width: thin;
-
-            scrollbar-color: #386276 transparent;
-
-        }
+		   .container-manager .content0 .table-responsive {
+		       max-height: 60vh;
+		       overflow-y: auto;
+		       overflow-x: hidden !important;
+		       width: 100%;
+		       max-width: 100%;
+		       border: 0px solid #d4d7da;
+		       scrollbar-width: thin;
+		   }
 
         .table-scroll-container::-webkit-scrollbar {
 
@@ -293,12 +304,12 @@
 
             color: #1e293b !important;
 
-            font-size: 13px !important;
+            font-size: 14px !important;
 
-            font-weight: 600;
+            font-weight: 450 !important;
 
-			border: 1px solid #d4d7da !important;
-			  box-shadow: none !important;
+			border: 0px solid #d4d7da !important;
+			box-shadow: none !important;
  
             padding: 4px 10px !important;
 
@@ -310,7 +321,7 @@
 
         #my_table td {
 
-            height: 15px !important;
+            height: 25px !important;
 
             padding: 4px 10px !important;
 
@@ -320,7 +331,7 @@
 
             margin: 0 !important;
 			
-			border: 1px solid #d4d7da !important;
+			border: 0px solid #d4d7da;
 
             border-right: 1px solid #3B5168 !important;
 
@@ -335,6 +346,8 @@
             background-color: #f8f7ff;
 
             font-size: 12px;
+			
+
 
         }
 
@@ -387,6 +400,8 @@
             border-color: #007bff !important;
 
             color: #ffffff !important;
+			
+			border-radius: 3.5px !important;
 
         }
 
@@ -407,20 +422,11 @@
 
         .formline {
 
-            margin-bottom: 8px;
+            margin-bottom: 3px;
 
         }
 
-        .formline label {
-
-            font-size: 12px;
-
-            font-weight: 600;
-
-            color: #1e293b;
-
-        }
-
+		
 
         /* =========================================================
 
@@ -474,6 +480,8 @@
 		    color: #333333 !important;
 
 		    border-bottom: 1px solid #d5d9dc !important;
+			
+			
 
 		}
 
@@ -504,12 +512,12 @@
 		}
 
 		/* Form labels */
-
+		
 		.formline label {
-
-		    color: #333333 !important;
-
-		}
+				    color: #333333 !important;
+				    font-size: 12px !important;
+				}
+	
 
 		/* Form controls */
 
@@ -520,6 +528,7 @@
 		    color: #333333 !important;
 
 		    border: 1px solid #999999 !important;
+			font-size: 12px !important;
 
 		}
 
@@ -1789,21 +1798,7 @@
 
                 <div class="float-left">
 
-                    <h6 style="
-
-                        font-size: 1.2rem;
-
-						margin-left: 2%;
-						
-                        color: #1e293b;
-
-                        margin: 0;
-
-                    ">
-
-                        Access and Role - List
-
-                    </h6>
+					<h6 style="margin: 0; font-size: 17px;">Access and Roles - List</h6>
 
                 </div>
 
@@ -1974,8 +1969,6 @@
 
                                         color: green;
 
-                                        font-weight: bold;
-
                                     ">
 
                                     Verified
@@ -1988,7 +1981,6 @@
 
                                         color: red;
 
-                                        font-weight: bold;
 
                                     ">
 
@@ -1996,19 +1988,7 @@
 
                                 </td>
 
-                                <td th:case="*"
-
-                                    style="
-
-                                        color: green;
-
-                                        font-weight: bold;
-
-                                    ">
-
-                                    Verified
-
-                                </td>
+                   
 
                             </th:block>
 
@@ -2095,37 +2075,37 @@
 
                     <div>
 
-                        <h6 th:if="${formmode}=='edit'">
+                        <h6 th:if="${formmode}=='edit'" style="margin: 0; font-size: 17px;">
 
                             Access and Role - Edit
 
                         </h6>
 
-                        <h6 th:if="${formmode}=='add'">
+                        <h6 th:if="${formmode}=='add'" style="margin: 0; font-size: 17px;">
 
                             Access and Role - Add
 
                         </h6>
 
-                        <h6 th:if="${formmode}=='verify'">
+                        <h6 th:if="${formmode}=='verify'" style="margin: 0; font-size: 17px;">
 
                             Access and Role - Verify
 
                         </h6>
 
-                        <h6 th:if="${formmode}=='cancel'">
+                        <h6 th:if="${formmode}=='cancel'" style="margin: 0; font-size: 17px;">
 
                             Access and Role - Cancel
 
                         </h6>
 
-                        <h6 th:if="${formmode}=='view'">
+                        <h6 th:if="${formmode}=='view'"  style="margin: 0; font-size: 17px;">
 
                             Access and Role - View
 
                         </h6>
 
-                        <h6 th:if="${formmode}=='delete'">
+                        <h6 th:if="${formmode}=='delete'" style="margin: 0; font-size: 17px;">
 
                             Access and Role - Delete
 
@@ -2177,7 +2157,7 @@
                             <label class="col-sm-2">
 
                                 Role Id
-
+ 
                             </label>
 
 
@@ -2245,7 +2225,6 @@
 
                                        required />
 
-
                                 <input th:if="${formmode}=='edit'"
 
                                        type="text"
@@ -2287,9 +2266,8 @@
 
                         <!-- Permissions / Remarks -->
 
-						<div class=""style="padding:0px !important; display:flex; margin-bottom:10px;">
-
-                            <label class="col-sm-2">
+						<div style="padding:0px !important; display:flex; margin-bottom:3px;">
+                            <label class="col-sm-2"> 
 
                                 Permissions
 
@@ -2587,7 +2565,7 @@
 
                                     <p id="menuValue"
 
-                                       class="mb-1 font-weight-bold"
+                                       class="mb-1"
 
                                        th:each="message:${#strings.arraySplit(IPSAccessRole?.menulist, ',')}"
 
@@ -3096,25 +3074,16 @@
 
                      ========================================================= -->
 
-                <div class="entry-box"
-
-                     th:if="${formmode}!='add'"
-
-                     style="
-
-                         border: 1px solid #36404a;
-
-                         padding: 15px;
-
-                         margin: 15px;
-
-                         background-color: #ffffff;
-
-                         border-radius: 4px;
-
-                         border-top: 2px solid #2B506F;
-
-                     ">
+					 <div class="entry-box"
+					      th:if="${formmode}!='add'"
+					      style="
+					          width: 100%;
+					          border: 1px solid #cbd5e1;
+					          padding: 5px 20px;
+					          margin: 0;
+							  background-color: #f4f4f4 !important;
+					          border-radius: 0;
+					      ">
 
                     <div class="row formline">
 

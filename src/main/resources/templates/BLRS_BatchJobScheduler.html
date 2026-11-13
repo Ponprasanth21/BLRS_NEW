@@ -42,11 +42,22 @@
             th:src="@{/webjars/jquery-validation/1.19.0/jquery.validate.min.js}"></script>
 
     <style>
+		
+	
         /* =========================================================
            PAGE
            ========================================================= */
-        body { background-color: lightgrey; }
+		   
+		   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+		   
+        body { background-color: lightgrey; 
+			font-family: 'Outfit', sans-serif !important;
+		}
         * { overscroll-behavior: none; }
+		
+		html, body {
+				    overflow: hidden !important;
+				}
 
         /* =========================================================
            MAIN CONTAINER
@@ -54,14 +65,9 @@
         .container-manager {
             width: 100%;
             max-width: 100%;
-            padding-right: 2%;
-            padding-left: 2%;
-            margin-right: auto !important;
-            margin-left: auto !important;
-            margin-top: 15px;
+            padding: 0 1.9%;
+			margin: 20px auto 15px;
             box-sizing: border-box;
-			padding-top: 2px !important;
-		    padding-bottom: 2px !important;
 			font: sans-serif;
 			height: auto;
 			min-height: 0;
@@ -89,13 +95,14 @@
         /* =========================================================
            TABLE SCROLL
            ========================================================= */
-        .table-scroll-container {
+		   .container-manager .table-responsive {
             max-height: 60vh;
             overflow-y: auto;
-            overflow-x: auto;
-            border: 1px solid #d4d7da;
+            overflow-x: hidden !important;
+			width: 100%;
+			max-width: 100%;
+            border: 0px solid #d4d7da;
             scrollbar-width: thin;
-            scrollbar-color: #386276 transparent;
         }
         .table-scroll-container::-webkit-scrollbar { width: 6px; height: 6px; }
         .table-scroll-container::-webkit-scrollbar-track { background: transparent; }
@@ -116,19 +123,23 @@
             position: sticky !important;
             top: 0 !important;
             z-index: 10 !important;
-            background-color: #F1F5F9 !important;
+            background-color: #e9ecef !important;
             color: #1e293b !important;
-            font-size: 13px !important;
-            font-weight: 600;
+            font-size: 14px !important;
+            font-weight: 450 !important;
 			border: 1px solid #d4d7da !important;
 			box-shadow: none !important;
-            padding: 4px 8px !important;
+            padding: 5px 8px !important;
             height: 30px !important;
             vertical-align: middle !important;
+			
+			
         }
+		
+		
         #my_table td {
-            height: 15px !important;
-            padding: 4px 6px !important;
+            height: 18px !important;
+			padding: 4px 8px !important;
             line-height: 15px;
             vertical-align: middle;
             margin: 0 !important;
@@ -141,24 +152,27 @@
             font-size: 12px;
         }
 
+		
         /* =========================================================
            REPORTS PAGE HEADER / FOOTER THEME
            ========================================================= */
-        .card-header { background-color: #e9ecef !important; color: #1e293b !important; }
+        .card-header { background-color: #e9ecef !important; color: #1e293b !important; padding-left: 10px !important;
+ }
         .card-header h6 { color: #1e293b !important; margin: 0; }
         .card-footer { background-color: #e9ecef !important; padding: 6px; }
 
         /* =========================================================
            BUTTONS
            ========================================================= */
-        .btn-primary { background-color: #007bff !important; border-color: #007bff !important; color: #ffffff !important; }
+        .btn-primary { background-color: #007bff !important; border-color: #007bff !important; color: #ffffff !important; border-radius: 3.5px !important;
+}
         .btn-primary:hover { background-color: #0069d9 !important; border-color: #0062cc !important; }
 
         /* =========================================================
            FORM
            ========================================================= */
         .formline { margin-bottom: 3px; }
-        .formline label { font-size: 12px; font-weight: 600; color: #1e293b; }
+        .formline label { font-size: 12px;  color: #1e293b; }
 
         /* =========================================================
            SEARCH / INFO ICON
@@ -169,17 +183,25 @@
            REPORTS PAGE COLOR THEME  (Only colors are changed)
            ========================================================= */
         body { background-color: #f4f4f4; }
-        .card { background-color: #ffffff; border-color: #d5d9dc; }
-        .card-header { background-color: #e9ecef !important; color: #333333 !important; border-bottom: 1px solid #d5d9dc !important; }
+		.card,
+		.container-manager .content0 {
+		    background-color: #ffffff;
+		    border: 1px solid #cbd5e1 !important;
+		    border-radius: 6px !important;
+		    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+		    overflow: hidden;
+		}
+        .card-header { background-color: #e9ecef !important; color: #333333 !important; border-bottom: 1px solid #cbd5e1 !important; border-radius: 5px 5px 0 0 !important; }
         .card-header h6 { color: #333333 !important; }
         .card-body { background-color: #f4f4f4; 		padding-top: 8px !important;
 		  padding-bottom: 8px !important;}
         .card-footer { background-color: #e9ecef !important;
-			height: 45px;color: #333333 !important; border-top: 1px solid #d5d9dc !important;
+			height: 45px;color: #333333 !important; border-top: 1px solid #cbd5e1 !important;
 			display: flex;
 			 justify-content: center;
 			 align-items: center;
 			 gap: 6px;
+			 border-radius: 0 0 5px 5px !important;
  }
 
  /* REDUCE BUTTON SIZE ONLY */
@@ -191,7 +213,7 @@
  }
 
         .formline label { color: #333333 !important; }
-        .form-control { background-color: #ffffff !important; color: #333333 !important; border: 1px solid #999999 !important; }
+        .form-control { background-color: #ffffff !important; color: #333333 !important; border: 1px solid #999999 !important; font-size: 12px; }
         .form-control[readonly] { background-color: #ffffff !important; color: #333333 !important; }
         select.form-control { background-color: #ffffff !important; color: #333333 !important; }
         select.form-control:disabled { background-color: #ffffff !important; color: #333333 !important; opacity: 1; }
@@ -659,9 +681,8 @@
             <!-- Reports Theme Header -->
             <div class="card-header" style="height: 48px;">
                 <div class="float-left">
-                    <h6 style="font-size: 1.2rem; color: #1e293b; margin: 0; font: sans-serif ">
-                        Batch Job Schedule - List
-                    </h6>
+					
+					<h6 style="margin: 0; font-size: 17px;"> Batch Job Scheduler - List</h6>
                 </div>
 
                 <div class="btn-group nav-buttons float-right align-items-center"
@@ -713,8 +734,8 @@
                             <td th:text="${#dates.format(job.last_run_date,'dd-MM-yyyy')}"></td>
                             <td th:text="${#dates.format(job.next_run_date,'dd-MM-yyyy')}"></td>
                             <th:block th:switch="${job.entity_flg}">
-                                <td th:case="'N'" style="color: red; font-weight: bold;">Unverified<span th:if="${#strings.equalsIgnoreCase(job.status,'DELETE')}"> (Delete)</span><span th:if="${#strings.equalsIgnoreCase(job.status,'SUSPEND')}"> (Suspend)</span></td>
-                                <td th:case="*" style="color: green; font-weight: bold;">Verified<span th:if="${#strings.equalsIgnoreCase(job.status,'SUSPEND')}"> (Suspend)</span></td>
+                                <td th:case="'N'" style="color: red;">Unverified<span th:if="${#strings.equalsIgnoreCase(job.status,'DELETE')}"> (Delete)</span><span th:if="${#strings.equalsIgnoreCase(job.status,'SUSPEND')}"> (Suspend)</span></td>
+                                <td th:case="*" style="color: green;">Verified<span th:if="${#strings.equalsIgnoreCase(job.status,'SUSPEND')}"> (Suspend)</span></td>
                             </th:block>
                         </tr>
                     </tbody>
@@ -1182,9 +1203,16 @@
                 <!-- =========================================================
                      ENTRY / MODIFY / VERIFY DETAILS
                      ========================================================= -->
-                <div class="entry-box"
-                     th:if="${formmode}!='add'"
-                     style="border: 1px solid #36404a; padding: 15px; margin: 15px; background-color: #ffffff; border-radius: 4px; border-top: 2px solid #2B506F;">
+					 <div class="entry-box"
+					 				      th:if="${formmode}!='add'"
+					 				      style="
+					 				          width: 100%;
+					 				          border: 1px solid #cbd5e1;
+					 				          padding: 5px 20px;
+					 				          margin: 0;
+					 						  background-color: #f4f4f4 !important;
+					 				          border-radius: 0;
+					 				      ">
 
                     <div class="row formline">
                         <label class="col-sm-2">Entry User</label>
