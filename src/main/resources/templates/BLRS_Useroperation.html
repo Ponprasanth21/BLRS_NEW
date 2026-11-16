@@ -66,6 +66,8 @@
 
 	<style>
 		
+		@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+		
 		html, body {
 				    overflow: hidden !important;
 				}
@@ -73,6 +75,8 @@
 		body {
 
 			background-color: lightgrey;
+			font-family: 'Outfit', sans-serif !important;
+
 
 		}
 
@@ -100,7 +104,7 @@
 
 			overflow-y: auto;
 
-			overflow-x: auto;
+			overflow-x: hidden !important;
 
 			border: 1px solid #d4d7da;
 
@@ -149,6 +153,8 @@
 			border-spacing: 0 !important;
 
 			border: 1px solid #d4d7da !important;
+			
+			font-weight: 450 !important;
 
 		}
 
@@ -158,23 +164,23 @@
 
 			top: 0 !important;
 
-			z-index: 10 !important;
+			z-index: 5;
 
-			background-color: #e9ecef !important;
+			background-color: #F1F5F9 !important;
 
-			color: #333333;
+			color: #1e293b !important;
 
-			font-size: 13px !important;
+			font-size: 14px !important;
 
-			font-weight: 600;
+			font-weight: 450 !important;
 
 			border: none !important;
 
 			box-shadow: inset -1px 0 0 #d4d7da, inset 0 -2px 0 #d4d7da !important;
 
-			padding: 4px 8px !important;
+			padding: 8px 8px !important;
 
-			height: 30px !important;
+			height: 20px !important;
 
 			vertical-align: middle !important;
 
@@ -259,12 +265,16 @@
 			width: 10% !important;
 
 		}
+		
+		table.dataTable tbody td {
+		    border: 1px solid #cbd3dc !important;
+		}
 
 		#usertable td {
 
 			height: 15px !important;
 
-			padding: 2px 5px !important;
+			padding: 6px 6px !important;
 
 			line-height: 15px;
 
@@ -272,15 +282,20 @@
 
 			margin: 0 !important;
 
-			border-right: 1px solid #3B5168 !important;
-
-			border-bottom: 1px solid #3B5168 !important;
+			border-right: 1px solid #d4d7da !important;
+			border-bottom: 1px solid #d4d7da !important;
 
 			border-top: 0px !important;
 
 			border-left: 0px !important;
 
 			word-break: break-word;
+			
+			background-color: #ffffff;
+			
+			font-size: 12px;
+			
+			font-weight: 400 !important;
 
 		}
 
@@ -393,10 +408,6 @@
 
 		}
 
-
-
-
-
 		.container-manager {
 			width: 100%;
 			max-width: 100%;
@@ -404,7 +415,7 @@
 			padding-left: 1.7%;
 			margin-right: auto;
 			margin-left: auto;
-			margin-top: 16px !important;
+			margin-top: 18px !important;
 		}
 
 		input[type="text"] {
@@ -531,7 +542,13 @@
 			}
 
 			.container-manager > .card {
-				width: 100%;
+			    height: calc(100vh - 85px);
+			    border: 1px solid #cbd5e1;
+			    border-radius: 6px;
+			    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+			    overflow: hidden;
+			    display: flex;
+			    flex-direction: column;
 			}
 
 			#usertable {
@@ -570,7 +587,13 @@
 		    height: auto !important;
 		    min-height: 0 !important;
 		    margin: 0 2px !important;
+			border-radius: 4px;
 		}
+		
+		.card-header .float-left {
+		    margin-left: -12px !important;
+		}
+		
 
 	</style>
 
@@ -905,12 +928,13 @@
 			            height: 50px !important;
 			            display: flex;
 			            align-items: center;
+						border-radius: 6px 6px 0 0;
+						border-bottom: 1px solid #d4d7da;
 			            justify-content: space-between;">
 
 			    <div class="float-left">
-			        <h6 style="font-size: 1.2rem; color: #333333; margin: 0;">
-			            User Activity Audits
-			        </h6>
+			      
+					<h6 style="margin: 0; font-size: 17px;">User Activity Audits</h6>
 			    </div>
 
 			    <button type="button" class="btn btn-sm btn-primary" id="btnToggleFilter">
@@ -1048,7 +1072,10 @@
 
 			</table>
 
-			<div class="text-center" style="background-color: #e9ecef; padding: 5px; width: 100%;">
+			<div class="text-center" style="background-color: #e9ecef; padding: 7px; width: 100%;
+				   border-top: 1px solid #d4d7da;
+			       border-radius: 0 0 6px 6px;
+			       flex-shrink: 0;">
 
 				<div class="btn-group nav-buttons " style="align: center;">
 

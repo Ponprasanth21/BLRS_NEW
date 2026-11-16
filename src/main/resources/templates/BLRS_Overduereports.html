@@ -86,10 +86,12 @@
 		   OVERDUE REPORT
 		   ========================================================= */
 		.overdue-card {
-			border: 1px solid #9faab4;
-			border-radius: 0;
-			box-shadow: none;
+			border: 1px solid #cbd5e1;
+			border-radius: 6px;
+			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 			background-color: #ffffff;
+			overflow: hidden;
+			height: auto;
 		}
 
 		.overdue-header {
@@ -104,6 +106,13 @@
 			font-size: 14px;
 			font-weight: 500;
 			margin: 0;
+		}
+		
+		.overdue-card > .card-header {
+		    background-color: #e9ecef !important;
+		    border-bottom: 1px solid #cbd5e1;
+		    padding: 10px 16px;
+		    border-radius: 0;
 		}
 
 		.overdue-body {
@@ -151,18 +160,20 @@
 
 		.overdue-footer {
 			background-color: #e9ecef;
-			border-top: 0;
+			border-top: 1px solid #cbd5e1;
 			text-align: center;
-			padding: 12px;
+			padding: 8px;
+			margin: 0;
+			border-radius: 0;
 		}
 
 		.overdue-footer .big-btn {
-			min-width: 70px;
+			min-width: 50px;
 			margin: 0 3px;
-			padding: 5px 14px;
-			font-size: 12px;
-			font-weight: 500;
-			line-height: 1.5;
+			padding: 5px 5px;
+			font-size: 13px;
+			font-weight: 450;
+			line-height: 1.2;
 			color: #ffffff;
 			background-color: #007bff;
 			border: 1px solid #007bff;
@@ -298,8 +309,9 @@
 							<div class="card-header" style="background-color: #e9ecef">
 
 								<div class="float-left">
+									
+									<h6 style="margin: 0; font-size: 17px;">List of Overdue Report</h6>
 
-									<h6>List of Overdue Report</h6>
 
 								</div>
 

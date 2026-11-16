@@ -116,7 +116,7 @@ $(document).ready(function () {
 							      method="get"
 							      onsubmit="return validateSearch();">
 								<div class="form-group row justify-content-center align-items-center mb-2">
-									<label class="col-auto col-form-label font-weight-bold mr-2" for="reminderType" style="font-size: 0.88rem;">Reminder Type</label>
+									<label class="col-auto col-form-label" for="reminderType" style="font-size: 0.88rem;">Reminder Type</label>
 									<div class="col-auto mr-4" style="min-width: 180px;">
 										<select class="form-control form-control-sm"
 										        name="reminderType"
@@ -132,7 +132,7 @@ $(document).ready(function () {
 
 										</select>
 									</div>
-									<label class="col-auto col-form-label font-weight-bold mr-2" for="reminderDate" style="font-size: 0.88rem;">Reminder Date</label>
+									<label class="col-auto col-form-label" for="reminderDate" style="font-size: 0.88rem;">Reminder Date</label>
 									<div class="col-auto mr-4" style="min-width: 180px;">
 										<input type="date" class="form-control form-control-sm" name="reminderDate" id="reminderDate" th:value="${reminderDate}">
 									</div>
