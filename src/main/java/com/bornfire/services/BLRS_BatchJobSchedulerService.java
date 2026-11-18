@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +35,26 @@ public class BLRS_BatchJobSchedulerService {
 	private BLRS_BatchJobScheduler_Repo batchJobRepo;
     
 	
-	
+	@Autowired
+	private BLRS_AuditService auditService;
+
+	private static final String AUDIT_MODULE = "BATCH JOB SCHEDULER";
+	private static final String AUDIT_TABLE = "BLRS_BATCH_JOB_SCHEDULER_TAB";
+
+	/** system / derived / secret fields - not shown as "changes" */
+	private static final Set<String> AUDIT_SKIP = new HashSet<String>(Arrays.asList("entity_flg", "del_flg",
+			"entry_user", "entry_time", "modify_user", "modify_time", "auth_user", "auth_time", "email_pwd", "job_status",
+			"last_run_date", "next_run_date", "period"));
+
+	private static final Map<String, String> AUDIT_LABELS = new HashMap<String, String>();
+	static {
+		AUDIT_LABELS.put("day", "Run Day");
+		AUDIT_LABELS.put("hour", "Run Hour");
+		AUDIT_LABELS.put("hour1", "Run Minute");
+		AUDIT_LABELS.put("schm_code", "Scheme Code");
+		AUDIT_LABELS.put("reminder_type", "Reminder Type");
+	}
+    
 
 	    private static final org.slf4j.Logger log =
 	            org.slf4j.LoggerFactory.getLogger(BLRS_BatchJobSchedulerService.class);
@@ -177,6 +198,8 @@ public class BLRS_BatchJobSchedulerService {
 		j.setEntry_user(loginUser);
 		j.setEntry_time(new Date());
 		batchJobRepo.save(j);
+		auditService.saveRecord(AUDIT_MODULE, AUDIT_TABLE, "ADD", j.getJob_id(), j.getJob_name(), loginUser, null,
+				"Job Created Successfully");
 		return "Job Id: " + j.getJob_id() + " added Successfully.";
 	}
 
@@ -196,6 +219,9 @@ public class BLRS_BatchJobSchedulerService {
 		if ("Y".equals(in.getEmail_flg()) && isBlank(in.getEmail_pwd()) && isBlank(ex.getEmail_pwd())) {
 			return "Please enter Email Password";
 		}
+		
+		// audit : old values must be read BEFORE 'ex' (managed entity) is changed
+				Map<String, String> auditBefore = auditService.snapshot(ex, AUDIT_SKIP);
 
 		// Manual : only these fields are modifiable
 		ex.setPeriodicity(in.getPeriodicity());
@@ -208,30 +234,37 @@ public class BLRS_BatchJobSchedulerService {
 		ex.setEntity_flg("N");
 		ex.setModify_user(loginUser);
 		ex.setModify_time(new Date());
+		Map<String, String> auditAfter = auditService.snapshot(ex, AUDIT_SKIP);
 		batchJobRepo.save(ex);
+		auditService.saveChanges(AUDIT_MODULE, AUDIT_TABLE, "MODIFY", ex.getJob_id(), ex.getJob_name(), loginUser,
+				"Job Modified Successfully", auditBefore, auditAfter, AUDIT_LABELS, null);
 		return "Job Id: " + ex.getJob_id() + " Modified Successfully.";
 	}
 
 	// ------------------------------------------------------------------
-	// Verify (checker)
+	// Delete
 	// ------------------------------------------------------------------
-	/** Delete request by maker : status = Delete, record goes back to Unverified. Checker verify => DEL_FLG = Y */
 	@Transactional
 	public String deleteJob(String jobId, String loginUser) {
-		BLRS_BatchJobScheduler_Entity ex = getJob(jobId);
-		if (ex == null) {
-			return "Job Id not found";
-		}
-		if ("Delete".equalsIgnoreCase(ex.getStatus()) && "N".equals(ex.getEntity_flg())) {
-			return "Job Id: " + ex.getJob_id() + " is already waiting for delete verification.";
-		}
-		ex.setStatus("DELETE");
-		ex.setEntity_flg("N");
-		ex.setModify_user(loginUser);
-		ex.setModify_time(new Date());
-		batchJobRepo.save(ex);
-		return "Job Id: " + ex.getJob_id() + " Delete request submitted Successfully. Verifier has to verify.";
+	    BLRS_BatchJobScheduler_Entity ex = getJob(jobId);
+
+	    if (ex == null) {
+	        return "Job Id not found";
+	    }
+
+	    ex.setDel_flg("Y");
+	    ex.setModify_user(loginUser);
+	    ex.setModify_time(new Date());
+
+	    batchJobRepo.save(ex);
+
+	    auditService.saveRecord(AUDIT_MODULE, AUDIT_TABLE, "DELETE",
+	            ex.getJob_id(), ex.getJob_name(), loginUser, null,
+	            "Job Deleted Successfully");
+
+	    return "Job Id: " + ex.getJob_id() + " Deleted Successfully.";
 	}
+
 
 	@Transactional
 	public String verifyJob(String jobId, String loginUser) {
@@ -255,6 +288,8 @@ public class BLRS_BatchJobSchedulerService {
 			ex.setDel_flg("Y");
 		}
 		batchJobRepo.save(ex);
+		auditService.saveRecord(AUDIT_MODULE, AUDIT_TABLE, "VERIFY", ex.getJob_id(), ex.getJob_name(), loginUser,
+				loginUser, deleted ? "Job Deleted Successfully" : "Job Verified Successfully");
 		return "Job Name: " + ex.getJob_name() + (deleted ? " Deleted Successfully." : " Verified Successfully.");
 	}
 

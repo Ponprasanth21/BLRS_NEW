@@ -1155,7 +1155,7 @@
                         Submit
                     </button>
 
-                    <button th:if="${formmode}=='verify' OR ${formmode}=='view'"
+                    <button th:if="(${formmode}=='view' OR ${formmode}=='verify') AND ${BatchJob?.entity_flg}=='Y'"
                             type="button"
                             class="btn btn-sm btn-primary"
                             th:attr="data-job_id=${BatchJob?.job_id}"

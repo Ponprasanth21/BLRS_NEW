@@ -100,7 +100,7 @@
 
 		.table-scroll-container {
 
-			max-height: 60vh;
+			max-height: 50vh;
 
 			overflow-y: auto;
 
@@ -771,7 +771,7 @@
 
 				"searching": true,
 
-				"pageLength": 100,
+				"pageLength": 10,
 
 				"lengthChange": false,
 
@@ -1053,16 +1053,11 @@
 						</td>
 
 						<!-- Modification Details -->
+						<td th:text="${auditdata?.field_name}"></td>
 
-						<td th:text="${auditdata?.modi_details}"></td>
+						<td th:text="${auditdata?.old_value}"></td>
 
-						<!-- Old Value -->
-
-						<td></td>
-
-						<!-- New Value -->
-
-						<td></td>
+						<td th:text="${auditdata?.new_value}"></td>
 
 						<td th:text="${auditdata?.remarks}"></td>
 

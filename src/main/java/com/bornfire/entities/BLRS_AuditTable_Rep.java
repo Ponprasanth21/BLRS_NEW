@@ -31,20 +31,20 @@ public interface BLRS_AuditTable_Rep extends JpaRepository<BLRS_AuditTable, Stri
 
 	@Query(value = "SELECT * FROM BLRS_AUDIT_TABLE "
 			+ "WHERE CAST(audit_date AS DATE) BETWEEN CAST(?1 AS DATE) AND CAST(?2 AS DATE) "
-			+ "AND (audit_screen IN ('LOGIN', 'LOGOUT') " + "     OR audit_table NOT IN ('BLRS_USER_PROFILE')) "
-			+ "ORDER BY audit_date DESC", nativeQuery = true)
+			+ "AND (audit_screen IN ('LOGIN', 'LOGOUT') " + "     OR audit_table IN ('BLRS_USER_PROFILE',  'BLRS_ACCESS_ROLE_TABLE', 'BLRS_BATCH_JOB_SCHEDULER_TAB')) "
+			+ "ORDER BY entry_time DESC", nativeQuery = true)
 	List<BLRS_AuditTable> getauditListOpeartion(Date Fromdate, Date Todate);
 	
 	@Query(value = "SELECT * FROM BLRS_AUDIT_TABLE "
 	        + "WHERE CAST(audit_date AS DATE) BETWEEN CAST(?1 AS DATE) AND CAST(?2 AS DATE) "
 	        + "AND audit_screen NOT IN ('LOGIN', 'LOGOUT') "
-	        + "AND audit_table NOT IN ('BLRS_USER_PROFILE') "
+	        + "AND audit_table NOT IN ('BLRS_USER_PROFILE', 'BLRS_ACCESS_ROLE_TABLE', 'BLRS_BATCH_JOB_SCHEDULER_TAB')"
 	        + "ORDER BY audit_date DESC",
 	        nativeQuery = true)
 	List<BLRS_AuditTable> getbusinessListOpeartion(Date Fromdate, Date Todate);
 
 	@Query(value = "SELECT * FROM BLRS_AUDIT_TABLE " + "WHERE CAST(audit_date AS DATE) = CAST(?1 AS DATE) "
-			+ "AND audit_table NOT IN ('BLRS_USER_PROFILE') " + "ORDER BY audit_date DESC", nativeQuery = true)
+			+ "AND audit_table NOT IN ('BLRS_USER_PROFILE', 'BLRS_ACCESS_ROLE_TABLE', 'BLRS_BATCH_JOB_SCHEDULER_TAB') " + "ORDER BY audit_date DESC", nativeQuery = true)
 	List<BLRS_AuditTable> getauditListOpeartion(Date Fromdate);
 
 	@Query(value = "SELECT * FROM BLRS_AUDIT_TABLE", nativeQuery = true)

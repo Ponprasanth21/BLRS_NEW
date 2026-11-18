@@ -29,6 +29,10 @@ public class BLRS_AuditTable {
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date auth_time;
 	private String func_code;
+	private String field_name;
+	private String old_value;
+	private String new_value;
+	
 	public String getAudit_ref_no() {
 		return audit_ref_no;
 	}
@@ -107,6 +111,31 @@ public class BLRS_AuditTable {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
+	
+	public String getField_name() {
+	    return field_name;
+	}
+
+	public void setField_name(String field_name) {
+	    this.field_name = field_name;
+	}
+
+	public String getOld_value() {
+	    return old_value;
+	}
+
+	public void setOld_value(String old_value) {
+	    this.old_value = old_value;
+	}
+
+	public String getNew_value() {
+	    return new_value;
+	}
+
+	public void setNew_value(String new_value) {
+	    this.new_value = new_value;
+	}
+	
 	public BLRS_AuditTable(String audit_ref_no, Date audit_date, String audit_table, String audit_screen,
 			String event_id, String event_name, String modi_details, String entry_user, Date entry_time, String remarks,
 			String auth_user, Date auth_time, String func_code) {

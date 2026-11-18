@@ -33,12 +33,12 @@ public class BLRS_Access_Role_Entity {
 	private String inquiries;
 	private String reports;
 	private String audit_operations;
-	private String ips_operations;
-	private String monitoring;
-	private String myt_registration;
-	private String wallet_master;
-	private String consent_registration;
-	private String merchant_registration;
+	/*
+	 *  private String ips_operations; private
+	 * String monitoring; private String myt_registration; private String
+	 * wallet_master; private String consent_registration; private String
+	 * merchant_registration;
+	 */
 	private String new_role_flg;
 	private String remarks;
 
@@ -201,7 +201,6 @@ public class BLRS_Access_Role_Entity {
 
 	public void setOperations(String operations) {
 		this.operations = operations;
-		this.ips_operations = operations;
 	}
 
 	public String getInquiries() {
@@ -210,7 +209,6 @@ public class BLRS_Access_Role_Entity {
 
 	public void setInquiries(String inquiries) {
 		this.inquiries = inquiries;
-		this.monitoring = inquiries;
 	}
 
 	public String getReports() {
@@ -219,68 +217,51 @@ public class BLRS_Access_Role_Entity {
 
 	public void setReports(String reports) {
 		this.reports = reports;
-		this.myt_registration = reports;
 	}
+	
+	 public String getAudit_operations() { return audit_operations != null ?
+			 audit_operations : audit_logs; }
+			 
+	 public void setAudit_operations(String audit_operations) {
+	 this.audit_operations = audit_operations;
+	 }
 
-	public String getAudit_operations() {
-		return audit_operations != null ? audit_operations : audit_logs;
-	}
-
-	public void setAudit_operations(String audit_operations) {
-		this.audit_operations = audit_operations;
-		this.audit_logs = audit_operations;
-	}
-
-	public String getIps_operations() {
-		return ips_operations != null ? ips_operations : operations;
-	}
-
-	public void setIps_operations(String ips_operations) {
-		this.ips_operations = ips_operations;
-		this.operations = ips_operations;
-	}
-
-	public String getMonitoring() {
-		return monitoring != null ? monitoring : inquiries;
-	}
-
-	public void setMonitoring(String monitoring) {
-		this.monitoring = monitoring;
-		this.inquiries = monitoring;
-	}
-
-	public String getMyt_registration() {
-		return myt_registration != null ? myt_registration : reports;
-	}
-
-	public void setMyt_registration(String myt_registration) {
-		this.myt_registration = myt_registration;
-		this.reports = myt_registration;
-	}
-
-	public String getWallet_master() {
-		return wallet_master;
-	}
-
-	public void setWallet_master(String wallet_master) {
-		this.wallet_master = wallet_master;
-	}
-
-	public String getConsent_registration() {
-		return consent_registration;
-	}
-
-	public void setConsent_registration(String consent_registration) {
-		this.consent_registration = consent_registration;
-	}
-
-	public String getMerchant_registration() {
-		return merchant_registration;
-	}
-
-	public void setMerchant_registration(String merchant_registration) {
-		this.merchant_registration = merchant_registration;
-	}
+	/*
+	 * 
+	 * 
+	 * public String getIps_operations() { return ips_operations != null ?
+	 * ips_operations : operations; }
+	 * 
+	 * public void setIps_operations(String ips_operations) { this.ips_operations =
+	 * ips_operations; this.operations = ips_operations; }
+	 * 
+	 * public String getMonitoring() { return monitoring != null ? monitoring :
+	 * inquiries; }
+	 * 
+	 * public void setMonitoring(String monitoring) { this.monitoring = monitoring;
+	 * this.inquiries = monitoring; }
+	 * 
+	 * public String getMyt_registration() { return myt_registration != null ?
+	 * myt_registration : reports; }
+	 * 
+	 * public void setMyt_registration(String myt_registration) {
+	 * this.myt_registration = myt_registration; this.reports = myt_registration; }
+	 * 
+	 * public String getWallet_master() { return wallet_master; }
+	 * 
+	 * public void setWallet_master(String wallet_master) { this.wallet_master =
+	 * wallet_master; }
+	 * 
+	 * public String getConsent_registration() { return consent_registration; }
+	 * 
+	 * public void setConsent_registration(String consent_registration) {
+	 * this.consent_registration = consent_registration; }
+	 * 
+	 * public String getMerchant_registration() { return merchant_registration; }
+	 * 
+	 * public void setMerchant_registration(String merchant_registration) {
+	 * this.merchant_registration = merchant_registration; }
+	 */
 
 	public String getNew_role_flg() {
 		return new_role_flg;

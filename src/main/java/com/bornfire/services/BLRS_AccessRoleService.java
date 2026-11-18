@@ -1,9 +1,13 @@
 package com.bornfire.services;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +27,18 @@ public class BLRS_AccessRoleService {
 	@Autowired
 	private BLRS_Access_Role_Repo accessRoleRepo;
 
+	@Autowired
+	private BLRS_AuditService auditService;
+	
+	private static final String AUDIT_MODULE = "ACCESS ROLE";
+	private static final String AUDIT_TABLE = "BLRS_ACCESS_ROLE_TABLE";
+
+	/** system fields - not shown as "changes" */
+	private static final Set<String> AUDIT_SKIP = new HashSet<>(Arrays.asList("entity_flg", "auth_flg", "modify_flg",
+			"del_flg", "entry_user", "modify_user", "auth_user", "entry_time", "modify_time", "auth_time",
+			"new_role_flg"));
+	private static final Set<String> AUDIT_LIST_FIELDS = new HashSet<>(Arrays.asList("menulist"));
+	
 	public List<BLRS_Access_Role_Entity> getRoleList() {
 		return accessRoleRepo.getAllActiveRoles();
 	}
@@ -73,6 +89,8 @@ public class BLRS_AccessRoleService {
 				role.setEntry_time(new Date());
 
 				accessRoleRepo.save(role);
+				auditService.saveRecord(AUDIT_MODULE, AUDIT_TABLE, "ADD", role.getRole_id(), role.getRole_desc(), loginUser,
+						null, "Role Created Successfully");
 
 				msg = "Role Created Successfully";
 			} else if (formmode.equalsIgnoreCase("edit")) {
@@ -86,8 +104,13 @@ public class BLRS_AccessRoleService {
 				role.setModify_user(loginUser);
 				role.setModify_time(new Date());
 
-				accessRoleRepo.save(role);
+				// snapshot BEFORE save(): 'existing' is a managed entity and save() overwrites it
+				Map<String, String> before = auditService.snapshot(existing, AUDIT_SKIP);
+				Map<String, String> after = auditService.snapshot(role, AUDIT_SKIP);
 
+				accessRoleRepo.save(role);
+				auditService.saveChanges(AUDIT_MODULE, AUDIT_TABLE, "MODIFY", role.getRole_id(), role.getRole_desc(),
+						loginUser, "Role Modified Successfully", before, after, null, AUDIT_LIST_FIELDS);
 				msg = "Role Modified Successfully";
 			}
 		} catch (Exception e) {
@@ -125,6 +148,8 @@ public class BLRS_AccessRoleService {
 				role.setAuth_time(new Date());
 
 				accessRoleRepo.save(role);
+				auditService.saveRecord(AUDIT_MODULE, AUDIT_TABLE, "VERIFY", role.getRole_id(), role.getRole_desc(),
+						loginUser, loginUser, "Role Verified Successfully");
 
 				msg = "Role Verified Successfully";
 			} else {
@@ -150,6 +175,10 @@ public class BLRS_AccessRoleService {
 				role.setModify_time(new Date());
 
 				accessRoleRepo.save(role);
+				
+				auditService.saveRecord(AUDIT_MODULE, AUDIT_TABLE, "DELETE", role.getRole_id(), role.getRole_desc(),
+						loginUser, null, "Role Deleted Successfully");
+
 
 				msg = "Role Deleted Successfully";
 			} else {

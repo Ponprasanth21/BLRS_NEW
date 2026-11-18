@@ -19,6 +19,20 @@ import com.bornfire.config.AES;
 import com.bornfire.entities.BLRS_UserProfile_Entity;
 import com.bornfire.entities.BLRS_UserProfile_Repo;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+
+import com.bornfire.config.SequenceGenerator;
+import com.bornfire.entities.BLRS_AuditTable;
+import com.bornfire.entities.BLRS_AuditTable_Rep;
+
+
 @Service
 @Transactional
 public class UserProfileService {
@@ -27,9 +41,120 @@ public class UserProfileService {
 
 	@Autowired
 	private BLRS_UserProfile_Repo userProfileRep;
+	
+	@Autowired
+	private BLRS_AuditService auditService;
+	
+	@Autowired
+	private BLRS_AuditTable_Rep auditTableRep;
+
+	@Autowired
+	private SequenceGenerator sequence;
 
 	@Value("${default.password:Bornfire@123}")
 	private String defaultPassword;
+	
+	// ---------------------------------------------------------------------------------
+	// AUDIT HELPERS
+	// ---------------------------------------------------------------------------------
+
+	/** Fields that are system generated / sensitive and are not shown as "changes". */
+	private static final Set<String> AUDIT_SKIP_FIELDS = new HashSet<>(Arrays.asList("serialVersionUID", "password",
+			"photo", "entry_user", "entry_time", "modify_user", "modify_time", "modify_flg", "entity_flg", "auth_user",
+			"auth_time", "auth_flg", "del_flg", "no_of_attmp", "session_id", "login_flg", "user_locked_flg", "disable_flg",
+			"new_user_flg"));
+
+	private static final int AUDIT_MAX_LEN = 250;
+
+	/** Converts a field value to a comparable / displayable text. */
+	private String auditText(Object v) {
+		if (v == null) {
+			return "";
+		}
+		if (v instanceof Date) {
+			return new SimpleDateFormat("dd-MM-yyyy").format((Date) v);
+		}
+		if (v instanceof BigDecimal) {
+			return ((BigDecimal) v).stripTrailingZeros().toPlainString();
+		}
+		return v.toString().trim();
+	}
+
+	/** "role_id" -> "Role Id" */
+	private String auditLabel(String fieldName) {
+		StringBuilder sb = new StringBuilder();
+		for (String part : fieldName.split("_")) {
+			if (part.isEmpty()) {
+				continue;
+			}
+			if (sb.length() > 0) {
+				sb.append(' ');
+			}
+			sb.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
+		}
+		return sb.toString();
+	}
+
+	private String cut(String v) {
+		if (v == null) {
+			return null;
+		}
+		return v.length() > AUDIT_MAX_LEN ? v.substring(0, AUDIT_MAX_LEN - 3) + "..." : v;
+	}
+
+	/**
+	 * Compares the stored user with the edited user and returns one entry per
+	 * changed field: [fieldName, oldValue, newValue].
+	 */
+	private List<String[]> findChanges(BLRS_UserProfile_Entity oldUser, BLRS_UserProfile_Entity newUser) {
+		List<String[]> changes = new ArrayList<>();
+		for (Field f : BLRS_UserProfile_Entity.class.getDeclaredFields()) {
+			if (Modifier.isStatic(f.getModifiers()) || AUDIT_SKIP_FIELDS.contains(f.getName())) {
+				continue;
+			}
+			try {
+				f.setAccessible(true);
+				String o = auditText(f.get(oldUser));
+				String n = auditText(f.get(newUser));
+				if (!o.equals(n)) {
+					changes.add(new String[] { auditLabel(f.getName()), o.isEmpty() ? "-" : o, n.isEmpty() ? "-" : n });
+				}
+			} catch (Exception e) {
+				logger.error("Audit compare failed for field " + f.getName(), e);
+			}
+		}
+		return changes;
+	}
+
+	/** Writes one row to the audit table (shown in User Activity Audits). */
+	private void writeAudit(String funcCode, BLRS_UserProfile_Entity target, String entryUser, String authUser,
+			String fieldName, String oldValue, String newValue, String remarks) {
+		try {
+			BLRS_AuditTable audit = new BLRS_AuditTable();
+			Date now = new Date();
+			audit.setAudit_ref_no(sequence.generateRequestUUId());
+			audit.setAudit_date(now);
+			audit.setEntry_time(now);
+			audit.setEntry_user(entryUser);
+			audit.setAuth_user(authUser);
+			audit.setAuth_time(authUser != null ? now : null);
+			audit.setFunc_code(funcCode);
+			audit.setAudit_table("BLRS_USER_PROFILE");
+			audit.setAudit_screen("USER PROFILE - " + funcCode);
+			audit.setEvent_id(target.getUserid());
+			audit.setEvent_name(target.getUsername());
+			audit.setField_name(cut(fieldName));
+			audit.setOld_value(cut(oldValue));
+			audit.setNew_value(cut(newValue));
+			audit.setModi_details(remarks);
+			audit.setRemarks(remarks);
+			auditTableRep.save(audit);
+		} catch (Exception e) {
+			// an audit problem must never block the user operation itself
+			logger.error("Audit write failed for user " + target.getUserid(), e);
+		}
+	}
+
 
 	public List<BLRS_UserProfile_Entity> getUsersList() {
 		return userProfileRep.getAllList();
@@ -94,6 +219,8 @@ public class UserProfileService {
 			userProfile.setEntry_user(inputUser);
 
 			userProfileRep.save(userProfile);
+
+			writeAudit("ADD", userProfile, inputUser, null, "-", null, null, "User Created Successfully");
 			msg = "User Created Successfully";
 
 		} else if ("edit".equalsIgnoreCase(formmode) || "modify".equalsIgnoreCase(formmode)) {
@@ -130,7 +257,19 @@ public class UserProfileService {
 				userProfile.setPhoto(original.getPhoto());
 			}
 
-			userProfileRep.save(userProfile);
+			// Collect old/new values BEFORE save(): 'original' is a managed entity and
+						// save() would overwrite it with the new values.
+						List<String[]> changes = findChanges(original, userProfile);
+
+						userProfileRep.save(userProfile);
+
+						if (changes.isEmpty()) {
+							writeAudit("MODIFY", userProfile, inputUser, null, "-", null, null, "User Modified Successfully");
+						} else {
+							for (String[] c : changes) {
+								writeAudit("MODIFY", userProfile, inputUser, null, c[0], c[1], c[2], "User Modified Successfully");
+							}
+						}
 			msg = "User Modified Successfully";
 		}
 		} catch (Exception e) {
@@ -170,6 +309,9 @@ public class UserProfileService {
 			userProfile.setAuth_user(inputUser);
 			userProfile.setAuth_time(new Date());
 			userProfileRep.save(userProfile);
+			
+			writeAudit("VERIFY", userProfile, inputUser, inputUser, "-", null, null, "User Verified Successfully");
+
 
 			msg = "User Verified Successfully";
 		} else {
@@ -193,6 +335,9 @@ public class UserProfileService {
 			userProfile.setModify_user(inputUser);
 			userProfile.setModify_time(new Date());
 			userProfileRep.save(userProfile);
+			writeAudit("DELETE", userProfile, inputUser, null, "-", null, null, "User Deleted Successfully");
+
+
 
 			msg = "User Deleted Successfully";
 		} else {

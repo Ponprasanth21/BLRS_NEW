@@ -852,7 +852,7 @@ public class NavigationController {
 
 		if ("add".equals(mode)) {
 			md.addAttribute("BatchJob", batchJobService.getNewJob());
-		} else if ("edit".equals(mode) || "view".equals(mode) || "verify".equals(mode)) {
+		} else if ("edit".equals(mode) || "view".equals(mode) || "verify".equals(mode) || "delete".equals(mode)) {
 			BLRS_BatchJobScheduler_Entity job = batchJobService.getJob(job_id);
 			if (job == null) {
 				mode = "list";
@@ -897,6 +897,15 @@ public class NavigationController {
 		return batchJobService.verifyJob(jobId, loginUser);
 	}
 
+	@RequestMapping(value = "deleteBatchJob", method = RequestMethod.POST)
+	@ResponseBody
+	public String deleteBatchJob(@RequestParam("job_id") String jobId, HttpServletRequest rq) {
+		String loginUser = (String) rq.getSession().getAttribute("USERID");
+		if (loginUser == null)
+			loginUser = "SYSTEM";
+		return batchJobService.deleteJob(jobId, loginUser);
+	}
+	
 	// =====================================================================
 	// NavigationController.java  -  Batch Job Alert
 	// You ALREADY have these two methods. Nothing new to add, shown here for reference.
